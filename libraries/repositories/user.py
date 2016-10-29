@@ -9,7 +9,7 @@ class User(object):
         result = r.get_registry()['MY_SQL'].query(
             (
                 "select * from information_schema.tables where "
-                "TABLE_SCHEMA='trin_report' and table_name='user';"
+                "TABLE_SCHEMA='trin_report' and table_name='users';"
             )
         )
         if result != 0:

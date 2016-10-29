@@ -9,6 +9,7 @@ from flask import Flask, request
 from werkzeug.wsgi import SharedDataMiddleware
 load_registry()
 
+_root = os.path.abspath(os.path.join(os.path.dirname(__file__),".."))
 
 app = Flask('trin_report')
 app.debug = True
@@ -24,6 +25,8 @@ if app.config.get('ENV') == 'development':
     cacheStatic = False
 else:
     cacheStatic = True
+
+app.root_path = _root
 
 app.wsgi_app = SharedDataMiddleware(app.wsgi_app, {
     '/static': os.path.join(os.path.dirname(__file__), 'static'),
