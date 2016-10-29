@@ -11,14 +11,14 @@ load_registry()
 
 _root = os.path.abspath(os.path.join(os.path.dirname(__file__),".."))
 
-app = Flask('trin_report')
+app = Flask('trin_report_rddp')
 app.debug = True
 app.secret_key = '9dBrJXZMW8E44yfODtLuxp5f0Yz2cFfPfUe2Cs2n'
 
-APP_NAME = 'trin_report'
+APP_NAME = 'trin_report_rddp'
 
 app.config.update(
-    APP_SESSION_NAME='trin_report'
+    APP_SESSION_NAME='trin_report_rddp'
 )
 
 if app.config.get('ENV') == 'development':
