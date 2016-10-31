@@ -8,6 +8,9 @@ def run():
     r.get_registry()['MY_SQL'].query(
         'DROP TABLE user;'
     )
+    r.get_registry()['MY_SQL'].query(
+        'DROP TABLE emergency;'
+    )
 
 if __name__ == "__main__":
 	run()

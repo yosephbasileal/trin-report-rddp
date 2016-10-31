@@ -6,6 +6,7 @@ from constants import settings
 from libraries.my_sql_connection import MySQLConnection
 from raven import Client
 from libraries.repositories.user import User
+from libraries.repositories.emergency import Emergency
 
 
 def load_registry():
@@ -34,3 +35,4 @@ def init_redis(r):
 
 def init_db_objects(r):
     r['USER'] = User
+    r['EMERGENCY'] = Emergency
