@@ -1,0 +1,7 @@
+<h2>Emergency Records</h2>
+{% for rec in records %}
+	<p>ID: {{rec.get('id')}}</p>
+	<p>Timestamp: {{rec.get('created')}}</p>
+	<p>Location: lat={{rec.get('latitude')}} & lng={{rec.get('longitude')}}
+	<hr />
+{% endfor %}

@@ -7,6 +7,7 @@ import hashlib
 from initialize_registry import load_registry
 from flask import Flask, request
 from werkzeug.wsgi import SharedDataMiddleware
+from libraries.sentry_client import SentryClient
 load_registry()
 
 _root = os.path.abspath(os.path.join(os.path.dirname(__file__),".."))
@@ -18,8 +19,10 @@ app.secret_key = '9dBrJXZMW8E44yfODtLuxp5f0Yz2cFfPfUe2Cs2n'
 APP_NAME = 'trin_report_rddp'
 
 app.config.update(
-    APP_SESSION_NAME='trin_report_rddp'
+    APP_SESSION_NAME='trin_report_rddp',
+    SENTRY_DSN='https://e0949bf39462445eb3cc780a421dc885:74241d1bee2441cbb665f577edf94d4e@sentry.io/110628'
 )
+SentryClient.init_flask(app)
 
 if app.config.get('ENV') == 'development':
     cacheStatic = False
@@ -60,7 +63,8 @@ def cache_control(response):
     response.set_etag(etag)
     return response
 
+logging.basicConfig(filename='error.log', level=logging.DEBUG)
+logging.info("System started")
+
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
-    logging.info("System started")
     app.run()
