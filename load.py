@@ -19,6 +19,7 @@ def run():
         'utf8 COLLATE utf8_general_ci;'
     )
     r.get_registry()['USER'].create_table()
+    r.get_registry()['EMERGENCY'].create_table()
 
 
 if __name__ == "__main__":

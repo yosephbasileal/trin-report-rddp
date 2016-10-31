@@ -25,3 +25,25 @@ class Emergency(object):
         )
         r.get_registry()['MY_SQL'].query(query)
 
+    @staticmethod
+    def record_emergency(created, latitude, longitude):
+        query = """INSERT INTO emergency(
+            created,
+            longitude,
+            latitude
+        ) VALUES (
+            %(created)s,
+            %(longitude)s,
+            %(latitude)s
+        );"""
+        data = {
+            'created': created,
+            'longitude': longitude,
+            'latitude': latitude
+        }
+        return r.get_registry()['MY_SQL'].insert(query, data)
+
+    @staticmethod
+    def get_all_records():
+        query = """SELECT * FROM emergency ORDER BY created DESC;"""
+        return r.get_registry()['MY_SQL'].get_all(query)
