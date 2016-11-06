@@ -27,7 +27,8 @@ class Admin(object):
         r.get_registry()['MY_SQL'].query(query)
 
     @staticmethod
-    def create_test_admin(first_name,
+    def create_test_admin(
+        first_name,
         last_name,
         email,
         password
