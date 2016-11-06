@@ -106,7 +106,7 @@ def register_user():
     # get user data from POST request
     data = request.form
 
-    user_id = data.get('auth_user_id')
+    user_id = data.get('user_id')
     auth_token = data.get('auth_token')
 
     # add record to database

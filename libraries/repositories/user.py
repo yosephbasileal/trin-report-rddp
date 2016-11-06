@@ -18,7 +18,7 @@ class User(object):
             """CREATE TABLE IF NOT EXISTS users(
             user_id VARCHAR(200),
             auth_token VARCHAR(500),
-            PRIMARY KEY (id))
+            PRIMARY KEY (user_id))
             ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"""
         )
         r.get_registry()['MY_SQL'].query(query)
@@ -29,7 +29,7 @@ class User(object):
             user_id,
             auth_token
         ) VALUES (
-            %(u_id)s,
+            %(user_id)s,
             %(auth_token)s
         );"""
         data = {
