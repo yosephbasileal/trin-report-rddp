@@ -3,3 +3,4 @@ constants/settings.py
 js/node_modules/*
 static/js/*
 error.log
+login.sh

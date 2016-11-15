@@ -228,3 +228,6 @@ a.header-item {
   padding: 7px 14px;
   border: 2px solid #c4c4c4;
 }
+.header-link {
+  height: 60px;
+}

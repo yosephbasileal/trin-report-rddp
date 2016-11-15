@@ -16,10 +16,25 @@ class User(object):
             return
         query = (
             """CREATE TABLE IF NOT EXISTS users(
-            id INT AUTO_INCREMENT,
-            name VARCHAR(200),
-            PRIMARY KEY (id))
+            user_id VARCHAR(200),
+            auth_token VARCHAR(500),
+            PRIMARY KEY (user_id))
             ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"""
         )
         r.get_registry()['MY_SQL'].query(query)
+
+    @staticmethod
+    def register_user(user_id, auth_token):
+        query = """INSERT INTO users(
+            user_id,
+            auth_token
+        ) VALUES (
+            %(user_id)s,
+            %(auth_token)s
+        );"""
+        data = {
+            'user_id': user_id,
+            'auth_token': auth_token
+        }
+        return r.get_registry()['MY_SQL'].insert(query, data)
 

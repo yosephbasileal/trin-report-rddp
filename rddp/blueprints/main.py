@@ -87,13 +87,33 @@ def sign_in():
         'logged_in': True
     }), 200
 
+
 @main.route('/signout')
 def sign_out():
     Signin.logout()
     return redirect('/')
+
 
 @main.route('/check-loggedin', methods=['GET'])
 def check_loggedin():
     js = {}
     js['logged_in'] = Signin.is_loggedin()
     return jsonify(js), 200
+
+
+@main.route('/register-user', methods=['POST'])
+def register_user():
+    # get user data from POST request
+    data = request.form
+
+    user_id = data.get('user_id')
+    auth_token = data.get('auth_token')
+
+    # add record to database
+    r.get_registry()['USER'].register_user(
+        user_id,
+        auth_token
+    )
+
+    res = {}
+    return jsonify(res), 200
