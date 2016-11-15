@@ -47,9 +47,9 @@ var Header = React.createClass({
     }
     else if (logged_in) {
       buttons = (
-        <div>
-          <Link to='/signout'><div className="header-icon-item"><SignOut signOut={this.signOut} /></div></Link>
-        </div>
+         <div className="header-icon-item" onTouchTap={this.signOut}>
+            <SignOut />
+         </div>
       );
     }
 
@@ -71,7 +71,7 @@ var Header = React.createClass({
 var SignOut = React.createClass({
   render: function() {
     return (
-      <div onTouchTap={this.props.signOut}>
+      <div>
         <div className="header-name">Log Out</div>
       </div>
     );
