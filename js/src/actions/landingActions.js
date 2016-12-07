@@ -12,18 +12,38 @@ var LandingActions = {
     });
   },
 
-  getRecords: function() {
+  getEmergencies: function() {
     $.ajax({
       type: "GET",
       url: '/emergency-records',
       success: function(res) {
         AppDispatcher.dispatch({
-          type: ActionTypes.LANDING_RECORDS_LOADED,
+          type: ActionTypes.LANDING_EMERGENCIES_LOADED,
           payload: res
         });
       },
       error: function(res) {
-        console.log('getRecords: some unidentified error');
+        console.log('getEmergencies: some unidentified error');
+        AppDispatcher.dispatch({
+          type: ActionTypes.LANDING_UNITENTIFIED_ERROR,
+          payload: {}
+        });
+      }
+    });
+  },
+
+  getReports: function() {
+    $.ajax({
+      type: "GET",
+      url: '/report-records',
+      success: function(res) {
+        AppDispatcher.dispatch({
+          type: ActionTypes.LANDING_REPORTS_LOADED,
+          payload: res
+        });
+      },
+      error: function(res) {
+        console.log('getReports: some unidentified error');
         AppDispatcher.dispatch({
           type: ActionTypes.LANDING_UNITENTIFIED_ERROR,
           payload: {}

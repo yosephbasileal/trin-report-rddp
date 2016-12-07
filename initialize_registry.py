@@ -8,6 +8,7 @@ from raven import Client
 from libraries.repositories.user import User
 from libraries.repositories.emergency import Emergency
 from libraries.repositories.admin import Admin
+from libraries.repositories.report import Report
 
 
 def load_registry():
@@ -38,3 +39,4 @@ def init_db_objects(r):
     r['USER'] = User
     r['ADMIN'] = Admin
     r['EMERGENCY'] = Emergency
+    r['REPORT'] = Report

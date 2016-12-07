@@ -231,3 +231,84 @@ a.header-item {
 .header-link {
   height: 60px;
 }
+
+/* map */
+.map {
+  height: calc(100% - 61px);
+  width: 100%;
+}
+
+.emergency-list-container {
+  width: 300px;
+  height: auto;
+  max-height: calc(100% - 110px);
+  overflow-y: scroll;
+  position: absolute;
+  left: 20px;
+  top: 110px;
+  z-index: 1000;
+  background-color: rgba(175, 175, 175, 0.38);
+  padding:8px;
+}
+
+.emergency-container {
+  width: 275px;
+  height: 75px;
+  background-color: white;
+  border-radius: 25px;
+  padding: 10px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.name {
+  position: absolute;
+  font-weight: bold;
+  top: 10px;
+  left: 15px;
+}
+
+.user-id {
+  position: absolute;
+  top: 30px;
+  left: 15px;
+  font-size: 12px;
+}
+
+.map-link {
+  position: absolute;
+  right: 0;
+  bottom: 5px;
+  right: 15px;
+  font-size: 10px;
+}
+
+.time {
+  position: absolute;
+  bottom: 5px;
+  left: 15px;
+  font-size: 12px;
+}
+
+.report-list-container {
+  width: 300px;
+  height: auto;
+  max-height: calc(100% - 110px);
+  overflow-y: scroll;
+  position: absolute;
+  right: 20px;
+  top: 110px;
+  z-index: 1000;
+  background-color: rgba(175, 175, 175, 0.38);
+  padding:8px;
+}
+
+.report-container {
+  width: 275px;
+  height: 75px;
+  background-color: white;
+  border-radius: 25px;
+  padding: 10px;
+  margin-bottom: 20px;
+  position: relative;
+}

@@ -7,7 +7,9 @@ import datetime
 import registry as r
 from libraries.utilities.signin import Signin
 
+
 main = Blueprint('main', __name__)
+
 
 @main.route('/',  methods=['GET'])
 def landing():
@@ -15,28 +17,36 @@ def landing():
         return redirect(url_for('main.login'))
     return render_template("landing.html")
 
+
 @main.route('/login',  methods=['GET'])
 def login():
     if Signin.is_loggedin():
         return redirect(url_for('main.landing'))
     return render_template("landing.html")
 
-@main.route('/emergency', methods=['GET', 'POST'])
-def emergency():
-    if request.method == 'GET':
-        records = r.get_registry()['EMERGENCY'].get_all_records()
-        return render_template('temp.html', records=records)
 
+@main.route('/emergency', methods=['POST'])
+def emergency():
     # get user data from POST request
     timestamp = datetime.datetime.now()
     data = request.form
 
+    name = data.get('username')
+    dorm = data.get('userdorm')
+    phone = data.get('userphone')
+    email = data.get('useremail')
+    id_num = data.get('id_num')
     lat = data.get('latitude')
     lng = data.get('longitude')
 
     # add record to database
     r.get_registry()['EMERGENCY'].record_emergency(
         timestamp,
+        name,
+        dorm,
+        phone,
+        email,
+        id_num,
         lat,
         lng
     )
@@ -50,7 +60,17 @@ def emergency_records():
     records = r.get_registry()['EMERGENCY'].get_all_records()
     # create response
     js = {}
-    js['records'] = list(records)
+    js['emergencies'] = list(records)
+    return jsonify(js), 200
+
+
+@main.route('/report-records', methods=['GET'])
+def report_records():
+    # get all records
+    records = r.get_registry()['REPORT'].get_all_reports()
+    # create response
+    js = {}
+    js['reports'] = list(records)
     return jsonify(js), 200
 
 
@@ -94,6 +114,13 @@ def sign_out():
     return redirect('/')
 
 
+@main.route('/test')
+def test():
+    print 'Test called from app'
+    print request.remote_addr
+    return "thank you"
+
+
 @main.route('/check-loggedin', methods=['GET'])
 def check_loggedin():
     js = {}
@@ -117,3 +144,64 @@ def register_user():
 
     res = {}
     return jsonify(res), 200
+
+
+@main.route('/report', methods=['POST'])
+def add_report():
+    # get user data from POST request
+    timestamp = datetime.datetime.now()
+    data = request.form
+
+    # get data from form
+    urgency = data.get('urgency')
+    year = data.get('year')
+    month = data.get('month')
+    day = data.get('day')
+    hour = data.get('hour')
+    minute = data.get('minute')
+    location = data.get('location')
+    ttype = data.get('type')
+    is_anonymous = data.get('is_anonymous')
+    follow_up = data.get('follow_up_enabled')
+
+    # process data
+    date = datetime.datetime(
+        year=int(year),
+        day=int(day),
+        month=int(month),
+        hour=int(hour),
+        minute=int(minute)
+    )
+    is_anonymous = (is_anonymous == "true")
+    follow_up = (follow_up == "true")
+
+    created = datetime.datetime.now()
+
+    # add report to database
+    r_id = r.get_registry()['REPORT'].record_report(
+        created,
+        urgency,
+        date,
+        location,
+        ttype,
+        is_anonymous,
+        follow_up
+    )
+
+    if not is_anonymous:
+        name = data.get("username")
+        dorm = data.get("userdorm")
+        phone = data.get("userphone")
+        email = data.get("useremail")
+        id_num = data.get("userid")
+
+        r.get_registry()['REPORT'].add_reporter(
+            r_id,
+            name,
+            dorm,
+            email,
+            phone,
+            id_num
+        )
+
+    return jsonify({"status": "ok"}), 200

@@ -14,6 +14,9 @@ def run():
     r.get_registry()['MY_SQL'].query(
         'DROP TABLE emergency;'
     )
+    r.get_registry()['MY_SQL'].query(
+        'DROP TABLE report;'
+    )
 
 if __name__ == "__main__":
 	run()
