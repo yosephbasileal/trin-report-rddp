@@ -8,6 +8,7 @@ var Router = ReactRouter.Router;
 var Route = ReactRouter.Route;
 var IndexRoute = ReactRouter.IndexRoute;
 
+var EmergencyDialog = require('./emergencyDialog.jsx');
 var LandingPage = require('./landingPage.jsx');
 var Login = require('./login.jsx');
 var Header = require('./header.jsx');
@@ -23,8 +24,11 @@ var Root = React.createClass({
           <Header />
           <MuiThemeProvider>
             <Router history={history}>
-              <Route path="/" component={LandingPage} />
+              <Route path="/" component={LandingPage}>
+                <Route path="/emergency/:emergency_id" component={EmergencyDialog} />  
+              </Route>
               <Route path="/login" component={Login} />
+              
             </Router>
           </MuiThemeProvider>
         </div>

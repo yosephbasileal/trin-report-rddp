@@ -25,6 +25,8 @@ class Emergency(object):
             id_num VARCHAR(200),
             longitude DOUBLE,
             latitude DOUBLE,
+            status VARCHAR(200),
+            received DATETIME,
             PRIMARY KEY (id))
             ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"""
         )
@@ -39,7 +41,8 @@ class Emergency(object):
         email,
         id_num,
         latitude,
-        longitud
+        longitude,
+        status
     ):
         query = """INSERT INTO emergency(
             created,
@@ -49,7 +52,8 @@ class Emergency(object):
             email,
             id_num
             longitude,
-            latitude
+            latitude,
+            status
         ) VALUES (
             %(created)s,
             %(name)s,
@@ -58,7 +62,8 @@ class Emergency(object):
             %(email)s,
             %(id_num)s,
             %(longitude)s,
-            %(latitude)s
+            %(latitude)s,
+            %(status)s
         );"""
         data = {
             'created': created,
@@ -68,7 +73,8 @@ class Emergency(object):
             'email': email,
             'id_num': id_num,
             'longitude': longitude,
-            'latitude': latitude
+            'latitude': latitude,
+            'status': status
         }
         return r.get_registry()['MY_SQL'].insert(query, data)
 
@@ -76,3 +82,20 @@ class Emergency(object):
     def get_all_records():
         query = """SELECT * FROM emergency ORDER BY created DESC;"""
         return r.get_registry()['MY_SQL'].get_all(query)
+
+    @staticmethod
+    def update_status(e_id, status, timestamp):
+        query = """UPDATE emergency SET
+            status = %(status)s,
+            received = %(received)s,
+            reporter_email = %(reporter_email)s,
+            reporter_phone = %(reporter_phone)s,
+            reporter_id_num = %(reporter_id_num)s,
+            where id = %(id)s;"""
+
+        data = {
+            'status': status,
+            'received': timestamp,
+            'id': e_id
+        }
+        r.get_registry()['MY_SQL'].insert(query, data)

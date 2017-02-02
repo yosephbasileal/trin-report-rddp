@@ -41,7 +41,7 @@ var LoginActions = {
             payload: res.responseJSON
           });
         } else {
-          console.log('some unidentified error');
+          console.log('submitLoginInfo: some unidentified error');
           // TODO handle this properly
           AppDispatcher.dispatch({
             type: ActionTypes.LOGIN_UNITENTIFIED_ERROR,
