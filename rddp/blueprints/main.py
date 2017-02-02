@@ -17,13 +17,17 @@ def landing():
         return redirect(url_for('main.login'))
     return render_template("landing.html")
 
-
 @main.route('/login',  methods=['GET'])
 def login():
     if Signin.is_loggedin():
         return redirect(url_for('main.landing'))
     return render_template("landing.html")
 
+@main.route('/emergency/<emergency_id>',  methods=['GET'])
+def emergency_dialog(emergency_id):
+    if not Signin.is_loggedin():
+        return redirect(url_for('main.login'))
+    return render_template("landing.html")
 
 @main.route('/emergency', methods=['POST'])
 def emergency():
@@ -40,7 +44,7 @@ def emergency():
     lng = data.get('longitude')
 
     # add record to database
-    r.get_registry()['EMERGENCY'].record_emergency(
+    r_id = r.get_registry()['EMERGENCY'].record_emergency(
         timestamp,
         name,
         dorm,
@@ -48,10 +52,29 @@ def emergency():
         email,
         id_num,
         lat,
-        lng
+        lng,
+        'Not Received'
     )
 
-    return jsonify({}), 200
+    return jsonify({
+
+        }), 200
+
+
+@main.route('/check-status', methods=['POST'])
+def check_status():
+    # get  data from POST request
+    data = request.form
+    report_id = data.get('report_id')
+
+    # get status from db
+    status = r.get_registry()['EMERGENCY'].get_emergency_status(
+        report_id
+    )
+    # create response
+    js = {}
+    js['status'] = status
+    return jsonify(js), 200
 
 
 @main.route('/emergency-records', methods=['GET'])
@@ -205,3 +228,20 @@ def add_report():
         )
 
     return jsonify({"status": "ok"}), 200
+
+@main.route('/mark-emergency-as-recieved', methods=['POST'])
+def mark_as_received():
+    # get data from form
+    timestamp = datetime.datetime.now()
+    data = request.form    
+    emergency_id = data.get('emergency_id')
+
+    r.get_registry()['EMERGENCY'].update_status(
+        emergency_id,
+        status,
+        timestamp
+    )
+
+    res = {'receieved': True}
+    return jsonify(), 200
+
