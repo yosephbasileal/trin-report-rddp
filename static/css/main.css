@@ -266,28 +266,29 @@ a.header-item {
   font-weight: bold;
   top: 10px;
   left: 15px;
+  font-size: 16px;
 }
 
-.user-id {
+.id_num {
   position: absolute;
   top: 30px;
   left: 15px;
-  font-size: 12px;
+  font-size: 14px;
 }
 
-.map-link {
+.status {
   position: absolute;
-  right: 0;
   bottom: 5px;
-  right: 15px;
-  font-size: 10px;
+  left: 15px;
+  font-size: 14px;
 }
 
 .time {
   position: absolute;
-  bottom: 5px;
-  left: 15px;
-  font-size: 12px;
+  right: 0;
+  bottom: 8px;
+  right: 15px;
+  font-size: 14px;
 }
 
 .report-list-container {
@@ -311,4 +312,21 @@ a.header-item {
   padding: 10px;
   margin-bottom: 20px;
   position: relative;
+}
+
+/* dialog */
+.emergency-dialog {
+  background-color: #ffffff;
+}
+
+.dialog-close-button {
+  top: 15;
+  right: 15;
+  position: absolute;
+  font-size: 20px;
+}
+
+.info-col {
+  font-size: 16px;
+  font-weight: 400;
 }

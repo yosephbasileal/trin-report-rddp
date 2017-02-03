@@ -10,7 +10,10 @@ var ActionTypes = require('../constants/actionTypes');
 var get_default_state = function() {
   return Immutable.fromJS({
     'emergencies': [],
-    'reports': []
+    'reports': [],
+    'emergencies_loaded': false,
+    'map_loaded': false,
+    'map': null
   })
 };
 
@@ -46,6 +49,7 @@ LandingStore.dispatchToken = AppDispatcher.register(function(action) {
   switch (type) {
     case ActionTypes.LANDING_EMERGENCIES_LOADED:
     case ActionTypes.LANDING_REPORTS_LOADED:
+    case ActionTypes.LANDING_MAP_LOADED:
       _state = _state.merge(Immutable.fromJS(payload));
       LandingStore.emitChange();
       break;

@@ -18,7 +18,7 @@ function getStateFromStore() {
 var LandingPage = React.createClass({
   getInitialState: function() {
     Actions.getEmergencies();
-    Actions.getReports();
+    //Actions.getReports();
     return getStateFromStore();
   },
 
@@ -37,20 +37,44 @@ var LandingPage = React.createClass({
   },
 
   initMap: function() {
-    var uluru = {lat: 41.74702, lng: -72.6902683};
+    var center = {lat: 41.74702, lng: -72.6902683};
     var map = new google.maps.Map(document.getElementById('map'), {
       zoom: 16,
-      center: uluru
+      center: center
     });
-    var marker = new google.maps.Marker({
-      position: uluru,
-      map: map
-    });
+
+    Actions.mapLoaded({'map': map});
+  },
+
+  setMarkers: function(map) {
+    // Adds markers to the map.
+    // Assumes maximum of 16 different markers at the same time
+    var emergencies = this.state.data.get('emergencies');
+    var iconLetter = 65; // corresponds to letter A
+    for (var i = 0; i < emergencies.size; i++) {
+      var iconlink = "blue_Marker" + String.fromCharCode(iconLetter);
+      iconLetter++;
+      if (iconLetter > 90) { iconLetter = 65; }
+      var emergency = emergencies.get(i);
+
+      var marker = new google.maps.Marker({
+        position: {lat: emergency.get('latitude'), lng: emergency.get('longitude')},
+        map: map,
+        icon: '/static/img/markers/' + iconlink + '.png',
+        title: emergency.get('name'),
+        zIndex: emergency.get('id')
+      });
+    }
   },
 
   render: function() {
+    if (this.state.data.get('emergencies_loaded')) {
+      this.setMarkers(this.state.data.get('map'));
+    };
+
     var reports = this.state.data.get('reports');
     var emergencies = this.state.data.get('emergencies');
+
     return (
       <div>
         <div className="emergency-list-container">
@@ -63,16 +87,17 @@ var LandingPage = React.createClass({
               var lat = item.get('latitude');
               var lng = item.get('longitude');
               var timestamp = item.get('created');
+              var status = item.get('status');
 
               var link = "/emergency/" + id;
 
               return (
-                  <Link to={link}>
+                  <Link to={link} key={id}>
                     <div className="emergency-container">
-                      <div className="name">Basileal Imana (3215916890)</div>
-                      <div className="user-id">ID: 1478429</div>
-                      <div className="time">{timestamp}</div>
-                      <div className="map-link">Status: not handled</div>
+                      <div className="name">{name} ({phone})</div>
+                      <div className="id_num">ID: {id_num}</div>
+                      <div className="status">Status: {status}</div>
+                      <div className="time">2m</div>
                     </div>
                   </Link>
                 )

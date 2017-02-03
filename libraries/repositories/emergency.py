@@ -50,7 +50,7 @@ class Emergency(object):
             dorm,
             phone,
             email,
-            id_num
+            id_num,
             longitude,
             latitude,
             status
@@ -84,13 +84,18 @@ class Emergency(object):
         return r.get_registry()['MY_SQL'].get_all(query)
 
     @staticmethod
+    def get_emergency(e_id):
+        query = """SELECT * FROM emergency where id = %(id)s"""
+        data = {
+            'id': e_id
+        }
+        return r.get_registry()['MY_SQL'].get(query, data)
+
+    @staticmethod
     def update_status(e_id, status, timestamp):
         query = """UPDATE emergency SET
             status = %(status)s,
-            received = %(received)s,
-            reporter_email = %(reporter_email)s,
-            reporter_phone = %(reporter_phone)s,
-            reporter_id_num = %(reporter_id_num)s,
+            received = %(received)s
             where id = %(id)s;"""
 
         data = {
@@ -99,3 +104,11 @@ class Emergency(object):
             'id': e_id
         }
         r.get_registry()['MY_SQL'].insert(query, data)
+
+    @staticmethod
+    def get_status(e_id):
+        query = """SELECT status, received FROM emergency where id = %(id)s"""
+        data = {
+            'id': e_id
+        }
+        return r.get_registry()['MY_SQL'].get(query, data)

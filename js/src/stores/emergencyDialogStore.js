@@ -11,7 +11,8 @@ var get_default_state = function() {
   return Immutable.fromJS({
     'open': true,
     'receieved': false,
-    'emergency': new Map()
+    'emergency': new Map(),
+    'data_loaded': false
   })
 };
 
@@ -49,7 +50,7 @@ var EmergencyDialogStore = assign({}, EventEmitter.prototype, {
       _state = get_default_state();
       break;
     case ActionTypes.EMERGENCY_DIALOG_DATA_LOADED:
-    case ActionTypes.EMERGENCY_DIALOG_CLOSE_DATA_LOADED:
+    case ActionTypes.EMERGENCY_DIALOG_CLOSE:
     case ActionTypes.EMERGENCY_MARK_AS_RECEIEVED:
       _state = _state.merge(Immutable.fromJS(payload));
       EmergencyDialogStore.emitChange();
