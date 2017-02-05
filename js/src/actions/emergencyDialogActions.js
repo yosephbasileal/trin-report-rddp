@@ -14,7 +14,7 @@ var EmergencyDialogActions = {
 
   handleClose: function(change) {
   	AppDispatcher.dispatch({
-      type: ActionTypes.EMERGENCY_DIALOG_CLOSE_DATA_LOADED,
+      type: ActionTypes.EMERGENCY_DIALOG_CLOSE,
       payload: change
     });
   },
