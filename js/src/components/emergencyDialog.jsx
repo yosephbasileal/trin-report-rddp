@@ -90,7 +90,7 @@ var EmergencyDialog = React.createClass({
     var lat = emergency.get('latitude');
     var lng = emergency.get('longitude');
     var timestamp = emergency.get('created');
-    var status = emergency.get('status');
+    var explanation = emergency.get('explanation');
 
     var title = "Emergency Request #: " + id;
 

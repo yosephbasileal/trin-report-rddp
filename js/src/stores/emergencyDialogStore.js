@@ -12,7 +12,7 @@ var get_default_state = function() {
     'open': true,
     'receieved': false,
     'emergency': new Map(),
-    'data_loaded': false
+    'data_loaded': false,
   })
 };
 

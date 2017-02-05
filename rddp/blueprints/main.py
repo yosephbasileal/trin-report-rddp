@@ -197,7 +197,7 @@ def emergency_request():
         id_num,
         lat,
         lng,
-        'Not Received'
+        False
     )
 
     js = {}
@@ -219,13 +219,17 @@ def emergency_records():
 @main.route('/get-emergency-record/<emergency_id>', methods=['GET'])
 def get_emergency_record(emergency_id):
     # get emergency record
-    record = r.get_registry()['EMERGENCY'].get_emergency(emergency_id)
+    emergency = r.get_registry()['EMERGENCY'].get_emergency(
+        emergency_id
+    )
+    handled_status = bool(emergency.get('handled_status'))
+
     # create response
     js = {}
-    js['emergency'] = record
+    js['emergency'] = emergency
     js['data_loaded'] = True
-    if record.get('status') == 'Received':
-        js['receieved'] = True
+    js['receieved'] = handled_status
+
     return jsonify(js), 200
 
 
@@ -236,11 +240,20 @@ def mark_as_received():
     data = request.json    
     emergency_id = data.get('emergency_id')
 
-    status = "Received"
+    emergency = r.get_registry()['EMERGENCY'].get_status(
+        emergency_id
+    )
+
+    if not emergency:
+        return jsonify({
+            'error': "Ivalid ID"
+        }), 400
+
+    handled_status = True
 
     r.get_registry()['EMERGENCY'].update_status(
         emergency_id,
-        status,
+        handled_status,
         timestamp
     )
 
@@ -255,19 +268,68 @@ def check_emergency_status():
     data = request.form    
     emergency_id = data.get('emergency_id')
 
-    # TODO: do something with new location
-    lat = data.get('latitude')
-    lng = data.get('longitude')
+    latitude = data.get('latitude')
+    longitude = data.get('longitude')
 
-    status = r.get_registry()['EMERGENCY'].get_status(
+    print "Location: " + str(longitude) + ", " + str(latitude) 
+
+    emergency = r.get_registry()['EMERGENCY'].get_status(
         emergency_id
     )
-
-    if not status:
+    if not emergency:
         return jsonify({
             'error': "Ivalid ID"
         }), 400
 
+    # save updated gps location in db
+    r.get_registry()['EMERGENCY'].update_location(
+        emergency_id,
+        longitude,
+        latitude,
+        timestamp
+    )
 
-    js = {'status': status.get('status')}
+    # send status to phone
+    handled_status = bool(emergency.get('handled_status'))
+    js = {'handled_status': handled_status}
+    return jsonify(js), 200
+
+
+@main.route('/emergency-explanation', methods=['POST'])
+def emergency_explanation():
+    # get data from form
+    timestamp = datetime.datetime.now()
+    data = request.form    
+    emergency_id = data.get('emergency_id')
+    explanation = data.get('explanation')
+
+    # TODO: check if valid ID
+
+    # save explanation in db
+    r.get_registry()['EMERGENCY'].update_explanation(
+        emergency_id,
+        explanation
+    )
+
+    js = {}
+    return jsonify(js), 200
+
+
+@main.route('/emergency-callme-checkbox', methods=['POST'])
+def emergency_callme():
+    # get data from form
+    timestamp = datetime.datetime.now()
+    data = request.form    
+    emergency_id = data.get('emergency_id')
+    callme = bool(data.get('callme'))
+
+    # TODO: check if valid ID
+
+    # save explanation in db
+    r.get_registry()['EMERGENCY'].update_callme(
+        emergency_id,
+        callme
+    )
+
+    js = {}
     return jsonify(js), 200

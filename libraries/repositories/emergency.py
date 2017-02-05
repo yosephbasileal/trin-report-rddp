@@ -25,8 +25,11 @@ class Emergency(object):
             id_num VARCHAR(200),
             longitude DOUBLE,
             latitude DOUBLE,
-            status VARCHAR(200),
-            received DATETIME,
+            location_last_updated DATETIME,
+            handled_status BOOLEAN,
+            handled_time DATETIME,
+            explanation VARCHAR(500),
+            callme BOOLEAN,
             PRIMARY KEY (id))
             ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"""
         )
@@ -42,7 +45,7 @@ class Emergency(object):
         id_num,
         latitude,
         longitude,
-        status
+        handled_status
     ):
         query = """INSERT INTO emergency(
             created,
@@ -53,7 +56,8 @@ class Emergency(object):
             id_num,
             longitude,
             latitude,
-            status
+            location_last_updated,
+            handled_status
         ) VALUES (
             %(created)s,
             %(name)s,
@@ -63,7 +67,8 @@ class Emergency(object):
             %(id_num)s,
             %(longitude)s,
             %(latitude)s,
-            %(status)s
+            %(location_last_updated)s,
+            %(handled_status)s
         );"""
         data = {
             'created': created,
@@ -74,7 +79,8 @@ class Emergency(object):
             'id_num': id_num,
             'longitude': longitude,
             'latitude': latitude,
-            'status': status
+            'location_last_updated': created,
+            'handled_status': handled_status
         }
         return r.get_registry()['MY_SQL'].insert(query, data)
 
@@ -92,22 +98,62 @@ class Emergency(object):
         return r.get_registry()['MY_SQL'].get(query, data)
 
     @staticmethod
-    def update_status(e_id, status, timestamp):
+    def update_status(e_id, handled_status, timestamp):
         query = """UPDATE emergency SET
-            status = %(status)s,
-            received = %(received)s
+            handled_status = %(handled_status)s,
+            handled_time = %(handled_time)s
             where id = %(id)s;"""
 
         data = {
-            'status': status,
-            'received': timestamp,
+            'handled_status': handled_status,
+            'handled_time': timestamp,
+            'id': e_id
+        }
+        r.get_registry()['MY_SQL'].insert(query, data)
+
+    @staticmethod
+    def update_location(e_id, longitude, latitude, timestamp):
+        query = """UPDATE emergency SET
+            longitude = %(longitude)s,
+            latitude = %(latitude)s,
+            location_last_updated = %(location_last_updated)s
+            where id = %(id)s;"""
+
+        data = {
+            'longitude': longitude,
+            'latitude': latitude,
+            'location_last_updated': timestamp,
+            'id': e_id
+        }
+        r.get_registry()['MY_SQL'].insert(query, data)
+
+    @staticmethod
+    def update_explanation(e_id, explanation):
+        query = """UPDATE emergency SET
+            explanation = %(explanation)s
+            where id = %(id)s;"""
+
+        data = {
+            'explanation': explanation,
+            'id': e_id
+        }
+        r.get_registry()['MY_SQL'].insert(query, data)
+
+    @staticmethod
+    def update_callme(e_id, callme):
+        query = """UPDATE emergency SET
+            callme = %(callme)s
+            where id = %(id)s;"""
+
+        data = {
+            'callme': callme,
             'id': e_id
         }
         r.get_registry()['MY_SQL'].insert(query, data)
 
     @staticmethod
     def get_status(e_id):
-        query = """SELECT status, received FROM emergency where id = %(id)s"""
+        query = """SELECT handled_status, handled_time FROM emergency where id = %(id)s"""
         data = {
             'id': e_id
         }

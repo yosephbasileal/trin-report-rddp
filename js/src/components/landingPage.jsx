@@ -97,7 +97,7 @@ var LandingPage = React.createClass({
                       <div className="name">{name} ({phone})</div>
                       <div className="id_num">ID: {id_num}</div>
                       <div className="status">Status: {status}</div>
-                      <div className="time">2m</div>
+                      <div className="time"></div>
                     </div>
                   </Link>
                 )
