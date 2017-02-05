@@ -22,7 +22,7 @@ var EmergencyDialogActions = {
    getEmergencyData: function(emergency_id) {
     $.ajax({
       type: "GET",
-      url: '/get-emergency-record/' + emergency_id,
+      url: '/api/rddp/get-emergency-record/' + emergency_id,
       success: function(res) {
         AppDispatcher.dispatch({
           type: ActionTypes.EMERGENCY_DIALOG_DATA_LOADED,
@@ -42,7 +42,7 @@ var EmergencyDialogActions = {
   markAsRecieved: function(data) {
     $.ajax({
       type: "POST",
-      url: '/mark-emergency-as-recieved',
+      url: '/api/rddp/mark-emergency-as-recieved',
       data: JSON.stringify(data),
       contentType: "application/json; charset=utf-8",
       dataType: "json",
