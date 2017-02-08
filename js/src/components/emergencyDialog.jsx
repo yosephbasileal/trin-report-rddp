@@ -4,8 +4,22 @@ var React = require('react');
 var Link = require('react-router').Link;
 var mui = require('material-ui');
 
+var Forge = require('node-forge');
+
 var Store = require('../stores/emergencyDialogStore');
 var Actions = require('../actions/emergencyDialogActions');
+
+
+function decryptRSA(encryptedString, privateKey) {
+     var decrypted = privateKey.decrypt(Forge.util.decode64(encryptedString), 'RSA-OAEP', {
+         md: Forge.md.sha256.create(),
+         mgf1: {
+             md: Forge.md.sha256.create()
+         }
+     });
+     return decrypted;
+ }
+
 
 var styles = {
   dialog: {
@@ -18,6 +32,29 @@ var styles = {
     'height': 400
   }
 };
+
+function convertStringToArrayBufferView(str)
+{
+    var bytes = new Uint8Array(str.length);
+    for (var iii = 0; iii < str.length; iii++) 
+    {
+        bytes[iii] = str.charCodeAt(iii);
+    }
+
+    return bytes;
+}  
+
+function convertArrayBufferViewtoString(buffer)
+{
+    var str = "";
+    for (var iii = 0; iii < buffer.byteLength; iii++) 
+    {
+        str += String.fromCharCode(buffer[iii]);
+    }
+
+    return str;
+}
+
 
 function getStateFromStore() {
   return {
@@ -37,7 +74,7 @@ var EmergencyDialog = React.createClass({
 
   initMiniMap: function() {
     //{lat: 41.74702, lng: -72.6902683};
-    var lat = this.state.data.get('emergency').get('latitude');
+/*    var lat = this.state.data.get('emergency').get('latitude');
     var lng = this.state.data.get('emergency').get('longitude');
     console.log(lat);
     console.log(lng);
@@ -49,7 +86,7 @@ var EmergencyDialog = React.createClass({
     var marker = new google.maps.Marker({
       position: location,
       map: minimap
-    });
+    });*/
   },
 
   componentWillUnmount: function() {
@@ -74,15 +111,23 @@ var EmergencyDialog = React.createClass({
   },
 
   render: function() {
-    if (this.state.data.get('data_loaded')) {
-      this.initMiniMap();
-    }
-
     var actions = [];
     var emergency = this.state.data.get('emergency');
 
+    var name = "";
+
+    if (this.state.data.get('data_loaded')) {
+      //this.initMiniMap();
+      
+      var prv = localStorage.getItem("admin_private_key");
+      var privateKey = Forge.pki.privateKeyFromPem(prv);
+
+      console.log(emergency.get('name'));
+      name = decryptRSA(emergency.get('name'), privateKey);
+
+    }
+
     var id = String(emergency.get('id'));
-    var name = emergency.get('name');
     var id_num = emergency.get('id_num');
     var phone = emergency.get('phone');
     var email = emergency.get('email');

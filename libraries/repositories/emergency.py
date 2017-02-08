@@ -18,17 +18,17 @@ class Emergency(object):
             """CREATE TABLE IF NOT EXISTS emergency(
             id INT AUTO_INCREMENT,
             created DATETIME,
-            name VARCHAR(200),
-            dorm VARCHAR(200),
-            phone VARCHAR(200),
-            email VARCHAR(200),
-            id_num VARCHAR(200),
+            name VARCHAR(2000),
+            dorm VARCHAR(2000),
+            phone VARCHAR(2000),
+            email VARCHAR(2000),
+            id_num VARCHAR(2000),
             longitude DOUBLE,
             latitude DOUBLE,
             location_last_updated DATETIME,
             handled_status BOOLEAN,
             handled_time DATETIME,
-            explanation VARCHAR(500),
+            explanation VARCHAR(2000),
             callme BOOLEAN,
             PRIMARY KEY (id))
             ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"""

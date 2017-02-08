@@ -21,16 +21,22 @@ def landing():
 
 
 @main.route('/login',  methods=['GET'])
-@main.route('/signup',  methods=['GET'])
 def login():
     if Signin.is_loggedin():
         return redirect(url_for('main.landing'))
     return render_template("landing.html")
 
 
-# @main.route('/test',  methods=['GET'])
-# def test():
-#     return render_template("landing.html")
+@main.route('/signup',  methods=['GET'])
+def signup():
+    if Signin.is_loggedin():
+        return redirect(url_for('main.landing'))
+    return render_template("landing.html")
+
+
+@main.route('/test',  methods=['GET'])
+def test():
+    return render_template("landing.html")
 
 
 @main.route('/emergency/<emergency_id>',  methods=['GET'])
@@ -57,22 +63,21 @@ def sign_up_admin():
     # get user input data from form
     email = request.json.get('email').lower()
     passw = request.json.get('pass')
-    public_key = request.json.get('public_key') # type is dict
+    public_key_pwm = request.json.get('public_key') # pwm string
 
     # TODO: validate input
     # TODO: email verification
 
-    # convert dict to json str
-    public_key_jwk_str = json.dumps(public_key)
-
     # hash email and password
     pw_hash = Authentication.make_pw_hash(email, passw)
+
+    print public_key_pwm
 
     # create a new entry in databse
     a_id = r.get_registry()['ADMIN'].create_admin(
         email,
         pw_hash,
-        public_key_jwk_str
+        public_key_pwm
     )
 
     # log in admin
@@ -221,24 +226,31 @@ def register_user():
 @main.route('/api/app/publish-user-public-key', methods=['POST'])
 def publish_user_public_key():
     # get data from POST request
-    data = request.json
-    auth_token = data.keys()[0] # data = {auth_token: public_key}
-    
-    # TODO: verify auth_token
+    data = request.form
+    auth_token = data.get('auth_token')
+    public_key = data.get('public_key')
 
-    # get key, convert to json string
-    public_key = data.get(auth_token)
-    public_key_jwk = json.loads(public_key)
-    public_key_jwk_str = json.dumps(public_key_jwk)
+    print public_key
+
+    # TODO: verify auth_token
 
     # add record to database
     r.get_registry()['USER'].publish_public_key(
         auth_token,
-        public_key_jwk_str
+        public_key
     )
 
-    res = {}
-    return jsonify(res), 200
+    # send admin's public key to user
+    
+    admin_email = "user"
+    # TODO: this constant "user" needs to be removed, user a different query
+
+    # get pem string
+    admin = r.get_registry()['ADMIN'].get_public_key(admin_email)
+    public_key_pem = admin.get('public_key_pem')
+
+    js = {'public_key': public_key_pem}
+    return jsonify(js), 200
 
 
 
@@ -408,19 +420,19 @@ def emergency_callme():
     return jsonify(js), 200
 
 
-@main.route('/api/app/get-admin-public-key', methods=['GET'])
-def get_admin_public_key():
-    # this assumes there is only one admin
-    admin_email = "user"
-    # TODO: this constant "user" needs to be removed, user a different query
+# @main.route('/api/app/get-admin-public-key', methods=['GET'])
+# def get_admin_public_key():
+#     # this assumes there is only one admin
+#     admin_email = "user"
+#     # TODO: this constant "user" needs to be removed, user a different query
 
-    # get key str from db and covert to json object
-    admin = r.get_registry()['ADMIN'].get_public_key(admin_email)
-    public_key_jwk_str = admin.get('public_key_jwk')
-    public_key_jwk = json.loads(public_key_jwk_str)
+#     # get key str from db and covert to json object
+#     admin = r.get_registry()['ADMIN'].get_public_key(admin_email)
+#     public_key_jwk_str = admin.get('public_key_jwk')
+#     public_key_jwk = json.loads(public_key_jwk_str)
 
-    js = {'public_key': public_key_jwk}
-    return jsonify(js), 200
+#     js = {'public_key': public_key_jwk}
+#     return jsonify(js), 200
 
 
 # key_global = ""
@@ -448,3 +460,43 @@ def get_admin_public_key():
 #     global key_global
 #     js = {"public_key": key_global}
 #     return jsonify(js), 200
+
+
+publicKeyy = ""
+cipherr = ""
+@main.route('/rsa-test2', methods=['POST'])
+def rsa_test2():
+    global publicKeyy
+
+    data = request.json    
+    
+    publicKeyy = data.get('public_key')
+
+    print publicKeyy
+
+    return jsonify({}), 200
+
+@main.route('/rsa-test3', methods=['GET'])
+def rsa_test3():
+    global publicKeyy
+
+    return jsonify({"public_key": publicKeyy}), 200
+
+
+@main.route('/rsa-test4', methods=['POST'])
+def rsa_test4():
+    global cipherr
+
+    data = request.form    
+    cipherr = data.get('cipher')
+
+    print cipherr
+
+    js = {}
+    return jsonify(js), 200
+
+@main.route('/rsa-test5', methods=['GET'])
+def rsa_test5():
+    global cipherr
+
+    return jsonify({"cipher": cipherr}), 200

@@ -18,16 +18,16 @@ class Report(object):
             """CREATE TABLE IF NOT EXISTS report(
             id INT AUTO_INCREMENT,
             created DATETIME,
-            urgency VARCHAR(200),
+            urgency VARCHAR(2000),
             date DATETIME,
-            location VARCHAR(200),
-            type VARCHAR(200),
+            location VARCHAR(2000),
+            type VARCHAR(2000),
             is_anonymous BOOLEAN,
             follow_up BOOLEAN,
-            reporer_name VARCHAR(200),
-            reporter_dorm VARCHAR(200),
-            reporter_phone VARCHAR(200),
-            reporter_id_num VARCHAR(200),
+            reporer_name VARCHAR(2000),
+            reporter_dorm VARCHAR(2000),
+            reporter_phone VARCHAR(2000),
+            reporter_id_num VARCHAR(2000),
             PRIMARY KEY (id))
             ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"""
         )

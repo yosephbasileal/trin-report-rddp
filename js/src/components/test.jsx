@@ -4,6 +4,8 @@ var Immutable = require('immutable');
 var React = require('react');
 var mui = require('material-ui');
 
+var Forge = require('node-forge');
+
 function string2Bin(str) {
   var result = [];
   for (var i = 0; i < str.length; i++) {
@@ -16,6 +18,15 @@ function bin2String(array) {
   return String.fromCharCode.apply(String, array);
 }
 
+function decryptRSA(encryptedString, privateKey) {
+     var decrypted = privateKey.decrypt(Forge.util.decode64(encryptedString), 'RSA-OAEP', {
+         md: Forge.md.sha256.create(),
+         mgf1: {
+             md: Forge.md.sha256.create()
+         }
+     });
+     return decrypted;
+ }
 
 var Test = React.createClass({
   clearError: function() {
@@ -23,12 +34,19 @@ var Test = React.createClass({
   },
 
   componentDidMount: function() {
-    this.rsaInit();
+    //this.rsaInit();
 
-    this.getkey();
+    //this.getkey();
+    //this.generate();
+
+    this.getcipher();
+
+    //var privateKey = Forge.pki.privateKeyFromPem(prv);
+
+    //console.log(this.decryptRSA(ciphertext, privateKey));
   },
 
-  rsaInit: function() {
+/*  rsaInit: function() {
     var algorithmName = "RSA-OAEP";
     var usages = ["encrypt", "decrypt"];
     window.crypto.subtle.generateKey(
@@ -63,9 +81,9 @@ var Test = React.createClass({
     catch(function(err) {
       alert("Could not create and save new key pair: " + err.message);
     });
-  },
+  },*/
 
-  getkey: function() {
+/*  getkey: function() {
     $.ajax({
       type: "GET",
       url: '/rsa-test2',
@@ -99,7 +117,60 @@ var Test = React.createClass({
 
       }
     });
+  },*/
+
+  generate: function() {
+    var rsa = Forge.pki.rsa;
+    var keypair = rsa.generateKeyPair({bits: 2048, e: 0x10001, workers: -1});
+    
+    var pem = Forge.pki.publicKeyToPem(keypair.publicKey);
+    console.log(pem);
+    this.send({"public_key": pem});
+
+    var pem2 = Forge.pki.privateKeyToPem(keypair.privateKey);
+    localStorage.setItem("admin_private_key", pem2);
+
+    console.log(pem2);
   },
+
+
+
+ send: function(data) {
+  $.ajax({
+      type: "POST",
+      url: '/rsa-test2',
+      data: JSON.stringify(data),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: function(res) {
+      },
+      error: function(res) {
+
+          console.log('send: some unidentified error');
+      
+      }
+    });
+
+ },
+
+ getcipher: function() {
+    $.ajax({
+      type: "GET",
+      url: '/rsa-test5',
+      success: function(res) {
+        console.log(res.cipher);
+
+        var prv = localStorage.getItem("admin_private_key");
+        var privateKey = Forge.pki.privateKeyFromPem(prv);
+        console.log(decryptRSA(res.cipher, privateKey));
+
+      },
+      error: function(res) {
+        console.log('getkey: some unidentified error');
+
+      }
+    });
+ },
 
   render: function() {
 

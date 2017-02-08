@@ -4,6 +4,8 @@ var React = require('react');
 var Link = require('react-router').Link;
 var mui = require('material-ui');
 
+var Forge = require('node-forge');
+
 var Store = require('../stores/signupStore');
 var Actions = require('../actions/signupActions');
 
@@ -42,47 +44,17 @@ var Signup = React.createClass({
   },
 
   createRSAKeys: function() {
-    var algorithmName = "RSA-OAEP";
-    var usages = ["encrypt", "decrypt"];
-    window.crypto.subtle.generateKey(
-      {
-        name: algorithmName,
-        modulusLength: 2048,
-        publicExponent: new Uint8Array([1, 0, 1]),  // 24 bit representation of 65537
-        hash: {name: "SHA-256"}
-      },
-      true,  // Cannot extract new key
-      usages
-    ).
-    then(function(keyPair) {
-      // convert public key to jwk format
-      window.crypto.subtle.exportKey('jwk', keyPair.publicKey).
-      then(function(jwk) {
-          console.log(jwk);
-          var change = {'public_key': jwk};
-          Actions.updateFieldInfo(change);
-      }).
-      catch(function(err) {
-          alert(err.message);
-      });
+    // generate rsa keypair
+    var rsa = Forge.pki.rsa;
+    var keypair = rsa.generateKeyPair({bits: 2048, e: 0x10001, workers: -1});
+    
+    // prepare public key pem to be sent to server
+    var pem = Forge.pki.publicKeyToPem(keypair.publicKey);
+    Actions.updateFieldInfo({'public_key': pem});
 
-      //TODO: store private key locally
-
-      // convert private key to jwk format
-      //window.crypto.subtle.exportKey('jwk', keyPair.privateKey).
-/*      then(function(jwk) {
-          console.log(jwk);
-          Actions.saveKey()
-      }).
-      catch(function(err) {
-          alert(err.message);
-      });*/
-
-      
-    }).
-    catch(function(err) {
-      alert("Could not create and save new key pair: " + err.message);
-    });
+    // save private key pem to local storage
+    var pem2 = Forge.pki.privateKeyToPem(keypair.privateKey);
+    localStorage.setItem("admin_private_key", pem2);
   },
 
   onSubmitButtonClick: function() {

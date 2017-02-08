@@ -34,7 +34,7 @@ var SignupActions = {
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: function(res) {
-        window.location.href = res.redirect;
+        //window.location.href = res.redirect;
       },
       error: function(res) {
         if (res.status === 400) {
