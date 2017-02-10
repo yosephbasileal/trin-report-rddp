@@ -462,6 +462,7 @@ def emergency_callme():
 #     return jsonify(js), 200
 
 
+# test encrypt on app, decrypt on browser
 publicKeyy = ""
 cipherr = ""
 @main.route('/rsa-test2', methods=['POST'])
@@ -500,3 +501,44 @@ def rsa_test5():
     global cipherr
 
     return jsonify({"cipher": cipherr}), 200
+
+
+# test encrypt on broser, decrypt on app
+app_publicKeyy = ""
+web_cipherr = ""
+
+@main.route('/rsa-test6', methods=['POST'])
+def rsa_test6():
+    global app_publicKeyy
+
+    data = request.form    
+    app_publicKeyy = data.get('public_key')
+
+    print app_publicKeyy
+
+    js = {}
+    return jsonify(js), 200
+
+@main.route('/rsa-test7', methods=['GET'])
+def rsa_test7():
+    global app_publicKeyy
+
+    return jsonify({"public_key": app_publicKeyy}), 200
+
+@main.route('/rsa-test8', methods=['POST'])
+def rsa_test8():
+    global web_cipherr
+
+    data = request.json    
+    
+    web_cipherr = data.get('cipher')
+
+    print web_cipherr
+
+    return jsonify({}), 200
+
+@main.route('/rsa-test9', methods=['GET'])
+def rsa_test9():
+    global web_cipherr
+
+    return jsonify({"cipher": web_cipherr}), 200

@@ -10,20 +10,9 @@ var Store = require('../stores/emergencyDialogStore');
 var Actions = require('../actions/emergencyDialogActions');
 
 
-function decryptRSA(encryptedString, privateKey) {
-     var decrypted = privateKey.decrypt(Forge.util.decode64(encryptedString), 'RSA-OAEP', {
-         md: Forge.md.sha256.create(),
-         mgf1: {
-             md: Forge.md.sha256.create()
-         }
-     });
-     return decrypted;
- }
-
-
 var styles = {
   dialog: {
-    'width': 1200,
+    'width': 1000,
     'maxWidth': 'none',
     'backgroundColor': '#f5f5f5'
   },
@@ -32,28 +21,6 @@ var styles = {
     'height': 400
   }
 };
-
-function convertStringToArrayBufferView(str)
-{
-    var bytes = new Uint8Array(str.length);
-    for (var iii = 0; iii < str.length; iii++) 
-    {
-        bytes[iii] = str.charCodeAt(iii);
-    }
-
-    return bytes;
-}  
-
-function convertArrayBufferViewtoString(buffer)
-{
-    var str = "";
-    for (var iii = 0; iii < buffer.byteLength; iii++) 
-    {
-        str += String.fromCharCode(buffer[iii]);
-    }
-
-    return str;
-}
 
 
 function getStateFromStore() {
@@ -73,8 +40,7 @@ var EmergencyDialog = React.createClass({
   },
 
   initMiniMap: function() {
-    //{lat: 41.74702, lng: -72.6902683};
-/*    var lat = this.state.data.get('emergency').get('latitude');
+    var lat = this.state.data.get('emergency').get('latitude');
     var lng = this.state.data.get('emergency').get('longitude');
     console.log(lat);
     console.log(lng);
@@ -86,7 +52,7 @@ var EmergencyDialog = React.createClass({
     var marker = new google.maps.Marker({
       position: location,
       map: minimap
-    });*/
+    });
   },
 
   componentWillUnmount: function() {
@@ -117,17 +83,11 @@ var EmergencyDialog = React.createClass({
     var name = "";
 
     if (this.state.data.get('data_loaded')) {
-      //this.initMiniMap();
-      
-      var prv = localStorage.getItem("admin_private_key");
-      var privateKey = Forge.pki.privateKeyFromPem(prv);
-
-      console.log(emergency.get('name'));
-      name = decryptRSA(emergency.get('name'), privateKey);
-
+      this.initMiniMap();
     }
 
     var id = String(emergency.get('id'));
+    var name = emergency.get('name');
     var id_num = emergency.get('id_num');
     var phone = emergency.get('phone');
     var email = emergency.get('email');
@@ -149,7 +109,7 @@ var EmergencyDialog = React.createClass({
           onRequestClose={this.handleClose}
           contentStyle={styles.dialog}
         >
-          <div className="col-xs-4 info-col">
+          <div className="col-xs-6 info-col">
             <div className="row">
               <div>Received at: {timestamp}</div>
               <br />
@@ -183,12 +143,9 @@ var EmergencyDialog = React.createClass({
               />
             </div>
           </div>
-          <div className="col-xs-4">
+          <div className="col-xs-6">
             <div style={styles.minimap} id="minimap">
             </div>
-          </div>
-          <div className="col-xs-4">
-            
           </div>
           <div className="dialog-close-button">
             <Link to="/">[X]</Link>

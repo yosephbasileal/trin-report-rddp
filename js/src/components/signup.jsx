@@ -4,7 +4,7 @@ var React = require('react');
 var Link = require('react-router').Link;
 var mui = require('material-ui');
 
-var Forge = require('node-forge');
+var RSA = require('../actions/rsa');
 
 var Store = require('../stores/signupStore');
 var Actions = require('../actions/signupActions');
@@ -26,7 +26,7 @@ function getStateFromStore() {
 
 var Signup = React.createClass({
   getInitialState: function() {
-    this.createRSAKeys();
+    this.generateRSAKeys();
     return getStateFromStore();
   },
 
@@ -43,18 +43,17 @@ var Signup = React.createClass({
     this.setState(getStateFromStore());
   },
 
-  createRSAKeys: function() {
+  generateRSAKeys: function() {
     // generate rsa keypair
-    var rsa = Forge.pki.rsa;
-    var keypair = rsa.generateKeyPair({bits: 2048, e: 0x10001, workers: -1});
+    var keypair = RSA.generateRSAKeyPair(2048);
     
     // prepare public key pem to be sent to server
-    var pem = Forge.pki.publicKeyToPem(keypair.publicKey);
-    Actions.updateFieldInfo({'public_key': pem});
+    var publicKeyPem = RSA.createStringFromPublicKey(keypair.publicKey);
+    Actions.updateFieldInfo({'public_key': publicKeyPem});
 
     // save private key pem to local storage
-    var pem2 = Forge.pki.privateKeyToPem(keypair.privateKey);
-    localStorage.setItem("admin_private_key", pem2);
+    var privateKeyPem = RSAcreateStringFromPrivateKey(keypair.privateKey);
+    localStorage.setItem("admin_private_key", privateKeyPem);
   },
 
   onSubmitButtonClick: function() {

@@ -28,6 +28,20 @@ function decryptRSA(encryptedString, privateKey) {
      return decrypted;
  }
 
+function doRSA(stringToBeEncrypted, pubkey) {
+    var publicKey = Forge.pki.publicKeyFromPem(pubkey);
+    var buffer = Forge.util.createBuffer(stringToBeEncrypted, 'utf8');
+    var binaryString = buffer.getBytes();
+    var encrypted = publicKey.encrypt(binaryString, 'RSA-OAEP', {
+        md: Forge.md.sha256.create(),
+        mgf1: {
+            md: Forge.md.sha256.create()
+        }
+    });
+    return Forge.util.encode64(encrypted);
+}
+
+
 var Test = React.createClass({
   clearError: function() {
     this.props.clearError();
@@ -39,7 +53,10 @@ var Test = React.createClass({
     //this.getkey();
     //this.generate();
 
-    this.getcipher();
+    //this.getcipher();
+
+    //this.getpublickey();
+    //this.encryptandsend();
 
     //var privateKey = Forge.pki.privateKeyFromPem(prv);
 
@@ -172,11 +189,65 @@ var Test = React.createClass({
     });
  },
 
+ getpublickey: function() {
+    $.ajax({
+      type: "GET",
+      url: '/rsa-test7',
+      success: function(res) {
+        console.log(res.public_key);
+
+        localStorage.setItem("app_public_key", res.public_key);
+
+      },
+      error: function(res) {
+        console.log('getkey: some unidentified error');
+
+      }
+    });
+ },
+
+   encryptandsend: function() {
+    var pub = localStorage.getItem("app_public_key");
+    var stringToBeEncrypted = "this is plain text";
+    var cipher = doRSA(stringToBeEncrypted, pub);
+    console.log(cipher);
+    this.sendcipher({'cipher':cipher})
+  },
+
+  sendcipher: function(data) {
+  $.ajax({
+      type: "POST",
+      url: '/rsa-test8',
+      data: JSON.stringify(data),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: function(res) {
+      },
+      error: function(res) {
+
+          console.log('send: some unidentified error');
+      
+      }
+    });
+
+ },
+
+
+
   render: function() {
 
     return (
       <div>
-        asdfasdf
+        <mui.RaisedButton
+          label="Get public key"
+          primary={true}
+          onTouchTap={this.getpublickey}
+        />
+        <mui.RaisedButton
+          label="encrypt and send"
+          primary={true}
+          onTouchTap={this.encryptandsend}
+        />
       </div>
     );
   }
