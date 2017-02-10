@@ -69,7 +69,7 @@ var LandingPage = React.createClass({
 
   render: function() {
     if (this.state.data.get('emergencies_loaded')) {
-      this.setMarkers(this.state.data.get('map'));
+      //this.setMarkers(this.state.data.get('map'));
     };
 
     var reports = this.state.data.get('reports');

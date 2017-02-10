@@ -4,12 +4,15 @@ var React = require('react');
 var Link = require('react-router').Link;
 var mui = require('material-ui');
 
+var Forge = require('node-forge');
+
 var Store = require('../stores/emergencyDialogStore');
 var Actions = require('../actions/emergencyDialogActions');
 
+
 var styles = {
   dialog: {
-    'width': 1200,
+    'width': 1000,
     'maxWidth': 'none',
     'backgroundColor': '#f5f5f5'
   },
@@ -18,6 +21,7 @@ var styles = {
     'height': 400
   }
 };
+
 
 function getStateFromStore() {
   return {
@@ -36,7 +40,6 @@ var EmergencyDialog = React.createClass({
   },
 
   initMiniMap: function() {
-    //{lat: 41.74702, lng: -72.6902683};
     var lat = this.state.data.get('emergency').get('latitude');
     var lng = this.state.data.get('emergency').get('longitude');
     console.log(lat);
@@ -74,12 +77,14 @@ var EmergencyDialog = React.createClass({
   },
 
   render: function() {
+    var actions = [];
+    var emergency = this.state.data.get('emergency');
+
+    var name = "";
+
     if (this.state.data.get('data_loaded')) {
       this.initMiniMap();
     }
-
-    var actions = [];
-    var emergency = this.state.data.get('emergency');
 
     var id = String(emergency.get('id'));
     var name = emergency.get('name');
@@ -104,7 +109,7 @@ var EmergencyDialog = React.createClass({
           onRequestClose={this.handleClose}
           contentStyle={styles.dialog}
         >
-          <div className="col-xs-4 info-col">
+          <div className="col-xs-6 info-col">
             <div className="row">
               <div>Received at: {timestamp}</div>
               <br />
@@ -138,12 +143,9 @@ var EmergencyDialog = React.createClass({
               />
             </div>
           </div>
-          <div className="col-xs-4">
+          <div className="col-xs-6">
             <div style={styles.minimap} id="minimap">
             </div>
-          </div>
-          <div className="col-xs-4">
-            
           </div>
           <div className="dialog-close-button">
             <Link to="/">[X]</Link>

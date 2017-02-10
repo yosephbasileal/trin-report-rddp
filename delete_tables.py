@@ -6,7 +6,7 @@ import registry as r
 def run():
     load_registry()
     r.get_registry()['MY_SQL'].query(
-        'DROP TABLE users;'
+        'DROP TABLE user;'
     )
     r.get_registry()['MY_SQL'].query(
         'DROP TABLE admin;'

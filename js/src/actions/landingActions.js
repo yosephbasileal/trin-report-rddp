@@ -22,7 +22,7 @@ var LandingActions = {
   getEmergencies: function() {
     $.ajax({
       type: "GET",
-      url: '/emergency-records',
+      url: '/api/rddp/emergency-records',
       success: function(res) {
         AppDispatcher.dispatch({
           type: ActionTypes.LANDING_EMERGENCIES_LOADED,
@@ -42,7 +42,7 @@ var LandingActions = {
   getReports: function() {
     $.ajax({
       type: "GET",
-      url: '/report-records',
+      url: '/api/rddp/report-records',
       success: function(res) {
         AppDispatcher.dispatch({
           type: ActionTypes.LANDING_REPORTS_LOADED,
