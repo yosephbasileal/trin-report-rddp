@@ -52,7 +52,7 @@ var Signup = React.createClass({
     Actions.updateFieldInfo({'public_key': publicKeyPem});
 
     // save private key pem to local storage
-    var privateKeyPem = RSAcreateStringFromPrivateKey(keypair.privateKey);
+    var privateKeyPem = RSA.createStringFromPrivateKey(keypair.privateKey);
     localStorage.setItem("admin_private_key", privateKeyPem);
   },
 

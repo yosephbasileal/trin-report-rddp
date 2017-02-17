@@ -136,7 +136,7 @@ def report_records():
 @main.route('/api/rddp/emergency-records', methods=['GET'])
 def emergency_records():
     # get all records
-    records = r.get_registry()['EMERGENCY'].get_all_records()
+    records = r.get_registry()['EMERGENCY'].get_non_archived_records()
     # create response
     js = {}
     js['emergencies'] = list(records)
@@ -155,7 +155,6 @@ def get_emergency_record(emergency_id):
     # create response
     js = {}
     js['emergency'] = emergency
-    js['data_loaded'] = True
     js['receieved'] = handled_status
 
     return jsonify(js), 200
@@ -186,6 +185,33 @@ def mark_as_received():
     )
 
     js = {'receieved': True}
+    return jsonify(js), 200
+
+@main.route('/api/rddp/mark-emergency-as-archived', methods=['POST'])
+def mark_as_archived():
+    # get data from form
+    timestamp = datetime.datetime.now()
+    data = request.json    
+    emergency_id = data.get('emergency_id')
+
+    emergency = r.get_registry()['EMERGENCY'].get_status(
+        emergency_id
+    )
+
+    if not emergency:
+        return jsonify({
+            'error': "Ivalid ID"
+        }), 400
+
+    archived = True
+
+    r.get_registry()['EMERGENCY'].archive_report(
+        emergency_id,
+        archived,
+        timestamp
+    )
+
+    js = {'redirect': '/'}
     return jsonify(js), 200
 
 
@@ -322,23 +348,22 @@ def emergency_request():
     data = request.form
 
     name = data.get('username')
-    dorm = data.get('userdorm')
     phone = data.get('userphone')
-    email = data.get('useremail')
-    id_num = data.get('id_num')
+    id_num = data.get('userid')
     lat = data.get('latitude')
     lng = data.get('longitude')
+    exp = data.get('explanation')
 
     # add record to database
     e_id = r.get_registry()['EMERGENCY'].record_emergency(
         timestamp,
         name,
-        dorm,
         phone,
-        email,
         id_num,
         lat,
         lng,
+        False,
+        exp,
         False
     )
 
@@ -406,7 +431,11 @@ def emergency_callme():
     timestamp = datetime.datetime.now()
     data = request.form    
     emergency_id = data.get('emergency_id')
-    callme = bool(data.get('callme'))
+
+    if data.get('callme') == 'true':
+        callme = True;
+    else:
+        callme = False
 
     # TODO: check if valid ID
 

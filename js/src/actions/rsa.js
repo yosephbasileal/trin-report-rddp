@@ -1,5 +1,6 @@
 'use strict';
 
+var Forge = require('node-forge');
 
 var RSA = {
   // generates a private and public keypair of provided size
@@ -23,12 +24,12 @@ var RSA = {
 
   // takes a plaintext and a public key (pem formatted string) and returns encrypted ciphertext
   encrypt: function(plainText, pubKeyPem) {
-    return encryptRSA(createPublicKeyFromString(pubKeyPem), plainText);
+    return this.encryptRSA(this.createPublicKeyFromString(pubKeyPem), plainText);
   },
 
   // takes a cihertext and a private key (pem formatted string) and returns decrypted plaintext
   decrypt: function(cipherText, prvKeyPem) {
-    return decryptRSA(cipherText, createPrivateKeyFromString(prvKeyPem));
+    return this.decryptRSA(this.createPrivateKeyFromString(prvKeyPem), cipherText);
   },
 
   // takes a plaintext and a public key object and returns encrypted ciphertext (base64)

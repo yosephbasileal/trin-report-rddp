@@ -19,6 +19,20 @@ var EmergencyDialogActions = {
     });
   },
 
+  handleDataReceived: function(change) {
+    AppDispatcher.dispatch({
+      type: ActionTypes.EMERGENCY_DIALOG_DATA_RECEIVED,
+      payload: change
+    });
+  },
+
+  saveMapObject: function(change) {
+    AppDispatcher.dispatch({
+      type: ActionTypes.EMERGENCY_MAP_LOADED,
+      payload: change
+    });
+  },
+
    getEmergencyData: function(emergency_id) {
     $.ajax({
       type: "GET",
@@ -51,6 +65,26 @@ var EmergencyDialogActions = {
           type: ActionTypes.EMERGENCY_MARK_AS_RECEIEVED,
           payload: res
         });
+      },
+      error: function(res) {
+        console.log('markAsRecieved: some unidentified error');
+        AppDispatcher.dispatch({
+          type: ActionTypes.LANDING_UNITENTIFIED_ERROR,
+          payload: {}
+        });
+      }
+    });
+  },
+
+  onMarkAsArchived: function(data) {
+    $.ajax({
+      type: "POST",
+      url: '/api/rddp/mark-emergency-as-archived',
+      data: JSON.stringify(data),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: function(res) {
+        window.location.href = res.redirect;
       },
       error: function(res) {
         console.log('markAsRecieved: some unidentified error');

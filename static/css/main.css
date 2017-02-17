@@ -267,6 +267,7 @@ a.header-item {
   top: 10px;
   left: 15px;
   font-size: 16px;
+  color: #000000;
 }
 
 .id_num {
@@ -274,6 +275,7 @@ a.header-item {
   top: 30px;
   left: 15px;
   font-size: 14px;
+  color: #000000;
 }
 
 .status {
@@ -281,6 +283,13 @@ a.header-item {
   bottom: 5px;
   left: 15px;
   font-size: 14px;
+  color: #000000;
+}
+
+.pin {
+  position: absolute;
+  bottom: 13px;
+  right: 15px;
 }
 
 .time {

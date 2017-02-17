@@ -4,6 +4,8 @@ var Immutable = require('immutable');
 var assign = require('object-assign');
 var EventEmitter = require('events').EventEmitter;
 
+var RSA = require('../actions/rsa');
+
 var AppDispatcher = require('../dispatchers/appDispatcher');
 var ActionTypes = require('../constants/actionTypes');
 
@@ -12,8 +14,9 @@ var get_default_state = function() {
     'emergencies': [],
     'reports': [],
     'emergencies_loaded': false,
-    'map_loaded': false,
-    'map': null
+    'map_ready': false,
+    'map': null,
+    'markers': []
   })
 };
 
@@ -42,17 +45,39 @@ var LandingStore = assign({}, EventEmitter.prototype, {
   }
 });
 
+var admin_key_pem = localStorage.getItem("admin_private_key");
+var decrypt = function(cipher) {
+  return RSA.decrypt(cipher , admin_key_pem);
+}
+
 LandingStore.dispatchToken = AppDispatcher.register(function(action) {
+  console.log(action.type);
   var type = action.type;
   var payload = action.payload;
 
   switch (type) {
-    case ActionTypes.LANDING_EMERGENCIES_LOADED:
     case ActionTypes.LANDING_REPORTS_LOADED:
     case ActionTypes.LANDING_MAP_LOADED:
+    case ActionTypes.LANDING_MAP_CLEAR_MARKERS:
       _state = _state.merge(Immutable.fromJS(payload));
       LandingStore.emitChange();
       break;
+
+    case ActionTypes.LANDING_EMERGENCIES_LOADED:
+      var data = Immutable.fromJS(payload).get('emergencies');
+      for (var i = 0; i < data.size; i++) {
+        var e = data.get(i);
+        e = e.set('name', decrypt(e.get('name')));
+        e = e.set('id_num', decrypt(e.get('id_num')));
+        e = e.set('phone', decrypt(e.get('phone')));
+        e = e.set('explanation', decrypt(e.get('explanation')));
+        data = data.set(i, e);
+      }
+      _state = _state.set('emergencies', data);
+      _state = _state.set('emergencies_loaded', true);
+      LandingStore.emitChange();
+      break;
+
     case ActionTypes.LANDING_COMPONENT_UNMOUNTED:
       _state = get_default_state();
       break;
@@ -63,7 +88,7 @@ LandingStore.dispatchToken = AppDispatcher.register(function(action) {
     default:
       break;
   }
-
+  console.log("done");
   return true;
 });
 
