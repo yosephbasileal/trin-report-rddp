@@ -19,20 +19,6 @@ var EmergencyDialogActions = {
     });
   },
 
-  handleDataReceived: function(change) {
-    AppDispatcher.dispatch({
-      type: ActionTypes.EMERGENCY_DIALOG_DATA_RECEIVED,
-      payload: change
-    });
-  },
-
-  saveMapObject: function(change) {
-    AppDispatcher.dispatch({
-      type: ActionTypes.EMERGENCY_MAP_LOADED,
-      payload: change
-    });
-  },
-
    getEmergencyData: function(emergency_id) {
     $.ajax({
       type: "GET",
@@ -87,7 +73,7 @@ var EmergencyDialogActions = {
         window.location.href = res.redirect;
       },
       error: function(res) {
-        console.log('markAsRecieved: some unidentified error');
+        console.log('onMarkAsArchived: some unidentified error');
         AppDispatcher.dispatch({
           type: ActionTypes.LANDING_UNITENTIFIED_ERROR,
           payload: {}

@@ -51,7 +51,6 @@ var decrypt = function(cipher) {
 }
 
 LandingStore.dispatchToken = AppDispatcher.register(function(action) {
-  console.log(action.type);
   var type = action.type;
   var payload = action.payload;
 

@@ -139,7 +139,7 @@ var LandingPage = React.createClass({
               var path = '/static/img/markers/' + iconlink + '.png';
               iconLetter++;
               if (iconLetter > 90) { iconLetter = 65; }
-              console.log(path);
+              //console.log(path);
 
               var id = String(item.get('id'));
               var name = item.get('name');
@@ -158,7 +158,7 @@ var LandingPage = React.createClass({
                 status= "Pending";
                 status_color = '#ff0000'
               };
-              console.log(status);
+              //console.log(status);
 
               var link = "/emergency/" + id + "?index=" + index;
 
