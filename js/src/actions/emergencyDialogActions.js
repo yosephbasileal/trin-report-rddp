@@ -61,6 +61,26 @@ var EmergencyDialogActions = {
       }
     });
   },
+
+  onMarkAsArchived: function(data) {
+    $.ajax({
+      type: "POST",
+      url: '/api/rddp/mark-emergency-as-archived',
+      data: JSON.stringify(data),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: function(res) {
+        window.location.href = res.redirect;
+      },
+      error: function(res) {
+        console.log('onMarkAsArchived: some unidentified error');
+        AppDispatcher.dispatch({
+          type: ActionTypes.LANDING_UNITENTIFIED_ERROR,
+          payload: {}
+        });
+      }
+    });
+  },
 };
 
 module.exports = EmergencyDialogActions;

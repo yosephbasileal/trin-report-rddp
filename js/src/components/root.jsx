@@ -15,6 +15,7 @@ var Signup = require('./signup.jsx');
 var Header = require('./header.jsx');
 
 var Test = require('./test.jsx');
+var Empty = require('./empty.jsx');
 
 var createBrowserHistory = require('history/lib/createBrowserHistory');
 var history = createBrowserHistory();
@@ -28,6 +29,7 @@ var Root = React.createClass({
           <MuiThemeProvider>
             <Router history={history}>
               <Route path="/" component={LandingPage}>
+                <IndexRoute  component={Empty} />
                 <Route path="/emergency/:emergency_id" component={EmergencyDialog} />  
               </Route>
               <Route path="/login" component={Login} />

@@ -12,7 +12,7 @@ var LandingActions = {
     });
   },
 
-  mapLoaded: function(loaded) {
+  mapUpdated: function(loaded) {
     AppDispatcher.dispatch({
       type: ActionTypes.LANDING_MAP_LOADED,
       payload: loaded

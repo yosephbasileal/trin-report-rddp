@@ -19,9 +19,7 @@ class Emergency(object):
             id INT AUTO_INCREMENT,
             created DATETIME,
             name VARCHAR(2000),
-            dorm VARCHAR(2000),
             phone VARCHAR(2000),
-            email VARCHAR(2000),
             id_num VARCHAR(2000),
             longitude DOUBLE,
             latitude DOUBLE,
@@ -30,6 +28,8 @@ class Emergency(object):
             handled_time DATETIME,
             explanation VARCHAR(2000),
             callme BOOLEAN,
+            archived BOOLEAN,
+            archived_time DATETIME,
             PRIMARY KEY (id))
             ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"""
         )
@@ -39,48 +39,48 @@ class Emergency(object):
     def record_emergency(
         created,
         name,
-        dorm,
         phone,
-        email,
         id_num,
         latitude,
         longitude,
-        handled_status
+        handled_status,
+        explanation,
+        archived
     ):
         query = """INSERT INTO emergency(
             created,
             name,
-            dorm,
             phone,
-            email,
             id_num,
             longitude,
             latitude,
             location_last_updated,
-            handled_status
+            handled_status,
+            explanation,
+            archived
         ) VALUES (
             %(created)s,
             %(name)s,
-            %(dorm)s,
             %(phone)s,
-            %(email)s,
             %(id_num)s,
             %(longitude)s,
             %(latitude)s,
             %(location_last_updated)s,
-            %(handled_status)s
+            %(handled_status)s,
+            %(explanation)s,
+            %(archived)s
         );"""
         data = {
             'created': created,
             'name': name,
-            'dorm': dorm,
             'phone': phone,
-            'email': email,
             'id_num': id_num,
             'longitude': longitude,
             'latitude': latitude,
             'location_last_updated': created,
-            'handled_status': handled_status
+            'handled_status': handled_status,
+            'explanation': explanation,
+            'archived': archived
         }
         return r.get_registry()['MY_SQL'].insert(query, data)
 
@@ -88,6 +88,20 @@ class Emergency(object):
     def get_all_records():
         query = """SELECT * FROM emergency ORDER BY created DESC;"""
         return r.get_registry()['MY_SQL'].get_all(query)
+
+    @staticmethod
+    def get_non_archived_records():
+        query1 =  "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;"
+        r.get_registry()['MY_SQL'].query(query1);
+        query = """SELECT * FROM emergency where archived = %(archived)s
+            ORDER BY created DESC;"""
+        data = {
+            'archived': False
+        }
+        records =  r.get_registry()['MY_SQL'].get_all(query, data)
+        query2 =  "SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ ;"
+        r.get_registry()['MY_SQL'].query(query2);
+        return records
 
     @staticmethod
     def get_emergency(e_id):
@@ -107,6 +121,20 @@ class Emergency(object):
         data = {
             'handled_status': handled_status,
             'handled_time': timestamp,
+            'id': e_id
+        }
+        r.get_registry()['MY_SQL'].insert(query, data)
+
+    @staticmethod
+    def archive_report(e_id, archived, archived_time):
+        query = """UPDATE emergency SET
+            archived = %(archived)s,
+            archived_time = %(archived_time)s
+            where id = %(id)s;"""
+
+        data = {
+            'archived': archived,
+            'archived_time': archived_time,
             'id': e_id
         }
         r.get_registry()['MY_SQL'].insert(query, data)

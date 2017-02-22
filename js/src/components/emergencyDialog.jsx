@@ -4,8 +4,6 @@ var React = require('react');
 var Link = require('react-router').Link;
 var mui = require('material-ui');
 
-var Forge = require('node-forge');
-
 var Store = require('../stores/emergencyDialogStore');
 var Actions = require('../actions/emergencyDialogActions');
 
@@ -23,6 +21,12 @@ var styles = {
 };
 
 
+var minimap = null;
+var marker = null;
+var map_ready = false;
+var emergency = null;
+var emergency_loaded = false;
+
 function getStateFromStore() {
   return {
     data: Store.getState(),
@@ -31,25 +35,42 @@ function getStateFromStore() {
 
 var EmergencyDialog = React.createClass({
   getInitialState: function() {
-    Actions.getEmergencyData(this.props.params.emergency_id);
+    this.getData(this.props.params.emergency_id);
     return getStateFromStore();
   },
 
   componentDidMount: function() {
     Store.listen(this.handleStoreChange);
+    this.initMiniMap();
+  },
+
+  getData: function(e_id) {
+    emergency = this.props.getData(e_id);
+    emergency_loaded = true;
   },
 
   initMiniMap: function() {
-    var lat = this.state.data.get('emergency').get('latitude');
-    var lng = this.state.data.get('emergency').get('longitude');
-    console.log(lat);
-    console.log(lng);
-    var location = {lat: lat, lng: lng};
-    var minimap = new google.maps.Map(document.getElementById('minimap'), {
-      zoom: 17,
-      center: location
+    var center = {lat: 41.74702, lng: -72.6902683};
+    minimap = new google.maps.Map(document.getElementById('minimap'), {
+      zoom: 16,
+      center: center
     });
-    var marker = new google.maps.Marker({
+    marker = new google.maps.Marker({
+      map: minimap,
+    });
+    map_ready = true;
+    this.updateMiniMap();
+  },
+
+  updateMiniMap: function() {
+    var lat = emergency.get('latitude');
+    var lng = emergency.get('longitude');
+    var location = {lat: lat, lng: lng};
+
+    marker.setMap(null);
+    minimap.setCenter(location);
+    minimap.setZoom(17);
+    marker = new google.maps.Marker({
       position: location,
       map: minimap
     });
@@ -58,6 +79,11 @@ var EmergencyDialog = React.createClass({
   componentWillUnmount: function() {
     Actions.componentUnmounted();
     Store.unlisten(this.handleStoreChange);
+    map_ready = false;
+  },
+
+  componentWillReceiveProps: function(nextProps) {
+    this.getData(this.props.params.emergency_id);
   },
 
   handleStoreChange: function() {
@@ -76,34 +102,58 @@ var EmergencyDialog = React.createClass({
     Actions.markAsRecieved(data);
   },
 
+  onMarkAsArchived: function() {
+    var data = {
+      'emergency_id': this.props.params.emergency_id
+    };
+    Actions.onMarkAsArchived(data);
+  },
+
   render: function() {
-    var actions = [];
-    var emergency = this.state.data.get('emergency');
-
-    var name = "";
-
-    if (this.state.data.get('data_loaded')) {
-      this.initMiniMap();
+    // update map
+    if(emergency_loaded) {
+      if(map_ready) {
+        this.updateMiniMap();
+      }
     }
 
-    var id = String(emergency.get('id'));
-    var name = emergency.get('name');
-    var id_num = emergency.get('id_num');
-    var phone = emergency.get('phone');
-    var email = emergency.get('email');
-    var dorm = emergency.get('dorm');
-    var lat = emergency.get('latitude');
-    var lng = emergency.get('longitude');
-    var timestamp = emergency.get('created');
-    var explanation = emergency.get('explanation');
+    var id = "";
+    var name = "";
+    var id_num = "";
+    var phone = "";
+    var lat = "";
+    var lng = "";
+    var timestamp_location = "";
+    var timestamp = "";
+    var explanation = "";
+    var callme = "";
+
+    if (emergency) {
+      id = String(emergency.get('id'));
+      name = emergency.get('name');
+      id_num = emergency.get('id_num');
+      phone = emergency.get('phone');
+      lat = emergency.get('latitude');
+      lng = emergency.get('longitude');
+      timestamp_location = emergency.get('location_last_updated');
+      timestamp = emergency.get('created');
+      explanation = emergency.get('explanation');
+      callme = emergency.get('callme');
+    }
 
     var title = "Emergency Request #: " + id;
+    var callmetext = "";
+    if (callme == 1) {
+    	callmetext = "yes";
+    } else if(callme == 0) {
+    	callmetext = "no";
+    }
 
     return (
       <div>
         <mui.Dialog
           title={title}
-          actions={actions}
+          actions={[]}
           modal={true}
           open={this.state.data.get("open")}
           onRequestClose={this.handleClose}
@@ -113,18 +163,19 @@ var EmergencyDialog = React.createClass({
             <div className="row">
               <div>Received at: {timestamp}</div>
               <br />
+              <div>Explanation: {explanation}</div>
+              <div>Can talk on the phone: {callmetext}</div>
+              <br />
               <div>Last known location: Lat {lat} Lng {lng}</div>
-              <div>Last updated: {timestamp}</div>
+              <div>Last updated: {timestamp_location}</div>
             </div>
 
             <br />
 
             <div className="row">
-              <div>Student Name: {name}</div>
+              <div>Name: {name}</div>
               <div>ID Number: {id_num}</div>
-              <div>Dorm: {dorm}</div>
               <div>Phone: {phone}</div>
-              <div>Email: {email}</div>
             </div>
 
             <br />
@@ -139,6 +190,7 @@ var EmergencyDialog = React.createClass({
               &nbsp;&nbsp;&nbsp;
               <mui.RaisedButton
                 label="Archive"
+                onTouchTap={this.onMarkAsArchived}
                 secondary={true}
               />
             </div>
