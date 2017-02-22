@@ -91,12 +91,17 @@ class Emergency(object):
 
     @staticmethod
     def get_non_archived_records():
+        query1 =  "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;"
+        r.get_registry()['MY_SQL'].query(query1);
         query = """SELECT * FROM emergency where archived = %(archived)s
             ORDER BY created DESC;"""
         data = {
             'archived': False
         }
-        return r.get_registry()['MY_SQL'].get_all(query, data)
+        records =  r.get_registry()['MY_SQL'].get_all(query, data)
+        query2 =  "SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ ;"
+        r.get_registry()['MY_SQL'].query(query2);
+        return records
 
     @staticmethod
     def get_emergency(e_id):

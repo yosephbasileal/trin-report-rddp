@@ -87,7 +87,7 @@ LandingStore.dispatchToken = AppDispatcher.register(function(action) {
     default:
       break;
   }
-  console.log("done");
+
   return true;
 });
 

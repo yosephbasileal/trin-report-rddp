@@ -141,6 +141,7 @@ def emergency_records():
     js = {}
     js['emergencies'] = list(records)
     js['emergencies_loaded'] = True
+    print "Number of records: " + str(len(list(records)))
     return jsonify(js), 200
 
 
@@ -381,15 +382,18 @@ def check_emergency_status():
     latitude = data.get('latitude')
     longitude = data.get('longitude')
 
-    print "Location: " + str(longitude) + ", " + str(latitude) 
+    # print "Location: " + str(longitude) + ", " + str(latitude)
 
     emergency = r.get_registry()['EMERGENCY'].get_status(
         emergency_id
     )
     if not emergency:
+	print "No Emergency"
         return jsonify({
             'error': "Ivalid ID"
         }), 400
+
+    print "Emergency"
 
     # save updated gps location in db
     r.get_registry()['EMERGENCY'].update_location(
@@ -571,3 +575,4 @@ def rsa_test9():
     global web_cipherr
 
     return jsonify({"cipher": web_cipherr}), 200
+
