@@ -38,6 +38,10 @@ app.wsgi_app = SharedDataMiddleware(app.wsgi_app, {
 # blueprints and views
 from blueprints.main import main
 app.register_blueprint(main)
+from blueprints.emergency import emergency
+app.register_blueprint(emergency)
+from blueprints.report import report
+app.register_blueprint(report)
 
 def _get_etag():
     """

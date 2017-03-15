@@ -14,6 +14,8 @@ main = Blueprint('main', __name__)
 
 
 @main.route('/',  methods=['GET'])
+@main.route('/emergencies',  methods=['GET'])
+@main.route('/reports',  methods=['GET'])
 def landing():
     if not Signin.is_loggedin():
         return redirect(url_for('main.login'))
@@ -38,9 +40,21 @@ def signup():
 def test():
     return render_template("landing.html")
 
+@main.route('/ip',  methods=['GET'])
+def getip():
+    return jsonify({'ip': request.remote_addr}), 200
 
-@main.route('/emergency/<emergency_id>',  methods=['GET'])
+
+@main.route('/emergencies/<emergency_id>',  methods=['GET'])
 def emergency_dialog(emergency_id):
+    # TODO: check emergency id
+    if not Signin.is_loggedin():
+        return redirect(url_for('main.login'))
+    return render_template("landing.html")
+
+@main.route('/reports/<report_id>',  methods=['GET'])
+def report_dialog(report_id):
+    # TODO: check report id
     if not Signin.is_loggedin():
         return redirect(url_for('main.login'))
     return render_template("landing.html")
@@ -118,102 +132,9 @@ def sign_in():
 
     # response
     return jsonify({
-        'redirect': '/',
+        'redirect': '/emergencies',
         'logged_in': True
     }), 200
-
-
-@main.route('/api/rddp/report-records', methods=['GET'])
-def report_records():
-    # get all records
-    records = r.get_registry()['REPORT'].get_all_reports()
-    # create response
-    js = {}
-    js['reports'] = list(records)
-    return jsonify(js), 200
-
-
-@main.route('/api/rddp/emergency-records', methods=['GET'])
-def emergency_records():
-    # get all records
-    records = r.get_registry()['EMERGENCY'].get_non_archived_records()
-    # create response
-    js = {}
-    js['emergencies'] = list(records)
-    js['emergencies_loaded'] = True
-    print "Number of records: " + str(len(list(records)))
-    return jsonify(js), 200
-
-
-@main.route('/api/rddp/get-emergency-record/<emergency_id>', methods=['GET'])
-def get_emergency_record(emergency_id):
-    # get emergency record
-    emergency = r.get_registry()['EMERGENCY'].get_emergency(
-        emergency_id
-    )
-    handled_status = bool(emergency.get('handled_status'))
-
-    # create response
-    js = {}
-    js['emergency'] = emergency
-    js['receieved'] = handled_status
-
-    return jsonify(js), 200
-
-
-@main.route('/api/rddp/mark-emergency-as-recieved', methods=['POST'])
-def mark_as_received():
-    # get data from form
-    timestamp = datetime.datetime.now()
-    data = request.json    
-    emergency_id = data.get('emergency_id')
-
-    emergency = r.get_registry()['EMERGENCY'].get_status(
-        emergency_id
-    )
-
-    if not emergency:
-        return jsonify({
-            'error': "Ivalid ID"
-        }), 400
-
-    handled_status = True
-
-    r.get_registry()['EMERGENCY'].update_status(
-        emergency_id,
-        handled_status,
-        timestamp
-    )
-
-    js = {'receieved': True}
-    return jsonify(js), 200
-
-@main.route('/api/rddp/mark-emergency-as-archived', methods=['POST'])
-def mark_as_archived():
-    # get data from form
-    timestamp = datetime.datetime.now()
-    data = request.json    
-    emergency_id = data.get('emergency_id')
-
-    emergency = r.get_registry()['EMERGENCY'].get_status(
-        emergency_id
-    )
-
-    if not emergency:
-        return jsonify({
-            'error': "Ivalid ID"
-        }), 400
-
-    archived = True
-
-    r.get_registry()['EMERGENCY'].archive_report(
-        emergency_id,
-        archived,
-        timestamp
-    )
-
-    js = {'redirect': '/'}
-    return jsonify(js), 200
 
 
 @main.route('/api/rddp/get-user-public-key', methods=['POST'])
@@ -281,176 +202,6 @@ def publish_user_public_key():
 
 
 
-@main.route('/report', methods=['POST'])
-def add_report():
-    # get user data from POST request
-    timestamp = datetime.datetime.now()
-    data = request.form
-
-    # get data from form
-    urgency = data.get('urgency')
-    year = data.get('year')
-    month = data.get('month')
-    day = data.get('day')
-    hour = data.get('hour')
-    minute = data.get('minute')
-    location = data.get('location')
-    ttype = data.get('type')
-    is_anonymous = data.get('is_anonymous')
-    follow_up = data.get('follow_up_enabled')
-
-    # process data
-    date = datetime.datetime(
-        year=int(year),
-        day=int(day),
-        month=int(month),
-        hour=int(hour),
-        minute=int(minute)
-    )
-    is_anonymous = (is_anonymous == "true")
-    follow_up = (follow_up == "true")
-
-    created = datetime.datetime.now()
-
-    # add report to database
-    r_id = r.get_registry()['REPORT'].record_report(
-        created,
-        urgency,
-        date,
-        location,
-        ttype,
-        is_anonymous,
-        follow_up
-    )
-
-    if not is_anonymous:
-        name = data.get("username")
-        dorm = data.get("userdorm")
-        phone = data.get("userphone")
-        email = data.get("useremail")
-        id_num = data.get("userid")
-
-        r.get_registry()['REPORT'].add_reporter(
-            r_id,
-            name,
-            dorm,
-            email,
-            phone,
-            id_num
-        )
-
-    return jsonify({"status": "ok"}), 200
-
-
-@main.route('/emergency-request', methods=['POST'])
-def emergency_request():
-    # get user data from POST request
-    timestamp = datetime.datetime.now()
-    data = request.form
-
-    name = data.get('username')
-    phone = data.get('userphone')
-    id_num = data.get('userid')
-    lat = data.get('latitude')
-    lng = data.get('longitude')
-    exp = data.get('explanation')
-
-    # add record to database
-    e_id = r.get_registry()['EMERGENCY'].record_emergency(
-        timestamp,
-        name,
-        phone,
-        id_num,
-        lat,
-        lng,
-        False,
-        exp,
-        False
-    )
-
-    js = {}
-    js['emergency_id'] = e_id
-    return jsonify(js), 200
-
-@main.route('/check-emergency-status', methods=['POST'])
-def check_emergency_status():
-    # get data from form
-    timestamp = datetime.datetime.now()
-    data = request.form    
-    emergency_id = data.get('emergency_id')
-
-    latitude = data.get('latitude')
-    longitude = data.get('longitude')
-
-    # print "Location: " + str(longitude) + ", " + str(latitude)
-
-    emergency = r.get_registry()['EMERGENCY'].get_status(
-        emergency_id
-    )
-    if not emergency:
-	print "No Emergency"
-        return jsonify({
-            'error': "Ivalid ID"
-        }), 400
-
-    print "Emergency"
-
-    # save updated gps location in db
-    r.get_registry()['EMERGENCY'].update_location(
-        emergency_id,
-        longitude,
-        latitude,
-        timestamp
-    )
-
-    # send status to phone
-    handled_status = bool(emergency.get('handled_status'))
-    js = {'handled_status': handled_status}
-    return jsonify(js), 200
-
-
-@main.route('/emergency-explanation', methods=['POST'])
-def emergency_explanation():
-    # get data from form
-    timestamp = datetime.datetime.now()
-    data = request.form    
-    emergency_id = data.get('emergency_id')
-    explanation = data.get('explanation')
-
-    # TODO: check if valid ID
-
-    # save explanation in db
-    r.get_registry()['EMERGENCY'].update_explanation(
-        emergency_id,
-        explanation
-    )
-
-    js = {}
-    return jsonify(js), 200
-
-
-@main.route('/emergency-callme-checkbox', methods=['POST'])
-def emergency_callme():
-    # get data from form
-    timestamp = datetime.datetime.now()
-    data = request.form    
-    emergency_id = data.get('emergency_id')
-
-    if data.get('callme') == 'true':
-        callme = True;
-    else:
-        callme = False
-
-    # TODO: check if valid ID
-
-    # save explanation in db
-    r.get_registry()['EMERGENCY'].update_callme(
-        emergency_id,
-        callme
-    )
-
-    js = {}
-    return jsonify(js), 200
 
 
 # @main.route('/api/app/get-admin-public-key', methods=['GET'])

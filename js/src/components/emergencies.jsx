@@ -4,10 +4,8 @@ var React = require('react');
 var Link = require('react-router').Link;
 var mui = require('material-ui');
 
-var Store = require('../stores/landingStore');
-var Actions = require('../actions/landingActions');
-
-var LandingPage = require('./landingPage.jsx');
+var Store = require('../stores/emergenciesStore');
+var Actions = require('../actions/emergenciesActions');
 
 var timer;
 var map;
@@ -20,7 +18,7 @@ function getStateFromStore() {
   };
 }
 
-var LandingPage = React.createClass({
+var EmergenciesPage = React.createClass({
   getInitialState: function() {
     Actions.getEmergencies();
     //Actions.getReports();
@@ -160,7 +158,7 @@ var LandingPage = React.createClass({
               };
               //console.log(status);
 
-              var link = "/emergency/" + id + "?index=" + index;
+              var link = "/emergencies/" + id + "?index=" + index;
 
               return (
                   <Link to={link} key={id}>
@@ -181,25 +179,6 @@ var LandingPage = React.createClass({
 
         </div>
 
-        <div className="report-list-container">
-          <mui.List>
-            {reports.map((item) => {
-              var id = String(item.get('id'));
-              var lat = item.get('latitude');
-              var lng = item.get('longitude');
-              var timestamp = item.get('created')
-
-              return (
-                  <div key={id} className="report-conainer">
-                    <p>ID: {id}</p>
-                    <p>Timestamp: {timestamp}</p>
-                    <p>Location: lat={lat} & lng={lng}</p>
-                  </div>
-                )
-            })}
-          </mui.List>
-        </div>
-
         <div>
           {React.cloneElement(this.props.children, {
             getData: this.getEmergencyFromList,
@@ -211,4 +190,4 @@ var LandingPage = React.createClass({
   }
 });
 
-module.exports = LandingPage;
+module.exports = EmergenciesPage;

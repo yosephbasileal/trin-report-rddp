@@ -200,7 +200,7 @@ var EmergencyDialog = React.createClass({
             </div>
           </div>
           <div className="dialog-close-button">
-            <Link to="/">[X]</Link>
+            <Link to="/emergencies">[X]</Link>
           </div>
         </mui.Dialog>
       </div>
