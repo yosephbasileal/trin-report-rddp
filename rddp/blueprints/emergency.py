@@ -14,6 +14,8 @@ emergency = Blueprint('emergency', __name__)
 
 @emergency.route('/emergency-request', methods=['POST'])
 def emergency_request():
+    # TODO: get auth token and verify in all app endpoints
+    
     # get user data from POST request
     timestamp = datetime.datetime.now()
     data = request.form

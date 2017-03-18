@@ -18,6 +18,8 @@ class Thread(object):
         query = (
             """CREATE TABLE IF NOT EXISTS thread(
             id INT AUTO_INCREMENT,
+            user_token VARCHAR(500),
+            title VARCHAR(500),
             report_id INT,
             last_updated DATETIME,
             last_message TEXT,
@@ -29,17 +31,25 @@ class Thread(object):
 
     @staticmethod
     def record_thread(
+        title,
+        user_token,
         report_id,
         last_updated
     ):
         query = """INSERT INTO thread(
+            title,
+            user_token,
             report_id,
             last_updated
         ) VALUES (
+            %(title)s,
+            %(user_token)s,
             %(report_id)s,
             %(last_updated)s
         );"""
         data = {
+            'title': title,
+            'user_token': user_token,
             'report_id': report_id,
             'last_updated': last_updated
         }
@@ -59,12 +69,13 @@ class Thread(object):
         return r.get_registry()['MY_SQL'].insert(query, data)
 
     @staticmethod
-    def get_thread_by_id(t_id):
-        query = """SELECT * FROM thread where id = %(id)s;"""
+    def get_threads_of_user(user_token):
+        query = """SELECT * FROM thread where user_token = %(user_token)s
+            ORDER BY last_updated DESC;"""
         data = {
-            'id': t_id
+            'user_token': user_token
         }
-        return r.get_registry()['MY_SQL'].get(query, data)
+        return r.get_registry()['MY_SQL'].get_all(query, data)
 
     @staticmethod
     def get_thread_by_report_id(report_id):

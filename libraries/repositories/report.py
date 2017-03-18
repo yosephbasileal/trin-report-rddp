@@ -17,6 +17,7 @@ class Report(object):
         query = (
             """CREATE TABLE IF NOT EXISTS report(
             id INT AUTO_INCREMENT,
+            user_token VARCHAR(500),
             created DATETIME,
             type VARCHAR(2000),
             urgency VARCHAR(2000),
@@ -41,6 +42,7 @@ class Report(object):
 
     @staticmethod
     def record_report(
+        user_token,
         created,
         rtype,
         urgency,
@@ -54,6 +56,7 @@ class Report(object):
         followup_initiated
     ):
         query = """INSERT INTO report(
+            user_token,
             type,
             created,
             urgency,
@@ -66,6 +69,7 @@ class Report(object):
             archived,
             followup_initiated
         ) VALUES (
+            %(user_token)s,
             %(type)s,
             %(created)s,
             %(urgency)s,
@@ -79,12 +83,13 @@ class Report(object):
             %(followup_initiated)s
         );"""
         data = {
+            'user_token': user_token,
             'type': rtype,
             'created': created,
             'urgency': urgency,
             'date': date,
             'location': location,
-            'type': ttype,
+            'description': description,
             'is_anonymous': is_anonymous,
             'is_res_emp': is_res_emp,
             'follow_up': follow_up,
@@ -100,7 +105,7 @@ class Report(object):
             reporter_dorm = %(reporter_dorm)s,
             reporter_email = %(reporter_email)s,
             reporter_phone = %(reporter_phone)s,
-            reporter_id_num = %(reporter_id_num)s,
+            reporter_id_num = %(reporter_id_num)s
             where id = %(id)s;"""
 
         data = {
@@ -127,7 +132,6 @@ class Report(object):
             'archived': False
         }
         return r.get_registry()['MY_SQL'].get_all(query, data)
-        return records
 
     @staticmethod
     def get_report(r_id):

@@ -21,6 +21,7 @@ def add_report():
     data = request.form
 
     # get data from form
+    user_token = data.get('auth_token')
     rtype = data.get('type')
     urgency = data.get('urgency')
     year = data.get('year')
@@ -35,6 +36,8 @@ def add_report():
     is_res_emp = data.get('is_resp_emp')
     follow_up = data.get('follow_up_enabled')
 
+    # TODO: error check data
+
     # create date object
     date = datetime.datetime(
         year=int(year),
@@ -48,9 +51,9 @@ def add_report():
     is_res_emp = (is_res_emp == "true")
     follow_up = (follow_up == "true")
 
-
     # add report to database
     r_id = r.get_registry()['REPORT'].record_report(
+        user_token,
         timestamp,
         rtype,
         urgency,
@@ -81,7 +84,9 @@ def add_report():
             id_num
         )
 
-    return jsonify({"status": "ok"}), 200
+    return jsonify({
+        "report_id": r_id
+    }), 200
 
 
 @report.route('/api/rddp/report-records', methods=['GET'])
@@ -132,6 +137,8 @@ def initiate_followup():
     )
 
     r.get_registry()['THREAD'].record_thread(
+        report.get('type'),
+        report.get('user_token'),
         report_id,
         timestamp
     )
@@ -243,4 +250,28 @@ def add_new_message():
         'message': '',
         'message_error': ''
     }
+    return jsonify(js), 200
+
+@report.route('/get-followup-threads', methods=['POST'])
+def get_threads():
+    data = request.form
+    user_token = data.get('auth_token')
+    print user_token
+
+    user = r.get_registry()['USER'].get_user(
+        user_token
+    )
+    if not user:
+        return jsonify({
+            'error': "Ivalid User"
+        }), 400
+
+    # get all threads of user
+    threads = r.get_registry()['THREAD'].get_threads_of_user(
+        user_token
+    )
+
+    # create response
+    js = {}
+    js['threads'] = list(threads)
     return jsonify(js), 200
