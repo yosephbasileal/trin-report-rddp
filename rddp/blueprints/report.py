@@ -252,6 +252,52 @@ def add_new_message():
     }
     return jsonify(js), 200
 
+    
+
+@report.route('/send-followup-message', methods=['POST'])
+def add_new_message2():
+    # get data from form
+    timestamp = datetime.datetime.now()
+
+    data = request.form
+    thread_id = data.get('thread_id')
+    message = data.get('message')
+    print thread_id
+
+    thread = r.get_registry()['THREAD'].get_thread(
+        thread_id
+    )
+
+    if not thread:
+        return jsonify({
+            'error': 'Invalid thread ID'
+        }), 400
+
+    if not message:
+        return jsonify({
+            'message_error': 'Invalid message'
+        }), 400
+
+
+    from_admin = False
+    r.get_registry()['MESSAGE'].record_message(
+        thread_id,
+        message,
+        from_admin,
+        timestamp
+    )
+
+    messages = r.get_registry()['MESSAGE'].get_messages_of_thread(
+        thread_id
+    )
+
+    # create response
+    js = {
+        'messages': list(messages),
+    }
+    return jsonify(js), 200
+
+
 @report.route('/get-followup-threads', methods=['POST'])
 def get_threads():
     data = request.form
@@ -274,4 +320,30 @@ def get_threads():
     # create response
     js = {}
     js['threads'] = list(threads)
+    return jsonify(js), 200
+
+
+@report.route('/get-followup-messages', methods=['POST'])
+def get_messages2():
+    data = request.form
+    thread_id = data.get('thread_id')
+    print thread_id
+
+    thread = r.get_registry()['THREAD'].get_thread(
+        thread_id
+    )
+
+    if not thread:
+        return jsonify({
+            'error': 'Invalid thread ID'
+        }), 400
+
+    # get all messages of thread
+    messages = r.get_registry()['MESSAGE'].get_messages_of_thread(
+        thread_id
+    )
+
+    # create response
+    js = {}
+    js['messages'] = list(messages)
     return jsonify(js), 200

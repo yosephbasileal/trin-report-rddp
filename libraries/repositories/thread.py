@@ -69,6 +69,15 @@ class Thread(object):
         return r.get_registry()['MY_SQL'].insert(query, data)
 
     @staticmethod
+    def get_thread(thread_id):
+        query = """SELECT * FROM thread where
+            id = %(id)s"""
+        data = {
+            'id': thread_id
+        }
+        return r.get_registry()['MY_SQL'].get_all(query, data)
+
+    @staticmethod
     def get_threads_of_user(user_token):
         query = """SELECT * FROM thread where user_token = %(user_token)s
             ORDER BY last_updated DESC;"""
