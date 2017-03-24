@@ -239,6 +239,11 @@ def add_new_message():
         from_admin,
         timestamp
     )
+    r.get_registry()['THREAD'].update_last_message(
+        message,
+        timestamp,
+        thread.get('id')
+    )
 
     messages = r.get_registry()['MESSAGE'].get_messages_of_thread(
         thread.get('id')
@@ -286,6 +291,11 @@ def add_new_message2():
         from_admin,
         timestamp
     )
+    r.get_registry()['THREAD'].update_last_message(
+        message,
+        timestamp,
+        thread_id
+    )
 
     messages = r.get_registry()['MESSAGE'].get_messages_of_thread(
         thread_id
@@ -316,6 +326,13 @@ def get_threads():
     threads = r.get_registry()['THREAD'].get_threads_of_user(
         user_token
     )
+
+    for thread in threads:
+        # get all messages of thread
+        messages = r.get_registry()['MESSAGE'].get_messages_of_thread(
+            thread.get('id')
+        )
+        thread['messages'] = messages
 
     # create response
     js = {}

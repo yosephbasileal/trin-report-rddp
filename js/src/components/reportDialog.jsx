@@ -186,7 +186,7 @@ var ReportDialog = React.createClass({
               <div>Dorm: {dorm}</div>
             </div>
 
-            <br /><br /><br /><br /><br /><br /><br />
+            <br /><br /><br />
 
             <div className="row">
               <mui.RaisedButton
