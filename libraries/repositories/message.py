@@ -18,7 +18,7 @@ class Message(object):
         query = (
             """CREATE TABLE IF NOT EXISTS message(
             id INT AUTO_INCREMENT,
-            thread_id INT,
+            thread_id VARCHAR(2000),
             content TEXT,
             from_admin BOOLEAN,
             timestamp DATETIME,

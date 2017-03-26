@@ -16,14 +16,14 @@ class Report(object):
             return
         query = (
             """CREATE TABLE IF NOT EXISTS report(
-            id INT AUTO_INCREMENT,
-            user_token VARCHAR(500),
+            id VARCHAR(2000),
+            user_pub_key VARCHAR(4096),
             created DATETIME,
-            type VARCHAR(2000),
+            type TEXT,
             urgency VARCHAR(2000),
             date DATETIME,
-            location VARCHAR(2000),
-            description VARCHAR(2000),
+            location TEXT,
+            description TEXT,
             is_anonymous BOOLEAN,
             is_res_emp BOOLEAN,
             follow_up BOOLEAN,
@@ -34,15 +34,15 @@ class Report(object):
             reporter_id_num VARCHAR(2000),
             followup_initiated BOOLEAN,
             archived BOOLEAN,
-            archived_time DATETIME,
-            PRIMARY KEY (id))
+            archived_time DATETIME)
             ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"""
         )
         r.get_registry()['MY_SQL'].query(query)
 
     @staticmethod
     def record_report(
-        user_token,
+        report_id,
+        user_pub_key,
         created,
         rtype,
         urgency,
@@ -56,7 +56,8 @@ class Report(object):
         followup_initiated
     ):
         query = """INSERT INTO report(
-            user_token,
+            id,
+            user_pub_key,
             type,
             created,
             urgency,
@@ -69,7 +70,8 @@ class Report(object):
             archived,
             followup_initiated
         ) VALUES (
-            %(user_token)s,
+            %(id)s,
+            %(user_pub_key)s,
             %(type)s,
             %(created)s,
             %(urgency)s,
@@ -83,7 +85,8 @@ class Report(object):
             %(followup_initiated)s
         );"""
         data = {
-            'user_token': user_token,
+            'id': report_id,
+            'user_pub_key': user_pub_key,
             'type': rtype,
             'created': created,
             'urgency': urgency,

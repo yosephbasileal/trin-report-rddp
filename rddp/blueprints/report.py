@@ -16,12 +16,18 @@ report = Blueprint('report', __name__)
 def add_report():
     timestamp = datetime.datetime.now()
 
-    print request.form
-    
+    #print request.form
+    #print request.json
+    #print request.data
+
     data = request.form
 
+    if not data:
+        print 'not data'
+        data = request.json
+    
+
     # get data from form
-    user_token = data.get('auth_token')
     rtype = data.get('type')
     urgency = data.get('urgency')
     year = data.get('year')
@@ -35,6 +41,9 @@ def add_report():
     is_anonymous = data.get('is_anonymous')
     is_res_emp = data.get('is_resp_emp')
     follow_up = data.get('follow_up_enabled')
+
+    report_id = data.get('report_id')
+    user_pub_key = data.get('public_key')
 
     # TODO: error check data
 
@@ -53,7 +62,8 @@ def add_report():
 
     # add report to database
     r_id = r.get_registry()['REPORT'].record_report(
-        user_token,
+        report_id,
+        user_pub_key,
         timestamp,
         rtype,
         urgency,
@@ -83,6 +93,70 @@ def add_report():
             phone,
             id_num
         )
+
+    return jsonify({
+        "report_id": r_id
+    }), 200
+
+
+@report.route('/report-anonymous', methods=['POST'])
+def add_report_anon():
+    timestamp = datetime.datetime.now()
+
+    print request.form
+    
+    data = request.form
+
+    # get data from form
+    rtype = data.get('type')
+    urgency = data.get('urgency')
+    year = data.get('year')
+    month = data.get('month')
+    day = data.get('day')
+    hour = data.get('hour')
+    minute = data.get('minute')
+    location = data.get('location')
+    description = data.get('description')
+
+    is_anonymous = data.get('is_anonymous')
+    is_res_emp = data.get('is_resp_emp')
+    follow_up = data.get('follow_up_enabled')
+
+    report_id = data.get('report_id')
+    user_pub_key = data.get('public_key')
+
+    # TODO: error check data
+
+    # create date object
+    date = datetime.datetime(
+        year=int(year),
+        day=int(day),
+        month=int(month),
+        hour=int(hour),
+        minute=int(minute)
+    )
+    # convert to booleans
+    is_anonymous = (is_anonymous == "true")
+    is_res_emp = (is_res_emp == "true")
+    follow_up = (follow_up == "true")
+
+
+    # add report to database
+    r.get_registry()['REPORT_ANON'].record_report(
+        report_id,
+        user_pub_key,
+        timestamp,
+        rtype,
+        urgency,
+        date,
+        location,
+        description,
+        is_anonymous,
+        is_res_emp,
+        follow_up,
+        False,
+        False
+    )
 
     return jsonify({
         "report_id": r_id
@@ -119,6 +193,7 @@ def initiate_followup():
     timestamp = datetime.datetime.now()
     data = request.json    
     report_id = data.get('report_id')
+    print report_id
 
     report = r.get_registry()['REPORT'].get_report(
         report_id
@@ -138,7 +213,7 @@ def initiate_followup():
 
     r.get_registry()['THREAD'].record_thread(
         report.get('type'),
-        report.get('user_token'),
+        report.get('user_pub_key'),
         report_id,
         timestamp
     )
@@ -154,7 +229,7 @@ def initiate_followup():
 @report.route('/api/rddp/report-followup-messages/<report_id>', methods=['GET'])
 def get_messages(report_id):
     report = r.get_registry()['REPORT'].get_report(
-        Utilities.safe_cast(report_id, int)
+        report_id
     )
     if not report:
         return jsonify({
@@ -165,10 +240,11 @@ def get_messages(report_id):
     thread = r.get_registry()['THREAD'].get_thread_by_report_id(
         report_id
     )
+    print thread
     messages = []
     if thread:
         messages = r.get_registry()['MESSAGE'].get_messages_of_thread(
-            thread.get('id')
+            report_id
         )
 
     # create response
@@ -234,7 +310,7 @@ def add_new_message():
     )
     from_admin = True
     r.get_registry()['MESSAGE'].record_message(
-        thread.get('id'),
+        report_id,
         message,
         from_admin,
         timestamp
@@ -242,11 +318,11 @@ def add_new_message():
     r.get_registry()['THREAD'].update_last_message(
         message,
         timestamp,
-        thread.get('id')
+        report_id
     )
 
     messages = r.get_registry()['MESSAGE'].get_messages_of_thread(
-        thread.get('id')
+        report_id
     )
 
     # create response
@@ -265,6 +341,7 @@ def add_new_message2():
     timestamp = datetime.datetime.now()
 
     data = request.form
+
     thread_id = data.get('thread_id')
     message = data.get('message')
     print thread_id
@@ -285,6 +362,7 @@ def add_new_message2():
 
 
     from_admin = False
+
     r.get_registry()['MESSAGE'].record_message(
         thread_id,
         message,
@@ -307,37 +385,68 @@ def add_new_message2():
     }
     return jsonify(js), 200
 
-
-@report.route('/get-followup-threads', methods=['POST'])
-def get_threads():
+@report.route('/api/app/get-report-thread', methods=['POST'])
+def get_report_thread():
     data = request.form
-    user_token = data.get('auth_token')
-    print user_token
+    report_id = data.get('report_id')
+    print report_id
 
-    user = r.get_registry()['USER'].get_user(
-        user_token
-    )
-    if not user:
-        return jsonify({
-            'error': "Ivalid User"
-        }), 400
-
-    # get all threads of user
-    threads = r.get_registry()['THREAD'].get_threads_of_user(
-        user_token
+    # get report thread
+    thread = r.get_registry()['THREAD'].get_thread_by_report_id(
+        report_id
     )
 
-    for thread in threads:
-        # get all messages of thread
-        messages = r.get_registry()['MESSAGE'].get_messages_of_thread(
-            thread.get('id')
-        )
-        thread['messages'] = messages
+    if not thread:
+        js = {}
+        js['initiated'] = False
+        return jsonify(js), 200
+
+    # get all messages of thread
+    messages = r.get_registry()['MESSAGE'].get_messages_of_thread(
+        report_id
+    )
+    thread['messages'] = messages
 
     # create response
     js = {}
-    js['threads'] = list(threads)
+    js['initiated'] = True
+    js['thread'] = thread
+
     return jsonify(js), 200
+
+
+# @report.route('/get-followup-threads', methods=['POST'])
+# def get_threads():
+#     data = request.form
+#     user_token = data.get('auth_token')
+#     print user_token
+
+#     user = r.get_registry()['USER'].get_user(
+#         user_token
+#     )
+#     if not user:
+#         return jsonify({
+#             'error': "Ivalid User"
+#         }), 400
+
+#     # get all threads of user
+#     threads = r.get_registry()['THREAD'].get_threads_of_user(
+#         user_token
+#     )
+
+#     for thread in threads:
+#         # get all messages of thread
+#         messages = r.get_registry()['MESSAGE'].get_messages_of_thread(
+#             thread.get('id')
+#         )
+#         thread['messages'] = messages
+
+#     # create response
+#     js = {}
+#     js['threads'] = list(threads)
+#     return jsonify(js), 200
+
+
 
 
 @report.route('/get-followup-messages', methods=['POST'])
