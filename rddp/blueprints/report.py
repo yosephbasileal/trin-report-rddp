@@ -8,6 +8,7 @@ import registry as r
 from libraries.utilities.signin import Signin
 from libraries.utilities.authentication import Authentication
 from libraries.utilities.utilities import Utilities
+from libraries.s3_client import S3Client as S3
 
 report = Blueprint('report', __name__)
 
@@ -60,6 +61,16 @@ def add_report():
     is_res_emp = (is_res_emp == "true")
     follow_up = (follow_up == "true")
 
+    # TODO test image upload
+    image_str = data.get('image')
+    image_key = data.get('image_key')
+    image_iv = data.get('image_iv')
+    #print image_str
+    print image_key
+    print image_iv
+    S3.upload_file(image_str, report_id)
+
+
     # add report to database
     r_id = r.get_registry()['REPORT'].record_report(
         report_id,
@@ -94,10 +105,26 @@ def add_report():
             id_num
         )
 
+    print report_id 
+
     return jsonify({
         "report_id": r_id
     }), 200
 
+
+@report.route('/test-file', methods=['GET'])
+def test_file():
+    key = "ea117002b4d36323e96c41a92a5918aab391867098a58b204bc025be43d685df"
+
+    file = S3.get_file_content(key)
+
+    # create and return response
+    #res = make_response(file.decode('base64'))  # use this if not encrypted
+    #es.headers['Content-Type'] = 'image/*'
+    #res.headers['Content-Disposition'] = \
+    #        'inline; filename=%s.jpg' % key
+    #return res
+    return file
 
 @report.route('/report-anonymous', methods=['POST'])
 def add_report_anon():

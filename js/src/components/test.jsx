@@ -232,6 +232,70 @@ var Test = React.createClass({
 
  },
 
+ testAES: function() {
+  var cipher_str = "iBlycURly89ne4ln8Yk9OQ==";
+  var key_str = "1eLAQJPtZrPaAl1r8mHB/i6zzdfVc2egM0ljFCoP68U=";
+  var iv_str = "Q4IETaMBSicPUmseLUhkWw==";
+
+  /*var buffer = Forge.util.createBuffer(cipher_str, 'utf8');
+  var cipher = buffer.getBytes();
+
+  var buffer2 = Forge.util.createBuffer(iv_str, 'utf8');
+  var iv = buffer2.getBytes();
+
+  var buffer3 = Forge.util.createBuffer(key_str, 'utf8');
+  var key = buffer3.getBytes();*/
+
+  var key = Forge.util.decode64(key_str);
+  var iv = Forge.util.decode64(iv_str);
+  var cipher = Forge.util.decode64(cipher_str);
+  console.log(key);
+  console.log(iv);
+  console.log(cipher);
+
+  var decipher = Forge.cipher.createDecipher('AES-CBC', key);
+  decipher.start({iv: iv});
+  decipher.update(Forge.util.createBuffer(cipher));
+  decipher.finish();
+
+  console.log(decipher.output);
+
+ },
+
+  getImage: function() {
+  $.ajax({
+      type: "GET",
+      url: '/test-file',
+      contentType: "application/json; charset=utf-8",
+      success: function(res) {
+        //console.log(res);
+        var key_str = "cwP6VilrtbRDpqIPreAnoFQi61tiTo2ZMWRI3mIPMjg=";
+        var iv_str = "aLh0yYW673T7N8EdnFb9KA==";
+        var key = Forge.util.decode64(key_str);
+        var iv = Forge.util.decode64(iv_str);
+        var cipher = Forge.util.decode64(res);
+        //console.log(key);
+        //console.log(iv);
+        //console.log(cipher);
+
+        var decipher = Forge.cipher.createDecipher('AES-CBC', key);
+        decipher.start({iv: iv});
+        decipher.update(Forge.util.createBuffer(cipher));
+        decipher.finish();
+
+        var image = new Image();
+        image.src = 'data:image/png;base64,'+ decipher.output.data;
+        document.body.appendChild(image);
+
+      },
+      error: function(res) {
+
+          console.log(res);
+      
+      }
+    });
+
+ },
 
 
   render: function() {
@@ -247,6 +311,16 @@ var Test = React.createClass({
           label="encrypt and send"
           primary={true}
           onTouchTap={this.encryptandsend}
+        />
+        <mui.RaisedButton
+          label="TestAES"
+          primary={true}
+          onTouchTap={this.testAES}
+        />
+        <mui.RaisedButton
+          label="Get Image"
+          primary={true}
+          onTouchTap={this.getImage}
         />
       </div>
     );
