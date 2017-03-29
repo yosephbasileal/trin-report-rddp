@@ -13,31 +13,34 @@ emergency = Blueprint('emergency', __name__)
 
 
 @emergency.route('/emergency-request', methods=['POST'])
-def emergency_request():
-    # TODO: get auth token and verify in all app endpoints
-    
+def emergency_request():    
     # get user data from POST request
     timestamp = datetime.datetime.now()
     data = request.form
-
     name = data.get('username')
     phone = data.get('userphone')
     id_num = data.get('userid')
+    email = data.get('useremail')
+    dorm = data.get('userdorm')
     lat = data.get('latitude')
     lng = data.get('longitude')
     exp = data.get('explanation')
 
     # add record to database
+    handled_status = False
+    archived = False
     e_id = r.get_registry()['EMERGENCY'].record_emergency(
         timestamp,
         name,
         phone,
         id_num,
+        email,
+        dorm,
         lat,
         lng,
-        False,
+        handled_status,
         exp,
-        False
+        archived
     )
 
     js = {}
@@ -117,7 +120,7 @@ def check_emergency_status():
         emergency_id
     )
     if not emergency:
-	print "No Emergency"
+        print "No Emergency"
         return jsonify({
             'error': "Ivalid ID"
         }), 400

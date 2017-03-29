@@ -99,7 +99,7 @@ def sign_up_admin():
 
     # redirect to next page
     return jsonify(
-        {'redirect': '/'}
+        {'redirect': '/emergencies'}
     ), 200
 
 

@@ -119,8 +119,10 @@ var EmergencyDialog = React.createClass({
 
     var id = "";
     var name = "";
-    var id_num = "";
     var phone = "";
+    var id_num = "";
+    var email = "";
+    var dorm = "";
     var lat = "";
     var lng = "";
     var timestamp_location = "";
@@ -131,8 +133,10 @@ var EmergencyDialog = React.createClass({
     if (emergency) {
       id = String(emergency.get('id'));
       name = emergency.get('name');
-      id_num = emergency.get('id_num');
       phone = emergency.get('phone');
+      id_num = emergency.get('id_num');
+      email = emergency.get('email');
+      dorm = emergency.get('dorm');
       lat = emergency.get('latitude');
       lng = emergency.get('longitude');
       timestamp_location = emergency.get('location_last_updated');
@@ -145,7 +149,7 @@ var EmergencyDialog = React.createClass({
     var callmetext = "";
     if (callme == 1) {
     	callmetext = "yes";
-    } else if(callme == 0) {
+    } else {
     	callmetext = "no";
     }
 
@@ -176,6 +180,8 @@ var EmergencyDialog = React.createClass({
               <div>Name: {name}</div>
               <div>ID Number: {id_num}</div>
               <div>Phone: {phone}</div>
+              <div>Email: {email}</div>
+              <div>Dorm: {dorm}</div>
             </div>
 
             <br />
