@@ -306,7 +306,7 @@ a.header-item {
   max-height: calc(100% - 110px);
   overflow-y: scroll;
   position: absolute;
-  right: 20px;
+  left: 20px;
   top: 110px;
   z-index: 1000;
   background-color: rgba(175, 175, 175, 0.38);
@@ -339,3 +339,129 @@ a.header-item {
   font-size: 16px;
   font-weight: 400;
 }
+
+/* inbox */
+.messages-div {
+  padding-left: 20px;
+  padding-right: 20px;
+  height: 55%;
+  overflow-y: scroll;
+  margin-bottom: 10px;
+}
+.active {
+  background-color: rgba(15, 50, 80, 0.5);
+}
+.active-thread {
+  background-color: rgb(220, 220, 220);
+}
+.inbox-container {
+  display: flex;
+}
+.threads-wrapper {
+  width: 28%;
+  float: left;
+  padding: 0px 0px 20px 0;
+  border-right: 1px solid #E8E8E8;
+}
+.messages-wrapper {
+  width: 71.3%;
+  float: left;
+  border-right: 1px solid #E8E8E8;
+  margin-bottom: 3em;
+}
+.messages-div {
+  padding-left: 20px;
+  padding-right: 20px;
+  height: 50%;
+  overflow-y: scroll;
+  margin-bottom: 10px;
+}
+.send-div {
+  height: 140px;
+}
+.send-text {
+  width: 85%;
+  float: left;
+}
+.send-button {
+  padding-left: 5px;
+  width: 15%;
+  float: left;
+  padding-top: 30px;
+}
+/* chat window message styles */
+.message-wrapper {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  margin: 10.66667px 0;
+  padding: 10.66667px 0;
+}
+.message-wrapper .circle-wrapper {
+  height: 42.66667px;
+  width: 42.66667px;
+  border-radius: 50%;
+}
+.message-wrapper .text-wrapper {
+  padding: 10.66667px;
+  min-height: 20.66667px;
+  width: auto;
+  max-width: 330px;
+  margin: 0 10.66667px;
+  box-shadow: 0px 1px 0px 0px rgba(50, 50, 50, 0.3);
+  border-radius: 2px;
+  font-weight: 300;
+  position: relative;
+  /* word-break: break-all; */
+}
+/*.message-wrapper .text-wrapper:before {
+  content: '';
+  width: 0;
+  height: 0;
+  border-style: solid;
+}*/
+.message-wrapper.them .circle-wrapper, .message-wrapper.them .text-wrapper {
+  background: #E0E0E0;
+  float: left;
+  color: #000;
+}
+.message-wrapper.them .text-wrapper {
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  white-space: pre-wrap;
+}
+.message-wrapper.them .text-wrapper:before {
+  border-width: 0 10px 10px 0;
+  border-color: transparent #E0E0E0 transparent transparent;
+  position: absolute;
+  top: 0;
+  left: -9px;
+}
+.message-wrapper.me .circle-wrapper, .message-wrapper.me .text-wrapper {
+  background: rgb(51, 122, 183);
+  float: right;
+  color: #fff;
+}
+.message-wrapper.me .text-wrapper {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  white-space: pre-wrap;
+}
+.message-wrapper.me .text-wrapper {
+  background: rgb(51, 122, 183);
+}
+.message-wrapper.me .text-wrapper:before {
+  border-width: 10px 10px 0 0;
+  border-color: rgb(51, 122, 183) transparent transparent transparent;
+  position: absolute;
+  top: 0;
+  right: -9px;
+}
+.select-convo-notice {
+  text-align: center;
+  color: #696969;
+  font-size: 20px;
+}
+/* end inbox *.

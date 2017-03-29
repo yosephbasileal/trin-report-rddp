@@ -17,6 +17,12 @@ def run():
     r.get_registry()['MY_SQL'].query(
         'DROP TABLE report;'
     )
+    r.get_registry()['MY_SQL'].query(
+        'DROP TABLE thread;'
+    )
+    r.get_registry()['MY_SQL'].query(
+        'DROP TABLE message;'
+    )
 
 if __name__ == "__main__":
 	run()

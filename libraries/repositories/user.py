@@ -40,6 +40,14 @@ class User(object):
         return r.get_registry()['MY_SQL'].insert(query, data)
 
     @staticmethod
+    def get_user(auth_token):
+        query = """SELECT * FROM user where auth_token = %(auth_token)s"""
+        data = {
+            'auth_token': auth_token
+        }
+        return r.get_registry()['MY_SQL'].get(query, data)
+
+    @staticmethod
     def publish_public_key(auth_token, public_key_jwk):
         query = """UPDATE user SET
             public_key_jwk = %(public_key_jwk)s

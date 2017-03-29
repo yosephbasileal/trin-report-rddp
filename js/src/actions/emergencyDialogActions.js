@@ -19,7 +19,7 @@ var EmergencyDialogActions = {
     });
   },
 
-   getEmergencyData: function(emergency_id) {
+  getEmergencyData: function(emergency_id) {
     $.ajax({
       type: "GET",
       url: '/api/rddp/get-emergency-record/' + emergency_id,
