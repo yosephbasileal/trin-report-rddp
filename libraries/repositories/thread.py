@@ -17,11 +17,13 @@ class Thread(object):
             return
         query = (
             """CREATE TABLE IF NOT EXISTS thread(
+            id_dummy INT AUTO_INCREMENT,
             user_pub_key VARCHAR(4096),
             title VARCHAR(500),
             report_id VARCHAR(2000),
             last_updated DATETIME,
-            last_message TEXT)
+            last_message TEXT,
+            PRIMARY KEY(id_dummy))
             ENGINE=InnoDB DEFAULT
             CHARSET=utf8 COLLATE=utf8_unicode_ci;"""
         )

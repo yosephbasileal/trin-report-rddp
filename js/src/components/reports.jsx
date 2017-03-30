@@ -24,6 +24,10 @@ var ReportsPage = React.createClass({
     Store.listen(this.handleStoreChange);
   },
 
+  onRefreshClicked: function() {
+    Actions.getReports();
+  },
+
   componentWillUnmount: function() {
     Actions.componentUnmounted();
     Store.unlisten(this.handleStoreChange);
@@ -50,6 +54,13 @@ var ReportsPage = React.createClass({
 
     return (
       <div>
+        <div className="row">
+          <mui.RaisedButton
+            label="Refresh"
+            onTouchTap={this.onRefreshClicked}
+            primary={true}
+          />
+        </div>
         <div className="report-list-container">
           <mui.List>
             {reports.map((item, index) => {

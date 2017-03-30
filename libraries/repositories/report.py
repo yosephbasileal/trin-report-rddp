@@ -16,6 +16,7 @@ class Report(object):
             return
         query = (
             """CREATE TABLE IF NOT EXISTS report(
+            id_dummy INT AUTO_INCREMENT,
             id VARCHAR(2000),
             user_pub_key VARCHAR(4096),
             created DATETIME,
@@ -34,7 +35,8 @@ class Report(object):
             reporter_id_num VARCHAR(2000),
             followup_initiated BOOLEAN,
             archived BOOLEAN,
-            archived_time DATETIME)
+            archived_time DATETIME,
+            PRIMARY KEY (id_dummy))
             ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"""
         )
         r.get_registry()['MY_SQL'].query(query)
@@ -109,7 +111,7 @@ class Report(object):
             reporter_email = %(reporter_email)s,
             reporter_phone = %(reporter_phone)s,
             reporter_id_num = %(reporter_id_num)s
-            where id = %(id)s;"""
+            where id_dummy = %(id_dummy)s;"""
 
         data = {
             'reporer_name': name,
@@ -117,7 +119,7 @@ class Report(object):
             'reporter_email': email,
             'reporter_phone': phone,
             'reporter_id_num': id_num,
-            'id': r_id
+            'id_dummy': r_id
         }
         r.get_registry()['MY_SQL'].insert(query, data)
 

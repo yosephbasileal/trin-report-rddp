@@ -26,16 +26,11 @@ def add_report():
     if not data:
         print 'not data'
         data = request.json
-    
 
     # get data from form
     rtype = data.get('type')
     urgency = data.get('urgency')
-    year = data.get('year')
-    month = data.get('month')
-    day = data.get('day')
-    hour = data.get('hour')
-    minute = data.get('minute')
+    date = data.get('timestamp')
     location = data.get('location')
     description = data.get('description')
 
@@ -48,27 +43,23 @@ def add_report():
 
     # TODO: error check data
 
-    # create date object
-    date = datetime.datetime(
-        year=int(year),
-        day=int(day),
-        month=int(month),
-        hour=int(hour),
-        minute=int(minute)
+    date = datetime.datetime.strptime(
+         date, '%a, %d %b %Y %H:%M:%S %Z'
     )
+
     # convert to booleans
     is_anonymous = (is_anonymous == "true")
     is_res_emp = (is_res_emp == "true")
     follow_up = (follow_up == "true")
 
     # TODO test image upload
-    image_str = data.get('image')
-    image_key = data.get('image_key')
-    image_iv = data.get('image_iv')
-    #print image_str
-    print image_key
-    print image_iv
-    S3.upload_file(image_str, report_id)
+    # image_str = data.get('image')
+    # image_key = data.get('image_key')
+    # image_iv = data.get('image_iv')
+    # #print image_str
+    # print image_key
+    # print image_iv
+    # S3.upload_file(image_str, report_id)
 
 
     # add report to database
@@ -88,27 +79,27 @@ def add_report():
         False
     )
 
-    # get reported data if not anoymous
-    if not is_anonymous:
-        name = data.get("username")
-        dorm = data.get("userdorm")
-        phone = data.get("userphone")
-        email = data.get("useremail")
-        id_num = data.get("userid")
+    # get reported data
+    # if anonymous, these empty strings when decrypted
+    name = data.get("username")
+    dorm = data.get("userdorm")
+    phone = data.get("userphone")
+    email = data.get("useremail")
+    id_num = data.get("userid")
 
-        r.get_registry()['REPORT'].add_reporter(
-            r_id,
-            name,
-            dorm,
-            email,
-            phone,
-            id_num
-        )
+    r.get_registry()['REPORT'].add_reporter(
+        r_id,
+        name,
+        dorm,
+        email,
+        phone,
+        id_num
+    )
 
     print report_id 
 
     return jsonify({
-        "report_id": r_id
+        "report_id": report_id
     }), 200
 
 

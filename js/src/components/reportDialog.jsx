@@ -56,7 +56,11 @@ var ReportDialog = React.createClass({
 
   handleStoreChange: function() {
     this.setState(getStateFromStore());
-    scorllDivToBottom();
+    if(this.state.data.get('report')) {
+      if(this.state.data.get('report').get('followup_initiated')) {
+        scorllDivToBottom();
+      }
+    }
   },
 
   handleClose: function() {
