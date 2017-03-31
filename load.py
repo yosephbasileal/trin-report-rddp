@@ -23,7 +23,8 @@ def run():
     r.get_registry()['ADMIN'].create_table()
     r.get_registry()['REPORT'].create_table()
     r.get_registry()['THREAD'].create_table()
-    r.get_registry()['MESSAGE'].create_table()
+    r.get_registry()['MESSAGE_ADMIN'].create_table()
+    r.get_registry()['MESSAGE_USER'].create_table()
 
 
 if __name__ == "__main__":

@@ -3,22 +3,22 @@
 import registry as r
 
 
-class Message(object):
+class MessageUser(object):
     @staticmethod
     def create_table():
         result = r.get_registry()['MY_SQL'].query(
             (
                 "select * from information_schema.tables where "
                 "TABLE_SCHEMA='trin_report' and "
-                "table_name='message';"
+                "table_name='message_user';"
             )
         )
         if result != 0:
             return
         query = (
-            """CREATE TABLE IF NOT EXISTS message(
+            """CREATE TABLE IF NOT EXISTS message_user(
             id INT AUTO_INCREMENT,
-            thread_id VARCHAR(2000),
+            report_id VARCHAR(2000),
             content TEXT,
             from_admin BOOLEAN,
             timestamp DATETIME,
@@ -30,25 +30,25 @@ class Message(object):
 
     @staticmethod
     def record_message(
-        thread_id,
+        report_id,
         content,
         from_admin,
         timestamp
     ):
 
-        query = """INSERT INTO message(
-            thread_id,
+        query = """INSERT INTO message_user(
+            report_id,
             content,
             from_admin,
             timestamp
         ) VALUES (
-            %(thread_id)s,
+            %(report_id)s,
             %(content)s,
             %(from_admin)s,
             %(timestamp)s
         );"""
         data = {
-            'thread_id': thread_id,
+            'report_id': report_id,
             'content': content,
             'from_admin': from_admin,
             'timestamp': timestamp
@@ -56,11 +56,11 @@ class Message(object):
         return r.get_registry()['MY_SQL'].insert(query, data)
 
     @staticmethod
-    def get_messages_of_thread(t_id):
-        query = """SELECT * FROM message where
-            thread_id = %(thread_id)s
+    def get_messages(report_id):
+        query = """SELECT * FROM message_user where
+            report_id = %(report_id)s
             ORDER BY timestamp ASC;"""
         data = {
-            'thread_id': t_id
+            'report_id': report_id
         }
         return r.get_registry()['MY_SQL'].get_all(query, data)

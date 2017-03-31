@@ -7,6 +7,7 @@ var mui = require('material-ui');
 var Store = require('../stores/reportDialogStore');
 var Actions = require('../actions/reportDialogActions');
 
+var RSA = require('../actions/rsa');
 
 var styles = {
   dialog: {
@@ -83,8 +84,14 @@ var ReportDialog = React.createClass({
   },
 
   sendMessage: function() {
+    var admin_public_key_pem = localStorage.getItem('admin_public_key');
+    var user_public_key_pem = this.state.data.get('report').get('user_pub_key');
+    var message = this.state.data.get('message');
+    //TODO: do error checking on message
+
     var data = {
-      'message': this.state.data.get('message'),
+      'message_user': RSA.encrypt(message, user_public_key_pem),
+      'message_admin': RSA.encrypt(message, admin_public_key_pem),
       'report_id': this.props.params.report_id
     }
     Actions.sendMessage(data);

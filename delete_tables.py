@@ -21,7 +21,10 @@ def run():
         'DROP TABLE thread;'
     )
     r.get_registry()['MY_SQL'].query(
-        'DROP TABLE message;'
+        'DROP TABLE message_admin;'
+    )
+    r.get_registry()['MY_SQL'].query(
+        'DROP TABLE message_user;'
     )
 
 if __name__ == "__main__":

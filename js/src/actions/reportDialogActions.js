@@ -41,7 +41,7 @@ var ReportDialogActions = {
   sendMessage: function(data) {
     $.ajax({
       type: "POST",
-      url: '/api/rddp/new-message',
+      url: '/api/rddp/add-new-message',
       data: JSON.stringify(data),
       contentType: "application/json; charset=utf-8",
       dataType: "json",

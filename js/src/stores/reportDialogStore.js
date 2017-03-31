@@ -82,13 +82,22 @@ var decrypt = function(cipher) {
       _state = _state.set('report', e);
       ReportDialogStore.emitChange();
       break;
+    case ActionTypes.REPORTS_MESSAGES_DATA_LOADED:
+    case ActionTypes.REPORT_SEND_MESSAGE_SUCCESS:
+      var data = Immutable.fromJS(payload).get('messages');
+      for (var i = 0; i < data.size; i++) {
+        var e = data.get(i);
+        e = e.set('content', decrypt(e.get('content')));
+        data = data.set(i, e);
+      }
+      _state = _state.set('messages', data);
+      _state = _state.set('message', '');
+      ReportDialogStore.emitChange();
+      break;
     case ActionTypes.REPORT_DIALOG_CLOSE:
     case ActionTypes.REPORT_DIALOG_UNITENTIFIED_ERROR:
-    case ActionTypes.REPORTS_MESSAGES_DATA_LOADED:
     case ActionTypes.REPORT_UPDATE_MESSAGE:
-    case ActionTypes.REPORT_SEND_MESSAGE_SUCCESS:
     case ActionTypes.REPORT_SEND_MESSAGE_FAILED:
-    
     case ActionTypes.REPORT_DIALOG_INIT_DATA:
       _state = _state.merge(Immutable.fromJS(payload));
       ReportDialogStore.emitChange();
