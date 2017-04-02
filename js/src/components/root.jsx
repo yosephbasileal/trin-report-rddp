@@ -11,6 +11,7 @@ var IndexRoute = ReactRouter.IndexRoute;
 var EmergencyDialog = require('./emergencyDialog.jsx');
 var Emergencies = require('./emergencies.jsx');
 
+var ReportImage = require('./reportImage.jsx');
 var ReportDialog = require('./reportDialog.jsx');
 var Reports = require('./reports.jsx');
 
@@ -39,7 +40,10 @@ var Root = React.createClass({
 
               <Route path="/reports" component={Reports}>
                 <IndexRoute  component={Empty} />
-                <Route path=":report_id" component={ReportDialog} />
+                <Route path=":report_id" component={ReportDialog}>
+                  <IndexRoute  component={Empty} />
+                  <Route path="img/:img_key" component={ReportImage} />
+                </Route>
               </Route>
 
               <Route path="/login" component={Login} />

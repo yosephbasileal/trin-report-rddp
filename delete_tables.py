@@ -26,6 +26,9 @@ def run():
     r.get_registry()['MY_SQL'].query(
         'DROP TABLE message_user;'
     )
+    r.get_registry()['MY_SQL'].query(
+        'DROP TABLE image;'
+    )
 
 if __name__ == "__main__":
 	run()

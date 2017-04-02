@@ -102,6 +102,7 @@ var ReportDialog = React.createClass({
   },
 
   render: function() {
+
     var report = this.state.data.get('report');
 
     var timestamp = "";
@@ -122,8 +123,9 @@ var ReportDialog = React.createClass({
     var email = "";
     var dorm = "";
 
-
+    var report_loaded = false;
     if (report) {
+      report_loaded = true;
       timestamp = report.get('created');
       id = String(report.get('id'));
       type = report.get('type');
@@ -223,6 +225,12 @@ var ReportDialog = React.createClass({
             <Link to="/reports">[X]</Link>
           </div>
         </mui.Dialog>
+        <div>
+          {React.cloneElement(this.props.children, {
+            report: this.state.data.get('report'),
+            report_loaded: report_loaded
+          })}
+        </div>
       </div>
     );
   }

@@ -52,6 +52,37 @@ def add_report():
     is_res_emp = (is_res_emp == "true")
     follow_up = (follow_up == "true")
 
+    # get images and upload to s3
+    images_count = data.get("images_count")
+    images_iv = data.get("images_iv")
+    images_key = data.get('images_key')
+    print images_count
+    print images_iv
+    print images_key
+    i = 1
+    while i <= int(images_count):
+        # save data except image in local db
+        content = ""  # image too big to be stored locally
+        i_id = r.get_registry()['IMAGE'].record_image(
+            report_id,
+            content,
+            images_iv
+        )
+
+        # construct s3 key and save locally
+        key_s3 = report_id + "_" + str(i_id)
+        r.get_registry()['IMAGE'].update_key_s3(
+            i_id,
+            key_s3
+        )
+        print "key: " + key_s3
+        
+        # upload images_iv
+        cipher_image = data.get("image"+str(i))
+        S3.upload_file(cipher_image, key_s3)
+        i = i+1;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+        
+
     # TODO test image upload
     # image_str = data.get('image')
     # image_key = data.get('image_key')
@@ -63,6 +94,8 @@ def add_report():
 
 
     # add report to database
+    archived = False
+    followup_initiated = False
     r_id = r.get_registry()['REPORT'].record_report(
         report_id,
         user_pub_key,
@@ -75,8 +108,9 @@ def add_report():
         is_anonymous,
         is_res_emp,
         follow_up,
-        False,
-        False
+        archived,
+        followup_initiated,
+        images_key
     )
 
     # get reported data
@@ -247,6 +281,9 @@ def add_new_message_app():
 
     # get data from form
     data = request.form
+    if not data:
+        data = request.json
+
     report_id = data.get('report_id')
     # encrypted with user's public key
     message_user = data.get('message_user')
@@ -374,6 +411,21 @@ def test_file():
     key = "ea117002b4d36323e96c41a92a5918aab391867098a58b204bc025be43d685df"
 
     file = S3.get_file_content(key)
+
+    # create and return response
+    #res = make_response(file.decode('base64'))  # use this if not encrypted
+    #es.headers['Content-Type'] = 'image/*'
+    #res.headers['Content-Disposition'] = \
+    #        'inline; filename=%s.jpg' % key
+    #return res
+    return file
+
+
+@report.route('/get-image/<img_key>', methods=['GET'])
+def get_image(img_key):
+    print img_key
+
+    file = S3.get_file_content(img_key)
 
     # create and return response
     #res = make_response(file.decode('base64'))  # use this if not encrypted
