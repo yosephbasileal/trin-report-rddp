@@ -2,6 +2,8 @@
 
 var AppDispatcher = require('../dispatchers/appDispatcher');
 var ActionTypes = require('../constants/actionTypes');
+var Immutable = require('immutable');
+var Forge = require('node-forge');
 
 
 var ReportDialogActions = {
@@ -124,6 +126,56 @@ var ReportDialogActions = {
       },
       error: function(res) {
         console.log('getMessages: some unidentified error');
+        AppDispatcher.dispatch({
+          type: ActionTypes.REPORTS_UNITENTIFIED_ERROR,
+          payload: {}
+        });
+      }
+    });
+  },
+
+  getImages: function(report_id) {
+    $.ajax({
+      type: "GET",
+      url: '/api/rddp/report-images/' + report_id,
+      success: function(res) {
+        console.log('images loaded');
+        console.log(res);
+
+        var images = Immutable.fromJS(res).get('images');
+        console.log('started decrupting');
+        for (var i = 0; i < images.size; i++) {
+          var image = images.get(i);
+
+          var key_str = image.get('aes_key');
+          var iv_str = image.get('iv');
+          var cipher_str = image.get('image');
+          var key = Forge.util.decode64(key_str);
+          var iv = Forge.util.decode64(iv_str);
+          var cipher = Forge.util.decode64(cipher_str);
+
+          //console.log(cipher_str);
+          console.log(key_str);
+          console.log(iv_str);
+
+          var decipher = Forge.cipher.createDecipher('AES-CBC', key);
+          decipher.start({iv: iv});
+          decipher.update(Forge.util.createBuffer(cipher));
+          decipher.finish();
+
+          image = image.set('image', decipher.output.data);
+          images = images.set(i, image);
+        }
+        console.log('done decrypting');
+
+        AppDispatcher.dispatch({
+          type: ActionTypes.REPORT_IMAGES_LOADED,
+          payload: {'images': images}
+        });
+
+      },
+      error: function(res) {
+        console.log('getImages: some unidentified error');
         AppDispatcher.dispatch({
           type: ActionTypes.REPORTS_UNITENTIFIED_ERROR,
           payload: {}

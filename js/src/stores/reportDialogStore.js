@@ -19,7 +19,8 @@ var get_default_state = function() {
     'message': '',
     'message_error': '',
     'report': new Map(),
-    'report_loaded': false
+    'report_loaded': false,
+    'images': []
   })
 };
 
@@ -92,6 +93,14 @@ var decrypt = function(cipher) {
       }
       _state = _state.set('messages', data);
       _state = _state.set('message', '');
+      ReportDialogStore.emitChange();
+      break;
+    case ActionTypes.REPORT_IMAGES_LOADED:
+      console.log('images loaded in store');
+      console.log(payload);
+      console.log(Immutable.fromJS(payload));
+
+      _state = _state.merge(Immutable.fromJS(payload));
       ReportDialogStore.emitChange();
       break;
     case ActionTypes.REPORT_DIALOG_CLOSE:

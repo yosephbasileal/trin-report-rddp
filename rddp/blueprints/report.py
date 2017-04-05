@@ -66,7 +66,8 @@ def add_report():
         i_id = r.get_registry()['IMAGE'].record_image(
             report_id,
             content,
-            images_iv
+            images_iv,
+            images_key
         )
 
         # construct s3 key and save locally
@@ -153,10 +154,32 @@ def get_report_record(report_id):
         report_id
     )
 
+    # get images
+    images = r.get_registry()['IMAGE'].get_images(
+        report_id
+    )
+
     # create response
     js = {}
     js['report'] = report
+    return jsonify(js), 200
 
+
+@report.route('/api/rddp/report-images/<report_id>', methods=['GET'])
+def get_report_images(report_id):
+    # get images
+    images = r.get_registry()['IMAGE'].get_images(
+        report_id
+    )
+
+    for image in images:
+        image['image'] = S3.get_file_content(
+            image.get('key_s3')
+        )
+
+    # create response
+    js = {}
+    js['images'] = images
     return jsonify(js), 200
 
 
@@ -178,7 +201,7 @@ def mark_as_archived():
 
     archived = True
 
-    r.get_registry()['REPORT'].initiate_followup(
+    r.get_registry()['REPORT'].archive_report(
         report_id,
         archived,
         timestamp
@@ -423,7 +446,7 @@ def test_file():
 
 @report.route('/get-image/<img_key>', methods=['GET'])
 def get_image(img_key):
-    print img_key
+    print 'image key: ' + img_key
 
     file = S3.get_file_content(img_key)
 

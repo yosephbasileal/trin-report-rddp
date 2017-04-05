@@ -30,6 +30,7 @@ function getStateFromStore() {
 var ReportDialog = React.createClass({
   getInitialState: function() {
     Actions.getMessages(this.props.params.report_id);
+    Actions.getImages(this.props.params.report_id);
     this.getData(this.props.params.report_id);
     return getStateFromStore();
   },
@@ -104,6 +105,8 @@ var ReportDialog = React.createClass({
   render: function() {
 
     var report = this.state.data.get('report');
+    var images = this.state.data.get('images');
+    console.log(images);
 
     var timestamp = "";
     var id = "";
@@ -216,21 +219,31 @@ var ReportDialog = React.createClass({
               />
             </div>
           </div>
-          <div className="col-xs-1">
+          <div className="col-xs-3">
+            <div className="images-list-container">
+              <mui.List>
+                {images.map((item, index) => {
+                  var s3_key = item.get('s3_key');
+                  var image = item.get('image');
+                  var src = 'data:image/png;base64,'+ image;
+                  return (
+                      <div key={s3_key}>
+                        <img src={src} id="image-container" width="100"></img>
+                        <br />
+                      </div>
+                    )
+                })}
+              </mui.List>
+            </div>
           </div>
-          <div className="col-xs-7">
+
+          <div className="col-xs-5">
             {followup_block}
           </div>
           <div className="dialog-close-button">
             <Link to="/reports">[X]</Link>
           </div>
         </mui.Dialog>
-        <div>
-          {React.cloneElement(this.props.children, {
-            report: this.state.data.get('report'),
-            report_loaded: report_loaded
-          })}
-        </div>
       </div>
     );
   }

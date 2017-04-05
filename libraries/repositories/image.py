@@ -22,6 +22,7 @@ class Image(object):
             content TEXT,
             key_s3 VARCHAR(2000),
             iv VARCHAR(2000),
+            aes_key VARCHAR(2000),
             PRIMARY KEY (id))
             ENGINE=InnoDB DEFAULT
             CHARSET=utf8 COLLATE=utf8_unicode_ci;"""
@@ -32,30 +33,33 @@ class Image(object):
     def record_image(
         report_id,
         content,
-        iv
+        iv,
+        aes_key
     ):
 
         query = """INSERT INTO image(
             report_id,
             content,
-            iv
+            iv,
+            aes_key
         ) VALUES (
             %(report_id)s,
             %(content)s,
-            %(iv)s
+            %(iv)s,
+            %(aes_key)s
         );"""
         data = {
             'report_id': report_id,
             'content': content,
-            'iv': iv
+            'iv': iv,
+            'aes_key': aes_key
         }
         return r.get_registry()['MY_SQL'].insert(query, data)
 
     @staticmethod
     def get_images(report_id):
         query = """SELECT * FROM image where
-            report_id = %(report_id)s
-            ORDER BY timestamp ASC;"""
+            report_id = %(report_id)s"""
         data = {
             'report_id': report_id
         }
