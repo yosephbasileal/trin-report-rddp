@@ -134,7 +134,7 @@ def add_report():
     print report_id 
 
     return jsonify({
-        "report_id": report_id
+        "succeeded": True
     }), 200
 
 @report.route('/api/rddp/report-records', methods=['GET'])
