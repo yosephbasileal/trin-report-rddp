@@ -16,6 +16,7 @@ class Report(object):
             return
         query = (
             """CREATE TABLE IF NOT EXISTS report(
+            id_dummy INT AUTO_INCREMENT,
             id VARCHAR(2000),
             user_pub_key VARCHAR(4096),
             created DATETIME,
@@ -34,7 +35,9 @@ class Report(object):
             reporter_id_num VARCHAR(2000),
             followup_initiated BOOLEAN,
             archived BOOLEAN,
-            archived_time DATETIME)
+            archived_time DATETIME,
+            image_sym_key VARCHAR(2000),
+            PRIMARY KEY (id_dummy))
             ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"""
         )
         r.get_registry()['MY_SQL'].query(query)
@@ -53,7 +56,8 @@ class Report(object):
         is_res_emp,
         follow_up,
         archived,
-        followup_initiated
+        followup_initiated,
+        image_sym_key
     ):
         query = """INSERT INTO report(
             id,
@@ -68,7 +72,8 @@ class Report(object):
             is_res_emp,
             follow_up,
             archived,
-            followup_initiated
+            followup_initiated,
+            image_sym_key
         ) VALUES (
             %(id)s,
             %(user_pub_key)s,
@@ -82,7 +87,8 @@ class Report(object):
             %(is_res_emp)s,
             %(follow_up)s,
             %(archived)s,
-            %(followup_initiated)s
+            %(followup_initiated)s,
+            %(image_sym_key)s
         );"""
         data = {
             'id': report_id,
@@ -97,7 +103,8 @@ class Report(object):
             'is_res_emp': is_res_emp,
             'follow_up': follow_up,
             'archived': archived,
-            'followup_initiated': followup_initiated
+            'followup_initiated': followup_initiated,
+            'image_sym_key': image_sym_key
         }
         return r.get_registry()['MY_SQL'].insert(query, data)
 
@@ -109,7 +116,7 @@ class Report(object):
             reporter_email = %(reporter_email)s,
             reporter_phone = %(reporter_phone)s,
             reporter_id_num = %(reporter_id_num)s
-            where id = %(id)s;"""
+            where id_dummy = %(id_dummy)s;"""
 
         data = {
             'reporer_name': name,
@@ -117,7 +124,7 @@ class Report(object):
             'reporter_email': email,
             'reporter_phone': phone,
             'reporter_id_num': id_num,
-            'id': r_id
+            'id_dummy': r_id
         }
         r.get_registry()['MY_SQL'].insert(query, data)
 

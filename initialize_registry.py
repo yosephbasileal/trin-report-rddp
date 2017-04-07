@@ -10,7 +10,9 @@ from libraries.repositories.emergency import Emergency
 from libraries.repositories.admin import Admin
 from libraries.repositories.report import Report
 from libraries.repositories.thread import Thread
-from libraries.repositories.message import Message
+from libraries.repositories.message_admin import MessageAdmin
+from libraries.repositories.message_user import MessageUser
+from libraries.repositories.image import Image
 
 
 def load_registry():
@@ -43,4 +45,6 @@ def init_db_objects(r):
     r['EMERGENCY'] = Emergency
     r['REPORT'] = Report
     r['THREAD'] = Thread
-    r['MESSAGE'] = Message
+    r['MESSAGE_ADMIN'] = MessageAdmin
+    r['MESSAGE_USER'] = MessageUser
+    r['IMAGE'] = Image

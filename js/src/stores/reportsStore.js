@@ -53,14 +53,20 @@ ReportsStore.dispatchToken = AppDispatcher.register(function(action) {
   switch (type) {
     case ActionTypes.REPORTS_DATA_LOADED:
       var data = Immutable.fromJS(payload).get('reports');
-      /*for (var i = 0; i < data.size; i++) {
+      for (var i = 0; i < data.size; i++) {
         var e = data.get(i);
-        e = e.set('name', decrypt(e.get('name')));
-        e = e.set('id_num', decrypt(e.get('id_num')));
-        e = e.set('phone', decrypt(e.get('phone')));
-        e = e.set('explanation', decrypt(e.get('explanation')));
+        e = e.set('reporer_name', decrypt(e.get('reporer_name')));
+        e = e.set('reporter_dorm', decrypt(e.get('reporter_dorm')));
+        e = e.set('reporter_email', decrypt(e.get('reporter_email')));
+        e = e.set('reporter_phone', decrypt(e.get('reporter_phone')));
+        e = e.set('reporter_id_num', decrypt(e.get('reporter_id_num')));
+
+        e = e.set('urgency', decrypt(e.get('urgency')));
+        e = e.set('type', decrypt(e.get('type')));
+        e = e.set('location', decrypt(e.get('location')));
+        e = e.set('description', decrypt(e.get('description')));
         data = data.set(i, e);
-      }*/
+      }
       _state = _state.set('reports', data);
       _state = _state.set('reports_loaded', true);
       ReportsStore.emitChange();

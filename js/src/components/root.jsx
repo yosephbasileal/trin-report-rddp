@@ -39,7 +39,9 @@ var Root = React.createClass({
 
               <Route path="/reports" component={Reports}>
                 <IndexRoute  component={Empty} />
-                <Route path=":report_id" component={ReportDialog} />
+                <Route path=":report_id" component={ReportDialog}>
+                  <IndexRoute  component={Empty} />
+                </Route>
               </Route>
 
               <Route path="/login" component={Login} />

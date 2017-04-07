@@ -54,6 +54,7 @@ var Signup = React.createClass({
     // save private key pem to local storage
     var privateKeyPem = RSA.createStringFromPrivateKey(keypair.privateKey);
     localStorage.setItem("admin_private_key", privateKeyPem);
+    localStorage.setItem("admin_public_key", publicKeyPem);
   },
 
   onSubmitButtonClick: function() {

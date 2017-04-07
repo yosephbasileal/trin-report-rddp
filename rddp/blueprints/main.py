@@ -59,6 +59,13 @@ def report_dialog(report_id):
         return redirect(url_for('main.login'))
     return render_template("landing.html")
 
+@main.route('/reports/<report_id>/img/<img_key>',  methods=['GET'])
+def report_image(report_id, img_key):
+    # TODO: check report id and img_key
+    if not Signin.is_loggedin():
+        return redirect(url_for('main.login'))
+    return render_template("landing.html")
+
 @main.route('/signout')
 def sign_out():
     Signin.logout()
@@ -99,7 +106,7 @@ def sign_up_admin():
 
     # redirect to next page
     return jsonify(
-        {'redirect': '/'}
+        {'redirect': '/emergencies'}
     ), 200
 
 

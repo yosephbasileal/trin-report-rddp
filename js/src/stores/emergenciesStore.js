@@ -61,14 +61,18 @@ EmergenciesStore.dispatchToken = AppDispatcher.register(function(action) {
 
     case ActionTypes.EMERGENCIES_DATA_LOADED:
       var data = Immutable.fromJS(payload).get('emergencies');
-      /*for (var i = 0; i < data.size; i++) {
+      for (var i = 0; i < data.size; i++) {
         var e = data.get(i);
         e = e.set('name', decrypt(e.get('name')));
         e = e.set('id_num', decrypt(e.get('id_num')));
         e = e.set('phone', decrypt(e.get('phone')));
+        e = e.set('email', decrypt(e.get('email')));
+        e = e.set('dorm', decrypt(e.get('dorm')));
+        e = e.set('longitude', parseFloat(decrypt(e.get('longitude'))));
+        e = e.set('latitude', parseFloat(decrypt(e.get('latitude'))));
         e = e.set('explanation', decrypt(e.get('explanation')));
         data = data.set(i, e);
-      }*/
+      }
       _state = _state.set('emergencies', data);
       _state = _state.set('emergencies_loaded', true);
       EmergenciesStore.emitChange();

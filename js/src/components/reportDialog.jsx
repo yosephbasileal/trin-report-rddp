@@ -7,6 +7,7 @@ var mui = require('material-ui');
 var Store = require('../stores/reportDialogStore');
 var Actions = require('../actions/reportDialogActions');
 
+var RSA = require('../actions/rsa');
 
 var styles = {
   dialog: {
@@ -29,6 +30,7 @@ function getStateFromStore() {
 var ReportDialog = React.createClass({
   getInitialState: function() {
     Actions.getMessages(this.props.params.report_id);
+    Actions.getImages(this.props.params.report_id);
     this.getData(this.props.params.report_id);
     return getStateFromStore();
   },
@@ -56,7 +58,11 @@ var ReportDialog = React.createClass({
 
   handleStoreChange: function() {
     this.setState(getStateFromStore());
-    scorllDivToBottom();
+    if(this.state.data.get('report')) {
+      if(this.state.data.get('report').get('followup_initiated')) {
+        scorllDivToBottom();
+      }
+    }
   },
 
   handleClose: function() {
@@ -79,8 +85,14 @@ var ReportDialog = React.createClass({
   },
 
   sendMessage: function() {
+    var admin_public_key_pem = localStorage.getItem('admin_public_key');
+    var user_public_key_pem = this.state.data.get('report').get('user_pub_key');
+    var message = this.state.data.get('message');
+    //TODO: do error checking on message
+
     var data = {
-      'message': this.state.data.get('message'),
+      'message_user': RSA.encrypt(message, user_public_key_pem),
+      'message_admin': RSA.encrypt(message, admin_public_key_pem),
       'report_id': this.props.params.report_id
     }
     Actions.sendMessage(data);
@@ -91,7 +103,10 @@ var ReportDialog = React.createClass({
   },
 
   render: function() {
+
     var report = this.state.data.get('report');
+    var images = this.state.data.get('images');
+    console.log(images);
 
     var timestamp = "";
     var id = "";
@@ -111,8 +126,9 @@ var ReportDialog = React.createClass({
     var email = "";
     var dorm = "";
 
-
+    var report_loaded = false;
     if (report) {
+      report_loaded = true;
       timestamp = report.get('created');
       id = String(report.get('id'));
       type = report.get('type');
@@ -203,9 +219,25 @@ var ReportDialog = React.createClass({
               />
             </div>
           </div>
-          <div className="col-xs-1">
+          <div className="col-xs-3">
+            <div className="images-list-container">
+              <mui.List>
+                {images.map((item, index) => {
+                  var s3_key = item.get('s3_key');
+                  var image = item.get('image');
+                  var src = 'data:image/png;base64,'+ image;
+                  return (
+                      <div key={s3_key}>
+                        <img src={src} id="image-container" width="100"></img>
+                        <br />
+                      </div>
+                    )
+                })}
+              </mui.List>
+            </div>
           </div>
-          <div className="col-xs-7">
+
+          <div className="col-xs-5">
             {followup_block}
           </div>
           <div className="dialog-close-button">

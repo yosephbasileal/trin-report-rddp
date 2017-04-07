@@ -57,7 +57,7 @@ class Admin(object):
 
     @staticmethod
     def publish_public_key(a_id, public_key_pem):
-        query = """UPDATE uesrs SET
+        query = """UPDATE admin SET
             public_key_pem = %(public_key_pem)s
             where id = %(id)s;"""
 
