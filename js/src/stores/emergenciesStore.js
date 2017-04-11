@@ -106,6 +106,12 @@ EmergenciesStore.dispatchToken = AppDispatcher.register(function(action) {
         var e_updated = old_data_update.get(i);
         var e_previous = current_list.get(i);
 
+        if(e_updated.get('id') != e_previous.get('id')) {
+            console.log(old_data_update);
+            console.log(current_list);
+            alert("Update invalid.");
+        }
+
         // only update these if user's phone is still sending updates
         if(!e_updated.get('done')) {
           e_previous = e_previous.set('longitude', parseFloat(decrypt(e_updated.get('longitude'))));

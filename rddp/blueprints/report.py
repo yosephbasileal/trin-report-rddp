@@ -44,7 +44,7 @@ def add_report():
     # TODO: error check data
 
     date = datetime.datetime.strptime(
-         date, '%a, %d %b %Y %H:%M:%S %Z'
+         date, '%a, %d %b %Y %H:%M:%S EDT'
     )
 
     # convert to booleans
@@ -416,6 +416,7 @@ def get_messages_app():
     )
 
     if not report:
+        print "Report Id not found: " + report_id
         return jsonify({
             'error': 'Invalid report ID'
         }), 400

@@ -70,7 +70,8 @@ def check_emergency_status():
         emergency_id
     )
     if not emergency:
-        print "No Emergency"
+        print "No Emergency with this ID"
+        print emergency_id
         return jsonify({
             'error': "Ivalid ID"
         }), 400
