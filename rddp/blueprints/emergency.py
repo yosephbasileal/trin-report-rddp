@@ -26,6 +26,10 @@ def emergency_request():
     lng = data.get('longitude')
     exp = data.get('explanation')
 
+    # TODO: validate ip adddress
+    # TODO: validate gps location
+    # TODO: validate authentication token
+
     # add record to database
     handled_status = False
     archived = False
@@ -54,6 +58,36 @@ def emergency_records():
     records = r.get_registry()['EMERGENCY'].get_non_archived_records()
     # create response
     js = {}
+    js['emergencies'] = list(records)
+    js['emergencies_loaded'] = True
+    print "Number of records: " + str(len(list(records)))
+    return jsonify(js), 200
+
+
+@emergency.route('/api/rddp/emergency-records-update', methods=['POST'])
+def emergency_records_update():
+    data = request.json    
+    current_list_ids = data.get('current_list_ids')
+
+    print current_list_ids
+
+    # get all records
+    records = r.get_registry()['EMERGENCY'].get_non_archived_records()
+
+    new_records = []
+    old_records = []
+    for record in records:
+        if record.get('id') not in current_list_ids:
+            new_records.append(record)
+        else:
+            old_records.append(record)
+
+
+
+    # create response
+    js = {}
+    js['new_emergencies'] = new_records
+    js['old_emergencies'] = old_records
     js['emergencies'] = list(records)
     js['emergencies_loaded'] = True
     print "Number of records: " + str(len(list(records)))
