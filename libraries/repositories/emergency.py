@@ -30,6 +30,7 @@ class Emergency(object):
             handled_time DATETIME,
             explanation VARCHAR(2000),
             callme BOOLEAN,
+            done BOOLEAN,
             archived BOOLEAN,
             archived_time DATETIME,
             PRIMARY KEY (id))
@@ -49,7 +50,8 @@ class Emergency(object):
         longitude,
         handled_status,
         explanation,
-        archived
+        archived,
+        done
     ):
         query = """INSERT INTO emergency(
             created,
@@ -63,7 +65,8 @@ class Emergency(object):
             location_last_updated,
             handled_status,
             explanation,
-            archived
+            archived,
+            done
         ) VALUES (
             %(created)s,
             %(name)s,
@@ -76,7 +79,8 @@ class Emergency(object):
             %(location_last_updated)s,
             %(handled_status)s,
             %(explanation)s,
-            %(archived)s
+            %(archived)s,
+            %(done)s
         );"""
         data = {
             'created': created,
@@ -90,7 +94,8 @@ class Emergency(object):
             'location_last_updated': created,
             'handled_status': handled_status,
             'explanation': explanation,
-            'archived': archived
+            'archived': archived,
+            'done': done
         }
         return r.get_registry()['MY_SQL'].insert(query, data)
 
@@ -145,6 +150,18 @@ class Emergency(object):
         data = {
             'archived': archived,
             'archived_time': archived_time,
+            'id': e_id
+        }
+        r.get_registry()['MY_SQL'].insert(query, data)
+
+    @staticmethod
+    def mark_as_done(e_id, done):
+        query = """UPDATE emergency SET
+            done = %(done)s
+            where id = %(id)s;"""
+
+        data = {
+            'done': done,
             'id': e_id
         }
         r.get_registry()['MY_SQL'].insert(query, data)

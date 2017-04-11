@@ -13,7 +13,7 @@ from libraries.s3_client import S3Client as S3
 report = Blueprint('report', __name__)
 
 
-@report.route('/report', methods=['POST'])
+@report.route('/api/app/report', methods=['POST'])
 def add_report():
     timestamp = datetime.datetime.now()
 
@@ -406,6 +406,8 @@ def get_messages_rddp(report_id):
 @report.route('/api/app/report-followup-messages', methods=['POST'])
 def get_messages_app():
     data = request.form
+    if not data:
+        data = request.json
 
     report_id = data.get('report_id')
 

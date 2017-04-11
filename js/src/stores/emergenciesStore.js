@@ -105,13 +105,17 @@ EmergenciesStore.dispatchToken = AppDispatcher.register(function(action) {
       for (var i = 0; i < old_data_update.size; i++) {
         var e_updated = old_data_update.get(i);
         var e_previous = current_list.get(i);
-        e_previous = e_previous.set('longitude', parseFloat(decrypt(e_updated.get('longitude'))));
-        e_previous = e_previous.set('latitude', parseFloat(decrypt(e_updated.get('latitude'))));
-        e_previous = e_previous.set('explanation', decrypt(e_updated.get('explanation')));
-        e_previous = e_previous.set('location_last_updated', e_updated.get('location_last_updated'));
+
+        // only update these if user's phone is still sending updates
+        if(!e_updated.get('done')) {
+          e_previous = e_previous.set('longitude', parseFloat(decrypt(e_updated.get('longitude'))));
+          e_previous = e_previous.set('latitude', parseFloat(decrypt(e_updated.get('latitude'))));
+          e_previous = e_previous.set('explanation', decrypt(e_updated.get('explanation')));
+          e_previous = e_previous.set('callme', e_updated.get('callme'));
+          e_previous = e_previous.set('location_last_updated', e_updated.get('location_last_updated'));
+        }
         e_previous = e_previous.set('handled_status', e_updated.get('handled_status'));
         e_previous = e_previous.set('handled_time', e_updated.get('handled_time'));
-        e_previous = e_previous.set('callme', e_updated.get('callme'));
         e_previous = e_previous.set('archived', e_updated.get('archived'));
 
         current_list = current_list.set(i, e_previous)
