@@ -154,7 +154,7 @@ h2 {
   display: block;
   float: left;
   padding: 0 32px;
-  margin-top: 19px;
+  margin-top: 5px;
   cursor: pointer;
 }
 .pull_right {
@@ -210,7 +210,7 @@ a.header-item {
   padding: 21px 19px;
 }
 .header-item {
-  border-left: 1px solid #dce0e0;
+  /*border-left: 1px solid #dce0e0;*/
 }
 .header-item:first-child {
   border-left: none;
@@ -222,7 +222,7 @@ a.header-item {
   background-color: #f5f5f5;
 }
 .header-icon-item {
-  border-left: 1px solid #dce0e0;
+  /*border-left: 1px solid #dce0e0;*/
 }
 .boxedText {
   padding: 7px 14px;
@@ -301,26 +301,46 @@ a.header-item {
 }
 
 .report-list-container {
-  width: 300px;
+  margin: 0 auto;
+  width: 1200px;
   height: auto;
-  max-height: calc(100% - 110px);
+  max-height: calc(100% - 110px);*/
   overflow-y: scroll;
-  position: absolute;
-  left: 20px;
-  top: 110px;
   z-index: 1000;
-  background-color: rgba(175, 175, 175, 0.38);
   padding:8px;
 }
 
+.report-list-item {
+  background-color: rgba(175, 175, 175, 0.38);
+  border: 1px solid rgba(175, 175, 175, 0.38);
+  border-radius: 1px;
+  height: auto;
+  padding: 10px;
+  margin: 20px 0 20px 0;
+}
+
 .report-container {
-  width: 275px;
-  height: 75px;
+  /*width: 275px;
+  height: 75px;*/
+  color: black;
   background-color: white;
   border-radius: 25px;
   padding: 10px;
-  margin-bottom: 20px;
-  position: relative;
+  /*position: relative;*/
+}
+
+.urgency-indicator {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  border-radius: 7px;
+  right: 20;
+  top: 28;
+}
+
+.refresh-row {
+  margin-left: 22px;
+  padding-top: 5;
 }
 
 /* dialog */
@@ -370,7 +390,7 @@ a.header-item {
   margin-bottom: 3em;
 }
 .messages-div {
-  padding-left: 20px;
+  /*padding-left: 20px;*/
   padding-right: 20px;
   height: 50%;
   overflow-y: scroll;
@@ -380,7 +400,7 @@ a.header-item {
   height: 140px;
 }
 .send-text {
-  width: 85%;
+  width: 83%;
   float: left;
 }
 .send-button {
@@ -407,7 +427,7 @@ a.header-item {
   min-height: 20.66667px;
   width: auto;
   max-width: 330px;
-  margin: 0 10.66667px;
+  /*margin: 0 10.66667px;*/
   box-shadow: 0px 1px 0px 0px rgba(50, 50, 50, 0.3);
   border-radius: 2px;
   font-weight: 300;

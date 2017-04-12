@@ -54,35 +54,50 @@ var ReportsPage = React.createClass({
 
     return (
       <div>
-        <div className="row">
-          <mui.RaisedButton
-            label="Refresh"
-            onTouchTap={this.onRefreshClicked}
-            primary={true}
-          />
-        </div>
-        <div className="report-list-container">
-          <mui.List>
-            {reports.map((item, index) => {
-              var id = String(item.get('id'));
-              var type = item.get('type');
-              var urgency = item.get('urgency');
-              var date = item.get('date')
+        <div className="row report-list-container">
 
-              var link = "/reports/" + id + "?index=" + index;
+          <div className="row refresh-row">
+            <span>
+              <h3 style={{'display': 'inline-block'}}>Pending Incident Reports</h3>
+              <mui.RaisedButton
+                label="Refresh"
+                onTouchTap={this.onRefreshClicked}
+                primary={true}
+                style={{'marginLeft': '40px'}}
+              />
+            </span>
+          </div>
+          {reports.map((item, index) => {
+            var dummy_id = String(item.get('id_dummy'));
+            var id = String(item.get('id'));
+            var type = item.get('type');
+            var urgency = item.get('urgency');
+            var date = item.get('date')
 
-              return (
+            var link = "/reports/" + id + "?index=" + index;
+
+            var color = "rgba(0, 128, 0, 0.86)";
+            if (urgency == "medium") {
+              color = "rgba(255, 255, 0, 0.86)";
+            } else if(urgency == "high") {
+              color = "rgba(255, 0, 0, 0.86)";
+            }
+
+            console.log(color);
+
+            return (
+                <div className="col-xs-3 report-list-item">
                   <Link to={link} key={id}>
-                    <div key={id} className="report-conainer">
-                      <p>ID: {id}</p>
-                      <p>Type: {type}</p>
-                      <p>Urgency: {urgency}</p>
-                      <p>Incident date: {date}</p>
+                    <div key={id} className="report-container">
+                      <p><b>Type:</b> {type}</p>
+                      <p><b>Urgency:</b> {urgency}</p>
+                      <p><b>Date:</b> {date}</p>
+                      <div className="urgency-indicator" style={{'backgroundColor': color}}></div>
                     </div>
                   </Link>
-                )
-            })}
-          </mui.List>
+                </div>
+              )
+          })}
         </div>
 
         <div>

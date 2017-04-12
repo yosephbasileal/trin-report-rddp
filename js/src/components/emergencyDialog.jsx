@@ -145,7 +145,7 @@ var EmergencyDialog = React.createClass({
       callme = emergency.get('callme');
     }
 
-    var title = "Emergency Request #: " + id;
+    var title = "Emergency Request #" + id;
     var callmetext = "";
     if (callme == 1) {
     	callmetext = "yes";
@@ -165,23 +165,23 @@ var EmergencyDialog = React.createClass({
         >
           <div className="col-xs-6 info-col">
             <div className="row">
-              <div>Received at: {timestamp}</div>
+              <div><b>Received at:</b> {timestamp}</div>
               <br />
-              <div>Explanation: {explanation}</div>
-              <div>Can talk on the phone: {callmetext}</div>
+              <div><b>Explanation:</b> {explanation}</div>
+              <div><b>Can talk on the phone:</b> {callmetext}</div>
               <br />
-              <div>Last known location: Lat {lat} Lng {lng}</div>
-              <div>Last updated: {timestamp_location}</div>
+              <div><b>Last known location:</b> Lat {lat} Lng {lng}</div>
+              <div><b>Last updated:</b> {timestamp_location}</div>
             </div>
 
             <br />
 
             <div className="row">
-              <div>Name: {name}</div>
-              <div>ID Number: {id_num}</div>
-              <div>Phone: {phone}</div>
-              <div>Email: {email}</div>
-              <div>Dorm: {dorm}</div>
+              <div><b>Name:</b> {name}</div>
+              <div><b>ID #:</b> {id_num}</div>
+              <div><b>Phone:</b> {phone}</div>
+              <div><b>Email:</b> {email}</div>
+              <div><b>Dorm:</b> {dorm}</div>
             </div>
 
             <br />

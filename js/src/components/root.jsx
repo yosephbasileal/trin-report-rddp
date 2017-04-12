@@ -14,6 +14,8 @@ var Emergencies = require('./emergencies.jsx');
 var ReportDialog = require('./reportDialog.jsx');
 var Reports = require('./reports.jsx');
 
+var Main = require('./main.jsx');
+
 var Login = require('./login.jsx');
 var Signup = require('./signup.jsx');
 var Header = require('./header.jsx');
@@ -29,25 +31,26 @@ var Root = React.createClass({
   render: function() {
     return (
         <div>
-          <Header />
           <MuiThemeProvider>
             <Router history={history}>
-              <Route path="/emergencies" component={Emergencies}>
-                <IndexRoute  component={Empty} />
-                <Route path=":emergency_id" component={EmergencyDialog} />  
-              </Route>
-
-              <Route path="/reports" component={Reports}>
-                <IndexRoute  component={Empty} />
-                <Route path=":report_id" component={ReportDialog}>
+              <Route path="/" component={Main}>
+                <Route path="/emergencies" component={Emergencies}>
                   <IndexRoute  component={Empty} />
+                  <Route path=":emergency_id" component={EmergencyDialog} />  
                 </Route>
+
+                <Route path="/reports" component={Reports}>
+                  <IndexRoute  component={Empty} />
+                  <Route path=":report_id" component={ReportDialog}>
+                    <IndexRoute  component={Empty} />
+                  </Route>
+                </Route>
+
+                <Route path="/login" component={Login} />
+                <Route path="/signup" component={Signup} />
+
+                <Route path="/test" component={Test} />
               </Route>
-
-              <Route path="/login" component={Login} />
-              <Route path="/signup" component={Signup} />
-
-              <Route path="/test" component={Test} />
               
             </Router>
           </MuiThemeProvider>

@@ -96,7 +96,7 @@ def add_report():
 
     # add report to database
     archived = False
-    followup_initiated = False
+    followup_initiated = True
     r_id = r.get_registry()['REPORT'].record_report(
         report_id,
         user_pub_key,
