@@ -16,9 +16,9 @@ class User(object):
             return
         query = (
             """CREATE TABLE IF NOT EXISTS user(
-            user_id VARCHAR(200),
-            auth_token VARCHAR(500),
-            public_key_jwk VARCHAR(4096),
+            user_id VARCHAR(32),
+            auth_token VARCHAR(64),
+            public_key_jwk VARCHAR(450),
             PRIMARY KEY (user_id))
             ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"""
         )

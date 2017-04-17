@@ -18,8 +18,8 @@ class MessageUser(object):
         query = (
             """CREATE TABLE IF NOT EXISTS message_user(
             id INT AUTO_INCREMENT,
-            report_id VARCHAR(2000),
-            content TEXT,
+            report_id VARCHAR(450),
+            content VARCHAR(350),
             from_admin BOOLEAN,
             timestamp DATETIME,
             PRIMARY KEY (id))
