@@ -1,7 +1,7 @@
 # -*- coding: utf-8; -*-
 
 import registry as r
-
+from libraries.utilities.my_sql_wrapper import MySqlWrapper as MySql
 
 class User(object):
     @staticmethod
@@ -16,9 +16,9 @@ class User(object):
             return
         query = (
             """CREATE TABLE IF NOT EXISTS user(
-            user_id VARCHAR(200),
-            auth_token VARCHAR(500),
-            public_key_jwk VARCHAR(4096),
+            user_id VARCHAR(32),
+            auth_token VARCHAR(64),
+            public_key_jwk VARCHAR(450),
             PRIMARY KEY (user_id))
             ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"""
         )
@@ -37,7 +37,7 @@ class User(object):
             'user_id': user_id,
             'auth_token': auth_token
         }
-        return r.get_registry()['MY_SQL'].insert(query, data)
+        return MySql.get_db_conn().insert(query, data)
 
     @staticmethod
     def get_user(auth_token):
@@ -45,7 +45,7 @@ class User(object):
         data = {
             'auth_token': auth_token
         }
-        return r.get_registry()['MY_SQL'].get(query, data)
+        return MySql.get_db_conn().get(query, data)
 
     @staticmethod
     def publish_public_key(auth_token, public_key_jwk):
@@ -57,7 +57,7 @@ class User(object):
             'public_key_jwk': public_key_jwk,
             'auth_token': auth_token
         }
-        r.get_registry()['MY_SQL'].insert(query, data)
+        MySql.get_db_conn().insert(query, data)
 
     @staticmethod
     def get_public_key(u_id):
@@ -65,5 +65,5 @@ class User(object):
         data = {
             'id': u_id
         }
-        return r.get_registry()['MY_SQL'].get(query, data)
+        return MySql.get_db_conn().get(query, data)
 

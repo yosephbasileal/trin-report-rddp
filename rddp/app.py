@@ -8,6 +8,7 @@ from initialize_registry import load_registry
 from flask import Flask, request
 from werkzeug.wsgi import SharedDataMiddleware
 from libraries.sentry_client import SentryClient
+from libraries.utilities.my_sql_wrapper import MySqlWrapper as MySql
 load_registry()
 
 _root = os.path.abspath(os.path.join(os.path.dirname(__file__),".."))
@@ -57,6 +58,9 @@ def _get_etag():
     etag = hashlib.sha1(etag_src.encode('utf8', 'replace')).hexdigest()
     return etag
 
+@app.teardown_appcontext
+def teardown_db(exception):
+    MySql.close_db_conn()
 
 @app.after_request
 def cache_control(response):

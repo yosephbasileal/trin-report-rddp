@@ -1,7 +1,7 @@
 # -*- coding: utf-8; -*-
 
 import registry as r
-
+from libraries.utilities.my_sql_wrapper import MySqlWrapper as MySql
 
 class Report(object):
     @staticmethod
@@ -17,26 +17,26 @@ class Report(object):
         query = (
             """CREATE TABLE IF NOT EXISTS report(
             id_dummy INT AUTO_INCREMENT,
-            id VARCHAR(2000),
-            user_pub_key VARCHAR(4096),
+            id VARCHAR(64),
+            user_pub_key VARCHAR(450),
             created DATETIME,
-            type TEXT,
-            urgency VARCHAR(2000),
+            type VARCHAR(350),
+            urgency VARCHAR(350),
             date DATETIME,
-            location TEXT,
-            description TEXT,
+            location VARCHAR(350),
+            description VARCHAR(350),
             is_anonymous BOOLEAN,
             is_res_emp BOOLEAN,
             follow_up BOOLEAN,
-            reporer_name VARCHAR(2000),
-            reporter_dorm VARCHAR(2000),
-            reporter_email VARCHAR(2000),
-            reporter_phone VARCHAR(2000),
-            reporter_id_num VARCHAR(2000),
+            reporer_name VARCHAR(350),
+            reporter_dorm VARCHAR(350),
+            reporter_email VARCHAR(350),
+            reporter_phone VARCHAR(350),
+            reporter_id_num VARCHAR(350),
             followup_initiated BOOLEAN,
             archived BOOLEAN,
             archived_time DATETIME,
-            image_sym_key VARCHAR(2000),
+            image_sym_key VARCHAR(50),
             PRIMARY KEY (id_dummy))
             ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"""
         )
@@ -106,7 +106,7 @@ class Report(object):
             'followup_initiated': followup_initiated,
             'image_sym_key': image_sym_key
         }
-        return r.get_registry()['MY_SQL'].insert(query, data)
+        return MySql.get_db_conn().insert(query, data)
 
     @staticmethod
     def add_reporter(r_id, name, dorm, email, phone, id_num):
@@ -126,13 +126,13 @@ class Report(object):
             'reporter_id_num': id_num,
             'id_dummy': r_id
         }
-        r.get_registry()['MY_SQL'].insert(query, data)
+        MySql.get_db_conn().insert(query, data)
 
 
     @staticmethod
     def get_all_reports():
         query = """SELECT * FROM report ORDER BY created DESC;"""
-        return r.get_registry()['MY_SQL'].get_all(query)
+        return MySql.get_db_conn().get_all(query)
 
     @staticmethod
     def get_non_archived_reports():
@@ -141,7 +141,7 @@ class Report(object):
         data = {
             'archived': False
         }
-        return r.get_registry()['MY_SQL'].get_all(query, data)
+        return MySql.get_db_conn().get_all(query, data)
 
     @staticmethod
     def get_report(r_id):
@@ -149,7 +149,7 @@ class Report(object):
         data = {
             'id': r_id
         }
-        return r.get_registry()['MY_SQL'].get(query, data)
+        return MySql.get_db_conn().get(query, data)
 
     @staticmethod
     def archive_report(r_id, archived, archived_time):
@@ -163,7 +163,7 @@ class Report(object):
             'archived_time': archived_time,
             'id': r_id
         }
-        r.get_registry()['MY_SQL'].insert(query, data)
+        MySql.get_db_conn().insert(query, data)
 
     @staticmethod
     def initiate_followup(r_id, followup_initiated):
@@ -175,4 +175,4 @@ class Report(object):
             'followup_initiated': followup_initiated,
             'id': r_id
         }
-        r.get_registry()['MY_SQL'].insert(query, data)
+        MySql.get_db_conn().insert(query, data)

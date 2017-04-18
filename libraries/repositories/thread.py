@@ -1,7 +1,7 @@
 # -*- coding: utf-8; -*-
 
 import registry as r
-
+from libraries.utilities.my_sql_wrapper import MySqlWrapper as MySql
 
 class Thread(object):
     @staticmethod
@@ -53,7 +53,7 @@ class Thread(object):
             'report_id': report_id,
             'last_updated': last_updated
         }
-        return r.get_registry()['MY_SQL'].insert(query, data)
+        return MySql.get_db_conn().insert(query, data)
 
     @staticmethod
     def update_last_message(message, time, t_id):
@@ -66,7 +66,7 @@ class Thread(object):
             'last_message': message,
             'report_id': t_id
         }
-        return r.get_registry()['MY_SQL'].insert(query, data)
+        return MySql.get_db_conn().insert(query, data)
 
     @staticmethod
     def get_thread(thread_id):
@@ -75,7 +75,7 @@ class Thread(object):
         data = {
             'report_id': thread_id
         }
-        return r.get_registry()['MY_SQL'].get_all(query, data)
+        return MySql.get_db_conn().get_all(query, data)
 
     @staticmethod
     def get_thread_by_report_id(report_id):
@@ -84,4 +84,4 @@ class Thread(object):
         data = {
             'report_id': report_id
         }
-        return r.get_registry()['MY_SQL'].get(query, data)
+        return MySql.get_db_conn().get(query, data)

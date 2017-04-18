@@ -13,7 +13,7 @@ from libraries.s3_client import S3Client as S3
 report = Blueprint('report', __name__)
 
 
-@report.route('/report', methods=['POST'])
+@report.route('/api/app/report', methods=['POST'])
 def add_report():
     timestamp = datetime.datetime.now()
 
@@ -44,7 +44,7 @@ def add_report():
     # TODO: error check data
 
     date = datetime.datetime.strptime(
-         date, '%a, %d %b %Y %H:%M:%S %Z'
+         date, '%a, %d %b %Y %H:%M:%S EDT'
     )
 
     # convert to booleans
@@ -96,7 +96,7 @@ def add_report():
 
     # add report to database
     archived = False
-    followup_initiated = False
+    followup_initiated = True
     r_id = r.get_registry()['REPORT'].record_report(
         report_id,
         user_pub_key,
@@ -406,6 +406,8 @@ def get_messages_rddp(report_id):
 @report.route('/api/app/report-followup-messages', methods=['POST'])
 def get_messages_app():
     data = request.form
+    if not data:
+        data = request.json
 
     report_id = data.get('report_id')
 
@@ -414,6 +416,7 @@ def get_messages_app():
     )
 
     if not report:
+        print "Report Id not found: " + report_id
         return jsonify({
             'error': 'Invalid report ID'
         }), 400

@@ -37,6 +37,30 @@ var EmergenciesActions = {
         });
       }
     });
+  },
+
+  updateEmergencies: function(current_list_ids) {
+    var data = {'current_list_ids': current_list_ids};
+    $.ajax({
+      type: "POST",
+      url: '/api/rddp/emergency-records-update',
+      data: JSON.stringify(data),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: function(res) {
+        AppDispatcher.dispatch({
+          type: ActionTypes.EMERGENCIES_DATA_UPDATED,
+          payload: res
+        });
+      },
+      error: function(res) {
+        console.log('getEmergencies: some unidentified error');
+        AppDispatcher.dispatch({
+          type: ActionTypes.EMERGENCIES_UNITENTIFIED_ERROR,
+          payload: {}
+        });
+      }
+    });
   }
 };
 

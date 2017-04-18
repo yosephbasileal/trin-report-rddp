@@ -84,6 +84,10 @@ var ReportDialog = React.createClass({
     Actions.initiateFollowup(data);
   },
 
+  onRefreshClicked: function() {
+    Actions.getMessages(this.props.params.report_id);
+  },
+
   sendMessage: function() {
     var admin_public_key_pem = localStorage.getItem('admin_public_key');
     var user_public_key_pem = this.state.data.get('report').get('user_pub_key');
@@ -109,6 +113,7 @@ var ReportDialog = React.createClass({
     console.log(images);
 
     var timestamp = "";
+    var dummy_id = ""
     var id = "";
     var type = "";
     var urgency = "";
@@ -131,6 +136,7 @@ var ReportDialog = React.createClass({
       report_loaded = true;
       timestamp = report.get('created');
       id = String(report.get('id'));
+      dummy_id = String(report.get('id_dummy'));
       type = report.get('type');
       urgency = report.get('urgency');
       date = report.get('date');
@@ -150,7 +156,7 @@ var ReportDialog = React.createClass({
       dorm = report.get('reporter_dorm');
     }
 
-    var title = "Report Request #: " + id;
+    var title = "Report Request #" + dummy_id;
 
     var followup_block = '';
     if(followup_initiated) {
@@ -184,22 +190,23 @@ var ReportDialog = React.createClass({
         >
           <div className="col-xs-4 info-col">
             <div className="row">
-              <div>Received at: {timestamp}</div>
+              <div><b>Received at:</b> {timestamp}</div>
               <br />
-              <div>Type: {type}</div>
-              <div>Incident date: {date}</div>
-              <div>Incident location: {location}</div>
-              <div>Description: {description}</div>
+              <div><b>Type:</b> {type}</div>
+              <div><b>Urgency:</b> {urgency}</div>
+              <div><b>Incident date:</b> {date}</div>
+              <div><b>Incident location:</b> {location}</div>
+              <div><b>Description:</b> {description}</div>
             </div>
 
             <br />
 
             <div className="row">
-              <div>Name: {name}</div>
-              <div>ID Number: {id_num}</div>
-              <div>Phone: {phone}</div>
-              <div>Email: {email}</div>
-              <div>Dorm: {dorm}</div>
+              <div><b>Name:</b> {name}</div>
+              <div><b>ID #:</b> {id_num}</div>
+              <div><b>Phone:</b> {phone}</div>
+              <div><b>Email:</b> {email}</div>
+              <div><b>Dorm:</b> {dorm}</div>
             </div>
 
             <br /><br /><br />
@@ -212,14 +219,13 @@ var ReportDialog = React.createClass({
               />
               &nbsp;&nbsp;&nbsp;
               <mui.RaisedButton
-                label="Initiate Follow-up"
-                onTouchTap={this.onFollowupClicked}
+                label="Refresh Messages"
+                onTouchTap={this.onRefreshClicked}
                 primary={true}
-                disabled={followup_initiated}
               />
             </div>
           </div>
-          <div className="col-xs-3">
+          <div className="col-xs-2">
             <div className="images-list-container">
               <mui.List>
                 {images.map((item, index) => {
@@ -228,7 +234,7 @@ var ReportDialog = React.createClass({
                   var src = 'data:image/png;base64,'+ image;
                   return (
                       <div key={s3_key}>
-                        <img src={src} id="image-container" width="100"></img>
+                        <img src={src} id="image-container" width="75"></img>
                         <br />
                       </div>
                     )
@@ -237,7 +243,7 @@ var ReportDialog = React.createClass({
             </div>
           </div>
 
-          <div className="col-xs-5">
+          <div className="col-xs-6">
             {followup_block}
           </div>
           <div className="dialog-close-button">
@@ -255,28 +261,32 @@ var Messages = React.createClass({
     var messages = this.props.messages;
 
     return (
-      <div className="messages-div">
-        <mui.List>
-          {messages.map((item) => {
-            var m_style; // for css style of chat window
-            if (item.get('from_admin')) {
-              m_style = 'me';
-            } else {
-              m_style = 'them';
-            };
+      <div>
+        <h3>Followup Message Window</h3>
+        <br />
+        <div className="messages-div">
+          <mui.List>
+            {messages.map((item) => {
+              var m_style; // for css style of chat window
+              if (item.get('from_admin')) {
+                m_style = 'me';
+              } else {
+                m_style = 'them';
+              };
 
-            var id = item.get('id');
-            var content = item.get('content');
+              var id = item.get('id');
+              var content = item.get('content');
 
-            return (
-                <div key={id}>
-                  <div className={"message-wrapper " + m_style}>
-                    <div className="text-wrapper">{content}</div>
+              return (
+                  <div key={id}>
+                    <div className={"message-wrapper " + m_style}>
+                      <div className="text-wrapper">{content}</div>
+                    </div>
                   </div>
-                </div>
-              )
-          })}
-        </mui.List>
+                )
+            })}
+          </mui.List>
+        </div>
       </div>
     );
   }
@@ -308,6 +318,7 @@ var NewMessage = React.createClass({
             multiLine={true}
             rows={2}
             rowsMax={2}
+            maxLength={150}
             fullWidth={true}
           />
         </div>

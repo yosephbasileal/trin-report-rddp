@@ -31,7 +31,13 @@ var EmergenciesPage = React.createClass({
 
     // request updated data every five seconds
     timer = setInterval(function(){
-      Actions.getEmergencies();
+      var list = [];
+      var state = getStateFromStore();
+      var data = state.data.get('emergencies');
+      for (var i = 0; i < data.size; i++) {
+        list.push(data.get(i).get('id'));
+      }
+      Actions.updateEmergencies(list);
     }, 6000);
   },
 
