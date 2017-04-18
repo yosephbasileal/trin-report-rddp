@@ -1,7 +1,7 @@
 # -*- coding: utf-8; -*-
 
 import registry as r
-
+from libraries.utilities.my_sql_wrapper import MySqlWrapper as MySql
 
 class Image(object):
     @staticmethod
@@ -54,7 +54,7 @@ class Image(object):
             'iv': iv,
             'aes_key': aes_key
         }
-        return r.get_registry()['MY_SQL'].insert(query, data)
+        return MySql.get_db_conn().insert(query, data)
 
     @staticmethod
     def get_images(report_id):
@@ -63,7 +63,7 @@ class Image(object):
         data = {
             'report_id': report_id
         }
-        return r.get_registry()['MY_SQL'].get_all(query, data)
+        return MySql.get_db_conn().get_all(query, data)
 
     @staticmethod
     def update_key_s3(i_id, key_s3):
@@ -75,4 +75,4 @@ class Image(object):
             'key_s3': key_s3,
             'id': i_id
         }
-        r.get_registry()['MY_SQL'].insert(query, data)
+        MySql.get_db_conn().insert(query, data)

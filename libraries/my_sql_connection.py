@@ -44,3 +44,6 @@ class MySQLConnection(object):
         args = args or {}
         cursor = self.get_cursor()
         return cursor.execute(query, args)
+
+    def close(self):
+        self.db.close()

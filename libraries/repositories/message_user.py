@@ -1,7 +1,7 @@
 # -*- coding: utf-8; -*-
 
 import registry as r
-
+from libraries.utilities.my_sql_wrapper import MySqlWrapper as MySql
 
 class MessageUser(object):
     @staticmethod
@@ -53,7 +53,7 @@ class MessageUser(object):
             'from_admin': from_admin,
             'timestamp': timestamp
         }
-        return r.get_registry()['MY_SQL'].insert(query, data)
+        return MySql.get_db_conn().insert(query, data)
 
     @staticmethod
     def get_messages(report_id):
@@ -63,4 +63,4 @@ class MessageUser(object):
         data = {
             'report_id': report_id
         }
-        return r.get_registry()['MY_SQL'].get_all(query, data)
+        return MySql.get_db_conn().get_all(query, data)

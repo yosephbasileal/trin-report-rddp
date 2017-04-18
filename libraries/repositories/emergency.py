@@ -1,7 +1,7 @@
 # -*- coding: utf-8; -*-
 
 import registry as r
-
+from libraries.utilities.my_sql_wrapper import MySqlWrapper as MySql
 
 class Emergency(object):
     @staticmethod
@@ -97,25 +97,25 @@ class Emergency(object):
             'archived': archived,
             'done': done
         }
-        return r.get_registry()['MY_SQL'].insert(query, data)
+        return MySql.get_db_conn().insert(query, data)
 
     @staticmethod
     def get_all_records():
         query = """SELECT * FROM emergency ORDER BY created DESC;"""
-        return r.get_registry()['MY_SQL'].get_all(query)
+        return MySql.get_db_conn().get_all(query)
 
     @staticmethod
     def get_non_archived_records():
         query1 =  "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;"
-        r.get_registry()['MY_SQL'].query(query1);
+        MySql.get_db_conn().query(query1);
         query = """SELECT * FROM emergency where archived = %(archived)s
             ORDER BY created DESC;"""
         data = {
             'archived': False
         }
-        records =  r.get_registry()['MY_SQL'].get_all(query, data)
+        records =  MySql.get_db_conn().get_all(query, data)
         query2 =  "SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ ;"
-        r.get_registry()['MY_SQL'].query(query2);
+        MySql.get_db_conn().query(query2);
         return records
 
     @staticmethod
@@ -124,7 +124,7 @@ class Emergency(object):
         data = {
             'id': e_id
         }
-        return r.get_registry()['MY_SQL'].get(query, data)
+        return MySql.get_db_conn().get(query, data)
 
     @staticmethod
     def update_status(e_id, handled_status, timestamp):
@@ -138,7 +138,7 @@ class Emergency(object):
             'handled_time': timestamp,
             'id': e_id
         }
-        r.get_registry()['MY_SQL'].insert(query, data)
+        MySql.get_db_conn().insert(query, data)
 
     @staticmethod
     def archive_report(e_id, archived, archived_time):
@@ -152,7 +152,7 @@ class Emergency(object):
             'archived_time': archived_time,
             'id': e_id
         }
-        r.get_registry()['MY_SQL'].insert(query, data)
+        MySql.get_db_conn().insert(query, data)
 
     @staticmethod
     def mark_as_done(e_id, done):
@@ -164,7 +164,7 @@ class Emergency(object):
             'done': done,
             'id': e_id
         }
-        r.get_registry()['MY_SQL'].insert(query, data)
+        MySql.get_db_conn().insert(query, data)
 
     @staticmethod
     def update_location(e_id, longitude, latitude, timestamp):
@@ -180,7 +180,7 @@ class Emergency(object):
             'location_last_updated': timestamp,
             'id': e_id
         }
-        r.get_registry()['MY_SQL'].insert(query, data)
+        MySql.get_db_conn().insert(query, data)
 
     @staticmethod
     def update_explanation(e_id, explanation):
@@ -192,7 +192,7 @@ class Emergency(object):
             'explanation': explanation,
             'id': e_id
         }
-        r.get_registry()['MY_SQL'].insert(query, data)
+        MySql.get_db_conn().insert(query, data)
 
     @staticmethod
     def update_callme(e_id, callme):
@@ -204,7 +204,7 @@ class Emergency(object):
             'callme': callme,
             'id': e_id
         }
-        r.get_registry()['MY_SQL'].insert(query, data)
+        MySql.get_db_conn().insert(query, data)
 
     @staticmethod
     def get_status(e_id):
@@ -212,4 +212,4 @@ class Emergency(object):
         data = {
             'id': e_id
         }
-        return r.get_registry()['MY_SQL'].get(query, data)
+        return MySql.get_db_conn().get(query, data)

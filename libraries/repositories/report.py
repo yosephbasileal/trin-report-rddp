@@ -1,7 +1,7 @@
 # -*- coding: utf-8; -*-
 
 import registry as r
-
+from libraries.utilities.my_sql_wrapper import MySqlWrapper as MySql
 
 class Report(object):
     @staticmethod
@@ -106,7 +106,7 @@ class Report(object):
             'followup_initiated': followup_initiated,
             'image_sym_key': image_sym_key
         }
-        return r.get_registry()['MY_SQL'].insert(query, data)
+        return MySql.get_db_conn().insert(query, data)
 
     @staticmethod
     def add_reporter(r_id, name, dorm, email, phone, id_num):
@@ -126,13 +126,13 @@ class Report(object):
             'reporter_id_num': id_num,
             'id_dummy': r_id
         }
-        r.get_registry()['MY_SQL'].insert(query, data)
+        MySql.get_db_conn().insert(query, data)
 
 
     @staticmethod
     def get_all_reports():
         query = """SELECT * FROM report ORDER BY created DESC;"""
-        return r.get_registry()['MY_SQL'].get_all(query)
+        return MySql.get_db_conn().get_all(query)
 
     @staticmethod
     def get_non_archived_reports():
@@ -141,7 +141,7 @@ class Report(object):
         data = {
             'archived': False
         }
-        return r.get_registry()['MY_SQL'].get_all(query, data)
+        return MySql.get_db_conn().get_all(query, data)
 
     @staticmethod
     def get_report(r_id):
@@ -149,7 +149,7 @@ class Report(object):
         data = {
             'id': r_id
         }
-        return r.get_registry()['MY_SQL'].get(query, data)
+        return MySql.get_db_conn().get(query, data)
 
     @staticmethod
     def archive_report(r_id, archived, archived_time):
@@ -163,7 +163,7 @@ class Report(object):
             'archived_time': archived_time,
             'id': r_id
         }
-        r.get_registry()['MY_SQL'].insert(query, data)
+        MySql.get_db_conn().insert(query, data)
 
     @staticmethod
     def initiate_followup(r_id, followup_initiated):
@@ -175,4 +175,4 @@ class Report(object):
             'followup_initiated': followup_initiated,
             'id': r_id
         }
-        r.get_registry()['MY_SQL'].insert(query, data)
+        MySql.get_db_conn().insert(query, data)

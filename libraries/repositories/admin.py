@@ -1,6 +1,7 @@
 # -*- coding: utf-8; -*-
 
 import registry as r
+from libraries.utilities.my_sql_wrapper import MySqlWrapper as MySql
 
 
 class Admin(object):
@@ -23,6 +24,7 @@ class Admin(object):
             PRIMARY KEY (id))
             ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"""
         )
+        #MySql.get_db_conn().query(query)
         r.get_registry()['MY_SQL'].query(query)
 
     @staticmethod
@@ -45,7 +47,7 @@ class Admin(object):
             'password': password,
             'public_key_pem': public_key_pem
         }
-        return r.get_registry()['MY_SQL'].insert(query, data)
+        return MySql.get_db_conn().insert(query, data)
 
     @staticmethod
     def get_admin_by_email(email):
@@ -53,7 +55,7 @@ class Admin(object):
         data = {
             'email': email
         }
-        return r.get_registry()['MY_SQL'].get(query, data)
+        return MySql.get_db_conn().get(query, data)
 
     @staticmethod
     def publish_public_key(a_id, public_key_pem):
@@ -65,7 +67,7 @@ class Admin(object):
             'public_key_pem': public_key_pem,
             'id': a_id
         }
-        r.get_registry()['MY_SQL'].insert(query, data)
+        MySql.get_db_conn().insert(query, data)
 
     @staticmethod
     def get_public_key(admin_email):
@@ -73,6 +75,6 @@ class Admin(object):
         data = {
             'email': admin_email
         }
-        return r.get_registry()['MY_SQL'].get(query, data)
+        return MySql.get_db_conn().get(query, data)
 
 
