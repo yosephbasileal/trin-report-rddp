@@ -1,5 +1,6 @@
 'use strict';
 
+// Mappings for event dispatcher
 module.exports = {
   SIGNUP_FAILED: 'SIGNUP_FAILED',
   SIGNUP_FIELD_ITEM_UPDATED: 'SIGNUP_FIELD_ITEM_UPDATED',

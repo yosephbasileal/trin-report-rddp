@@ -7,7 +7,7 @@ var mui = require('material-ui');
 var Store = require('../stores/emergencyDialogStore');
 var Actions = require('../actions/emergencyDialogActions');
 
-
+// styles
 var styles = {
   dialog: {
     'width': 1000,
@@ -21,6 +21,7 @@ var styles = {
 };
 
 
+// global states
 var minimap = null;
 var marker = null;
 var map_ready = false;
@@ -33,6 +34,7 @@ function getStateFromStore() {
   };
 }
 
+// Components that shows a dialog with more info of emergency request
 var EmergencyDialog = React.createClass({
   getInitialState: function() {
     this.getData(this.props.params.emergency_id);

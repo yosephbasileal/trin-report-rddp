@@ -15,18 +15,17 @@ var ReportDialog = require('./reportDialog.jsx');
 var Reports = require('./reports.jsx');
 
 var Main = require('./main.jsx');
-
 var Login = require('./login.jsx');
 var Signup = require('./signup.jsx');
 var Header = require('./header.jsx');
 
-var Test = require('./test.jsx');
 var Empty = require('./empty.jsx');
 
 var createBrowserHistory = require('history/lib/createBrowserHistory');
 var history = createBrowserHistory();
 
 
+// Root components that wraps around everything
 var Root = React.createClass({
   render: function() {
     return (
@@ -48,8 +47,6 @@ var Root = React.createClass({
 
                 <Route path="/login" component={Login} />
                 <Route path="/signup" component={Signup} />
-
-                <Route path="/test" component={Test} />
               </Route>
               
             </Router>

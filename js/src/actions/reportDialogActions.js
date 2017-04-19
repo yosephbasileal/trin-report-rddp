@@ -4,7 +4,12 @@ var AppDispatcher = require('../dispatchers/appDispatcher');
 var ActionTypes = require('../constants/actionTypes');
 var Immutable = require('immutable');
 var Forge = require('node-forge');
+var RSA = require('../actions/rsa');
 
+var admin_key_pem = localStorage.getItem("admin_private_key");
+var decrypt = function(cipher) {
+  return RSA.decrypt(cipher , admin_key_pem);
+}
 
 var ReportDialogActions = {
   componentUnmounted: function() {
@@ -139,34 +144,27 @@ var ReportDialogActions = {
       type: "GET",
       url: '/api/rddp/report-images/' + report_id,
       success: function(res) {
-        console.log('images loaded');
-        console.log(res);
-
         var images = Immutable.fromJS(res).get('images');
-        console.log('started decrupting');
         for (var i = 0; i < images.size; i++) {
           var image = images.get(i);
 
-          var key_str = image.get('aes_key');
+          // get key, iv and cipher image
+          var key_str = decrypt(image.get('aes_key')); // decrypt key
           var iv_str = image.get('iv');
           var cipher_str = image.get('image');
+          // decode all three
           var key = Forge.util.decode64(key_str);
           var iv = Forge.util.decode64(iv_str);
           var cipher = Forge.util.decode64(cipher_str);
-
-          //console.log(cipher_str);
-          console.log(key_str);
-          console.log(iv_str);
-
+          // decrypt image
           var decipher = Forge.cipher.createDecipher('AES-CBC', key);
           decipher.start({iv: iv});
           decipher.update(Forge.util.createBuffer(cipher));
           decipher.finish();
-
+          // save decrypted image in list
           image = image.set('image', decipher.output.data);
           images = images.set(i, image);
         }
-        console.log('done decrypting');
 
         AppDispatcher.dispatch({
           type: ActionTypes.REPORT_IMAGES_LOADED,

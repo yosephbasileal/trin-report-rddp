@@ -11,6 +11,7 @@ var Actions = require('../actions/signupActions');
 
 var ErrorBox = require('./error.jsx');
 
+// styles
 var styles = {
   button: {
     'marginTop': '20px',
@@ -24,6 +25,7 @@ function getStateFromStore() {
   };
 }
 
+// Components that shows admin sign up page
 var Signup = React.createClass({
   getInitialState: function() {
     this.generateRSAKeys();

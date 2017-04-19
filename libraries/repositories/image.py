@@ -22,11 +22,11 @@ class Image(object):
         query = (
             """CREATE TABLE IF NOT EXISTS image(
             id INT AUTO_INCREMENT,
-            report_id VARCHAR(2000),
+            report_id VARCHAR(64),
             content TEXT,
-            key_s3 VARCHAR(2000),
-            iv VARCHAR(2000),
-            aes_key VARCHAR(2000),
+            key_s3 VARCHAR(100),
+            iv VARCHAR(350),
+            aes_key VARCHAR(350),
             PRIMARY KEY (id))
             ENGINE=InnoDB DEFAULT
             CHARSET=utf8 COLLATE=utf8_unicode_ci;"""

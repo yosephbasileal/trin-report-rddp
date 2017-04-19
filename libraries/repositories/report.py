@@ -40,7 +40,7 @@ class Report(object):
             followup_initiated BOOLEAN,
             archived BOOLEAN,
             archived_time DATETIME,
-            image_sym_key VARCHAR(50),
+            image_sym_key VARCHAR(350),
             PRIMARY KEY (id_dummy))
             ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"""
         )

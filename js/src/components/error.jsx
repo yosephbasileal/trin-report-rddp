@@ -3,6 +3,7 @@
 var React = require('react');
 var mui = require('material-ui');
 
+// styles
 var styles = {
   errorIcon: {
     'marginTop': '10px',
@@ -23,6 +24,7 @@ var styles = {
   }
 };
 
+// Component that shows error when form submission encounters error
 var ErrorBox = React.createClass({
   clearError: function() {
     this.props.clearError();

@@ -22,6 +22,7 @@ function getStateFromStore() {
   };
 }
 
+// Components that shows login form
 var Login = React.createClass({
   getInitialState: function() {
     return getStateFromStore();

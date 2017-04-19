@@ -64,28 +64,7 @@ var RSA = {
   // takes a string in pem format and converts it to a private key object
   createPrivateKeyFromString: function(privateKeyString) {
     return Forge.pki.privateKeyFromPem(privateKeyString);
-  },
-
-/*  // takes a plaintext and a symmetric key and returns AES encrypted ciphertext (base64)
-  encryptAES: function(key_str, iv_str, plainText) {
-    var buffer = Forge.util.createBuffer(plainText, 'utf8');
-    var binaryString = buffer.getBytes();
-    // TODO: convert key and iv to bytes
-    var cipher = Forge.cipher.createCipher('AES-CBC', key);
-    cipher.start({iv: iv});
-    cipher.update(Forge.util.createBuffer(binaryString));
-    cipher.finish();
-    return cipher.output;
-  },
-
-  // takes a AES ciphertext (base64) and a symmetric key object and returns decrypted plaintext
-  decryptAES: function(key_str, iv_str encryptedString) {
-    var decipher = Forge.cipher.createDecipher('AES-CBC', key);
-    decipher.start({iv: iv});
-    decipher.update(Forge.util.decode64(encryptedString));
-    decipher.finish();
-    return decipher.output;
-  },*/  
+  } 
 };
 
 module.exports = RSA;

@@ -5,6 +5,7 @@ var Link = require('react-router').Link;
 var Store = require('../stores/headerStore');
 var Actions = require('../actions/headerActions');
 
+// styles
 var styles = {
   emergencyButton: {
     'marginTop': 10,
@@ -26,6 +27,7 @@ function getStateFromStore() {
   };
 }
 
+// Components that shows header (logo, navigation, logout)
 var Header = React.createClass({
   getInitialState: function() {
     Actions.checkLogin();

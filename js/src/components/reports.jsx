@@ -14,6 +14,7 @@ function getStateFromStore() {
   };
 }
 
+// Components that shows a list of incident reports
 var ReportsPage = React.createClass({
   getInitialState: function() {
     Actions.getReports();

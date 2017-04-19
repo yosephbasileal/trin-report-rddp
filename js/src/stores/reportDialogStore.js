@@ -57,7 +57,7 @@ var decrypt = function(cipher) {
  ReportDialogStore.dispatchToken = AppDispatcher.register(function(action) {
   var type = action.type;
   var payload = action.payload;
-  console.log(type);
+
   switch (type) {
 
     case ActionTypes.REPORT_DIALOG_INIT_DATA:
@@ -97,10 +97,6 @@ var decrypt = function(cipher) {
       ReportDialogStore.emitChange();
       break;
     case ActionTypes.REPORT_IMAGES_LOADED:
-      console.log('images loaded in store');
-      console.log(payload);
-      console.log(Immutable.fromJS(payload));
-
       _state = _state.merge(Immutable.fromJS(payload));
       ReportDialogStore.emitChange();
       break;

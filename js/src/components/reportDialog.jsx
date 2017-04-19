@@ -27,6 +27,7 @@ function getStateFromStore() {
   };
 }
 
+// Components that shows a dialog with more info of an incident report
 var ReportDialog = React.createClass({
   getInitialState: function() {
     Actions.getMessages(this.props.params.report_id);

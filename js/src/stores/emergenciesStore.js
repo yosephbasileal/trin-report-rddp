@@ -60,7 +60,6 @@ EmergenciesStore.dispatchToken = AppDispatcher.register(function(action) {
       break;
 
     case ActionTypes.EMERGENCIES_DATA_LOADED:
-      console.log('initial load');
       var data = Immutable.fromJS(payload).get('emergencies');
       for (var i = 0; i < data.size; i++) {
         var e = data.get(i);
@@ -81,7 +80,6 @@ EmergenciesStore.dispatchToken = AppDispatcher.register(function(action) {
 
 
     case ActionTypes.EMERGENCIES_DATA_UPDATED:
-      console.log('updating');
       // list of currently displayed emergencies
       var current_list = _state.get('emergencies');
 
@@ -107,8 +105,6 @@ EmergenciesStore.dispatchToken = AppDispatcher.register(function(action) {
         var e_previous = current_list.get(i);
 
         if(e_updated.get('id') != e_previous.get('id')) {
-            console.log(old_data_update);
-            console.log(current_list);
             alert("Update invalid.");
         }
 

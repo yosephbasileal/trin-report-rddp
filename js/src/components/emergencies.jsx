@@ -7,6 +7,7 @@ var mui = require('material-ui');
 var Store = require('../stores/emergenciesStore');
 var Actions = require('../actions/emergenciesActions');
 
+// global states
 var timer;
 var map;
 var markers = [];
@@ -18,10 +19,10 @@ function getStateFromStore() {
   };
 }
 
+// Components that shows a list of emergency requests along with map
 var EmergenciesPage = React.createClass({
   getInitialState: function() {
     Actions.getEmergencies();
-    //Actions.getReports();
     return getStateFromStore();
   },
 
@@ -52,7 +53,9 @@ var EmergenciesPage = React.createClass({
   },
 
   initMap: function() {
+    // coordinates of center of Trinity's campus
     var center = {lat: 41.74702, lng: -72.6902683};
+    // initialize map
     map = new google.maps.Map(document.getElementById('map'), {
       zoom: 16,
       center: center
@@ -98,15 +101,10 @@ var EmergenciesPage = React.createClass({
   },
 
   getEmergencyFromList: function(id) {
-    //console.log("called");
-    //console.log(id);
     var emergencies = this.state.data.get('emergencies');
-    //console.log(emergencies.size);
     var e = null;
     for (var i = emergencies.size - 1; i >= 0; i--) {
-      //console.log(String(emergencies.get(i).get('id')));
       if (String(emergencies.get(i).get('id')) == id) {
-        //console.log("found");
         e = emergencies.get(i);
         break;
       }
@@ -115,17 +113,12 @@ var EmergenciesPage = React.createClass({
   },
 
   render: function() {
-    //console.log('rendering');
     if (this.state.data.get('emergencies_loaded')) {
-      //console.log("loaded");
       if(!map_ready) {
-        //console.log('init map');
         this.initMap();
         
       } else {
-        //console.log('update map');
-        this.updateMap();
-        
+        this.updateMap();  
       }
     }
 
@@ -162,7 +155,6 @@ var EmergenciesPage = React.createClass({
                 status= "Pending";
                 status_color = '#ff0000'
               };
-              //console.log(status);
 
               var link = "/emergencies/" + id + "?index=" + index;
 
@@ -182,7 +174,6 @@ var EmergenciesPage = React.createClass({
         </div>
 
         <div className="map" id="map">
-
         </div>
 
         <div>
