@@ -5,6 +5,7 @@ import random
 import hashlib
 
 
+# Authenticaiton methods
 class Authentication(object):
 
     # makes random salt of length five

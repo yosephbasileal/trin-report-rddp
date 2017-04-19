@@ -9,7 +9,6 @@ from libraries.repositories.user import User
 from libraries.repositories.emergency import Emergency
 from libraries.repositories.admin import Admin
 from libraries.repositories.report import Report
-from libraries.repositories.thread import Thread
 from libraries.repositories.message_admin import MessageAdmin
 from libraries.repositories.message_user import MessageUser
 from libraries.repositories.image import Image
@@ -28,6 +27,10 @@ def load_registry():
 
 
 def init_mysql(r):
+    # This connection is used only for creating
+    # and deleting tables. Other queries during a
+    # web request are handled by a connection created
+    # withing the request's application context.
     r['MY_SQL'] = MySQLConnection()
 
 
@@ -44,7 +47,6 @@ def init_db_objects(r):
     r['ADMIN'] = Admin
     r['EMERGENCY'] = Emergency
     r['REPORT'] = Report
-    r['THREAD'] = Thread
     r['MESSAGE_ADMIN'] = MessageAdmin
     r['MESSAGE_USER'] = MessageUser
     r['IMAGE'] = Image

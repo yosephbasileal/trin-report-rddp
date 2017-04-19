@@ -22,7 +22,6 @@ def run():
     r.get_registry()['EMERGENCY'].create_table()
     r.get_registry()['ADMIN'].create_table()
     r.get_registry()['REPORT'].create_table()
-    r.get_registry()['THREAD'].create_table()
     r.get_registry()['MESSAGE_ADMIN'].create_table()
     r.get_registry()['MESSAGE_USER'].create_table()
     r.get_registry()['IMAGE'].create_table()

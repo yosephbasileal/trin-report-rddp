@@ -4,7 +4,10 @@ import MySQLdb
 from constants import settings
 
 
+# Methods for creating db connection and querying
 class MySQLConnection(object):
+
+    # Initializes a database connection
     def __init__(
             self, host=settings.mysql_host,
             port=settings.mysql_port,
@@ -16,6 +19,7 @@ class MySQLConnection(object):
         self.db.ping(True)
         self.db.set_character_set('utf8')
 
+    # Gets a db crusor
     def get_cursor(self):
         cursor = self.db.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SET NAMES utf8;')
@@ -23,27 +27,32 @@ class MySQLConnection(object):
         cursor.execute('SET character_set_connection=utf8;')
         return cursor
 
+    # SELECT query, fetches one result
     def get(self, query, args=None):
         cursor = self.get_cursor()
         cursor.execute(query, args)
         row = cursor.fetchone()
         return row
 
+    # SELECT query, fetches multiple rows
     def get_all(self, query, args=None):
         cursor = self.get_cursor()
         cursor.execute(query, args)
         return cursor.fetchall()
 
+    # INSERT query
     def insert(self, query, args):
         cursor = self.get_cursor()
         cursor.execute(query, args)
         self.db.commit()
         return cursor.lastrowid
 
+    # UPDATE and other queries
     def query(self, query, args=None):
         args = args or {}
         cursor = self.get_cursor()
         return cursor.execute(query, args)
 
+    # Closes db connection
     def close(self):
         self.db.close()

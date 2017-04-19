@@ -5,6 +5,7 @@ import registry as r
 from libraries.utilities.authentication import Authentication
 
 
+# Methods for signin validation, login, logout of admin user
 class Signin(object):
 
     # validates sign in form input
@@ -33,18 +34,22 @@ class Signin(object):
                 error['password_error'] = 'Incorrect email or password'
         return error
 
+    # log a admin in
     @staticmethod
     def login(email):
         session['email'] = email
 
+    # log a admin out
     @staticmethod
     def logout():
         session.pop('email', None)
 
+    # check if admin is loggedin
     @staticmethod
     def is_loggedin():
         return 'email' in session
 
+    # get loggein in admin object from db
     @staticmethod
     def get_logged_in_user():
         email = session.get('email')

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
+# Utility functions
 class Utilities(object):
 
     # safely casts to specified type
@@ -10,5 +11,3 @@ class Utilities(object):
             return to_type(val)
         except (ValueError, TypeError):
             return default
-
-

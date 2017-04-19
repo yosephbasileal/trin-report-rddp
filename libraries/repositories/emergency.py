@@ -3,7 +3,11 @@
 import registry as r
 from libraries.utilities.my_sql_wrapper import MySqlWrapper as MySql
 
+
+# Emergency db class for emergency requests
 class Emergency(object):
+
+    # Creates table
     @staticmethod
     def create_table():
         result = r.get_registry()['MY_SQL'].query(
@@ -38,6 +42,7 @@ class Emergency(object):
         )
         r.get_registry()['MY_SQL'].query(query)
 
+    # Creates a new emergency request
     @staticmethod
     def record_emergency(
         created,
@@ -99,25 +104,28 @@ class Emergency(object):
         }
         return MySql.get_db_conn().insert(query, data)
 
+    # Gets all emergency requests
     @staticmethod
     def get_all_records():
         query = """SELECT * FROM emergency ORDER BY created DESC;"""
         return MySql.get_db_conn().get_all(query)
 
+    # Gets all emergency requests that have not be archived
     @staticmethod
     def get_non_archived_records():
-        query1 =  "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;"
-        MySql.get_db_conn().query(query1);
+        # query1 = "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;"
+        # MySql.get_db_conn().query(query1)
         query = """SELECT * FROM emergency where archived = %(archived)s
             ORDER BY created DESC;"""
         data = {
             'archived': False
         }
-        records =  MySql.get_db_conn().get_all(query, data)
-        query2 =  "SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ ;"
-        MySql.get_db_conn().query(query2);
+        records = MySql.get_db_conn().get_all(query, data)
+        # query2 = "SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ ;"
+        # MySql.get_db_conn().query(query2)
         return records
 
+    # Gets an emergency request by id
     @staticmethod
     def get_emergency(e_id):
         query = """SELECT * FROM emergency where id = %(id)s"""
@@ -126,6 +134,7 @@ class Emergency(object):
         }
         return MySql.get_db_conn().get(query, data)
 
+    # Updates the status and timestamp of a request
     @staticmethod
     def update_status(e_id, handled_status, timestamp):
         query = """UPDATE emergency SET
@@ -140,6 +149,7 @@ class Emergency(object):
         }
         MySql.get_db_conn().insert(query, data)
 
+    # Archives a request by updating 'archived' column
     @staticmethod
     def archive_report(e_id, archived, archived_time):
         query = """UPDATE emergency SET
@@ -154,6 +164,7 @@ class Emergency(object):
         }
         MySql.get_db_conn().insert(query, data)
 
+    # Marks request as done by updating 'done' column
     @staticmethod
     def mark_as_done(e_id, done):
         query = """UPDATE emergency SET
@@ -166,6 +177,7 @@ class Emergency(object):
         }
         MySql.get_db_conn().insert(query, data)
 
+    # Updates the gps location (lat and lng) of emergency request
     @staticmethod
     def update_location(e_id, longitude, latitude, timestamp):
         query = """UPDATE emergency SET
@@ -182,6 +194,7 @@ class Emergency(object):
         }
         MySql.get_db_conn().insert(query, data)
 
+    # Updates the explanation of request
     @staticmethod
     def update_explanation(e_id, explanation):
         query = """UPDATE emergency SET
@@ -194,6 +207,7 @@ class Emergency(object):
         }
         MySql.get_db_conn().insert(query, data)
 
+    # Updates 'call me' boolean value
     @staticmethod
     def update_callme(e_id, callme):
         query = """UPDATE emergency SET
@@ -206,9 +220,11 @@ class Emergency(object):
         }
         MySql.get_db_conn().insert(query, data)
 
+    # Gets the status of a request using id
     @staticmethod
     def get_status(e_id):
-        query = """SELECT handled_status, handled_time FROM emergency where id = %(id)s"""
+        query = """SELECT handled_status, handled_time
+            FROM emergency where id = %(id)s"""
         data = {
             'id': e_id
         }

@@ -18,9 +18,6 @@ def run():
         'DROP TABLE report;'
     )
     r.get_registry()['MY_SQL'].query(
-        'DROP TABLE thread;'
-    )
-    r.get_registry()['MY_SQL'].query(
         'DROP TABLE message_admin;'
     )
     r.get_registry()['MY_SQL'].query(

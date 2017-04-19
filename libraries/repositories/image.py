@@ -3,7 +3,11 @@
 import registry as r
 from libraries.utilities.my_sql_wrapper import MySqlWrapper as MySql
 
+
+# Db class for images uploading along with incident reports
 class Image(object):
+
+    # Create table
     @staticmethod
     def create_table():
         result = r.get_registry()['MY_SQL'].query(
@@ -29,6 +33,7 @@ class Image(object):
         )
         r.get_registry()['MY_SQL'].query(query)
 
+    # Creates a new image record
     @staticmethod
     def record_image(
         report_id,
@@ -36,7 +41,6 @@ class Image(object):
         iv,
         aes_key
     ):
-
         query = """INSERT INTO image(
             report_id,
             content,
@@ -56,6 +60,7 @@ class Image(object):
         }
         return MySql.get_db_conn().insert(query, data)
 
+    # Gets all images of a report, given report_id
     @staticmethod
     def get_images(report_id):
         query = """SELECT * FROM image where
@@ -65,6 +70,7 @@ class Image(object):
         }
         return MySql.get_db_conn().get_all(query, data)
 
+    # Updates the AWS (Amazon Web Services) S3 key for an image
     @staticmethod
     def update_key_s3(i_id, key_s3):
         query = """UPDATE image SET

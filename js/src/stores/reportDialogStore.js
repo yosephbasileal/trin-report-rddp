@@ -93,6 +93,7 @@ var decrypt = function(cipher) {
       }
       _state = _state.set('messages', data);
       _state = _state.set('message', '');
+      _state = _state.set('message_error', '');
       ReportDialogStore.emitChange();
       break;
     case ActionTypes.REPORT_IMAGES_LOADED:

@@ -4,7 +4,10 @@ import registry as r
 from libraries.utilities.my_sql_wrapper import MySqlWrapper as MySql
 
 
+# Admin db class for rddp users
 class Admin(object):
+
+    # Creates table
     @staticmethod
     def create_table():
         result = r.get_registry()['MY_SQL'].query(
@@ -24,9 +27,9 @@ class Admin(object):
             PRIMARY KEY (id))
             ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"""
         )
-        #MySql.get_db_conn().query(query)
         r.get_registry()['MY_SQL'].query(query)
 
+    # Creates a new admin user
     @staticmethod
     def create_admin(
         email,
@@ -49,6 +52,7 @@ class Admin(object):
         }
         return MySql.get_db_conn().insert(query, data)
 
+    # Gets admin object by email
     @staticmethod
     def get_admin_by_email(email):
         query = """SELECT * FROM admin where email = %(email)s"""
@@ -57,6 +61,13 @@ class Admin(object):
         }
         return MySql.get_db_conn().get(query, data)
 
+    # Gets all admins
+    @staticmethod
+    def get_admins():
+        query = """SELECT * FROM admin"""
+        return MySql.get_db_conn().get_all(query)
+
+    # Updates public key of admin user, key is pem formatted string
     @staticmethod
     def publish_public_key(a_id, public_key_pem):
         query = """UPDATE admin SET
@@ -69,6 +80,7 @@ class Admin(object):
         }
         MySql.get_db_conn().insert(query, data)
 
+    # Gets the public key of an admin user
     @staticmethod
     def get_public_key(admin_email):
         query = """SELECT public_key_pem FROM admin where email = %(email)s"""
@@ -76,5 +88,3 @@ class Admin(object):
             'email': admin_email
         }
         return MySql.get_db_conn().get(query, data)
-
-

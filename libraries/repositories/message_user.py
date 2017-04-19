@@ -3,7 +3,11 @@
 import registry as r
 from libraries.utilities.my_sql_wrapper import MySqlWrapper as MySql
 
+
+# Db class for chat messages, encrypted with app user's public key
 class MessageUser(object):
+
+    # Creates table
     @staticmethod
     def create_table():
         result = r.get_registry()['MY_SQL'].query(
@@ -28,6 +32,7 @@ class MessageUser(object):
         )
         r.get_registry()['MY_SQL'].query(query)
 
+    # Records a new message
     @staticmethod
     def record_message(
         report_id,
@@ -55,6 +60,7 @@ class MessageUser(object):
         }
         return MySql.get_db_conn().insert(query, data)
 
+    # Gets all messages of a report
     @staticmethod
     def get_messages(report_id):
         query = """SELECT * FROM message_user where

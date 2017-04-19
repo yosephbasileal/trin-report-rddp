@@ -117,7 +117,7 @@ var ReportDialogActions = {
   getMessages: function(report_id) {
     $.ajax({
       type: "GET",
-      url: '/api/rddp/report-followup-messages/' + report_id,
+      url: '/api/rddp/followup-messages/' + report_id,
       success: function(res) {
         AppDispatcher.dispatch({
           type: ActionTypes.REPORTS_MESSAGES_DATA_LOADED,

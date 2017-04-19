@@ -89,10 +89,17 @@ var ReportDialog = React.createClass({
   },
 
   sendMessage: function() {
+    var message = this.state.data.get('message');
+    if (message === "") {
+      var data = {
+        'message_error': 'Please enter message'
+      };
+      Actions.saveData(data);
+      return;
+    }
+
     var admin_public_key_pem = localStorage.getItem('admin_public_key');
     var user_public_key_pem = this.state.data.get('report').get('user_pub_key');
-    var message = this.state.data.get('message');
-    //TODO: do error checking on message
 
     var data = {
       'message_user': RSA.encrypt(message, user_public_key_pem),

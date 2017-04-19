@@ -19,26 +19,6 @@ var EmergencyDialogActions = {
     });
   },
 
-  getEmergencyData: function(emergency_id) {
-    $.ajax({
-      type: "GET",
-      url: '/api/rddp/get-emergency-record/' + emergency_id,
-      success: function(res) {
-        AppDispatcher.dispatch({
-          type: ActionTypes.EMERGENCY_DIALOG_DATA_LOADED,
-          payload: res
-        });
-      },
-      error: function(res) {
-        console.log('getEmergencyData: some unidentified error');
-        AppDispatcher.dispatch({
-          type: ActionTypes.LANDING_UNITENTIFIED_ERROR,
-          payload: {}
-        });
-      }
-    });
-  },
-
   markAsRecieved: function(data) {
     $.ajax({
       type: "POST",

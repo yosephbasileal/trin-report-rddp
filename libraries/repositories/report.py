@@ -3,7 +3,11 @@
 import registry as r
 from libraries.utilities.my_sql_wrapper import MySqlWrapper as MySql
 
+
+# Db class for incident reports
 class Report(object):
+
+    # Creates table
     @staticmethod
     def create_table():
         result = r.get_registry()['MY_SQL'].query(
@@ -42,6 +46,7 @@ class Report(object):
         )
         r.get_registry()['MY_SQL'].query(query)
 
+    # Records a new incident report
     @staticmethod
     def record_report(
         report_id,
@@ -108,6 +113,7 @@ class Report(object):
         }
         return MySql.get_db_conn().insert(query, data)
 
+    # Adds reporter's personal info to an existing report
     @staticmethod
     def add_reporter(r_id, name, dorm, email, phone, id_num):
         query = """UPDATE report SET
@@ -128,12 +134,13 @@ class Report(object):
         }
         MySql.get_db_conn().insert(query, data)
 
-
+    # Gets all incident reports
     @staticmethod
     def get_all_reports():
         query = """SELECT * FROM report ORDER BY created DESC;"""
         return MySql.get_db_conn().get_all(query)
 
+    # Gets all non-archived incident reports
     @staticmethod
     def get_non_archived_reports():
         query = """SELECT * FROM report where archived = %(archived)s
@@ -143,6 +150,7 @@ class Report(object):
         }
         return MySql.get_db_conn().get_all(query, data)
 
+    # Gets a report, given report ID
     @staticmethod
     def get_report(r_id):
         query = """SELECT * FROM report where id = %(id)s"""
@@ -151,6 +159,7 @@ class Report(object):
         }
         return MySql.get_db_conn().get(query, data)
 
+    # Archives a report by updating 'archived' column
     @staticmethod
     def archive_report(r_id, archived, archived_time):
         query = """UPDATE report SET
@@ -161,18 +170,6 @@ class Report(object):
         data = {
             'archived': archived,
             'archived_time': archived_time,
-            'id': r_id
-        }
-        MySql.get_db_conn().insert(query, data)
-
-    @staticmethod
-    def initiate_followup(r_id, followup_initiated):
-        query = """UPDATE report SET
-            followup_initiated = %(followup_initiated)s
-            where id = %(id)s;"""
-
-        data = {
-            'followup_initiated': followup_initiated,
             'id': r_id
         }
         MySql.get_db_conn().insert(query, data)

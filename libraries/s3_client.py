@@ -6,8 +6,10 @@ from boto.s3.connection import S3Connection
 from constants import settings as const
 
 
+# Amazon web service s3 client
 class S3Client(object):
 
+    # Uploads file content to s3
     @staticmethod
     def upload_file(file_str, file_key):
         # connect to AWS S3
@@ -27,6 +29,7 @@ class S3Client(object):
         k.set_canned_acl('public-read')
 
 
+    # get absolute url of file hosted on s3
     @staticmethod
     def get_file_url(key):
         s3 = S3Connection(
@@ -40,6 +43,7 @@ class S3Client(object):
         return url
 
 
+    # get content of file hosted on s3
     @staticmethod
     def get_file_content(key):
         s3 = S3Connection(
