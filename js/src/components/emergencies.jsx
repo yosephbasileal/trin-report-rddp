@@ -57,17 +57,17 @@ var EmergenciesPage = React.createClass({
     var center = {lat: 41.74702, lng: -72.6902683};
     // initialize map
     map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 15,
+      zoom: 16,
       center: center
     });
 
     // Define the LatLng coordinates for the polygon's path.
     var campusCoords = [
-      {lat: 41.756097, lng: -72.697784},
-      {lat: 41.739487, lng: -72.697258},
-      {lat: 41.743114, lng: -72.682715},
-      {lat: 41.756292, lng: -72.682463},
-      {lat: 41.756097, lng: -72.697784}
+      {lat: 41.751164, lng: -72.697759},
+      {lat: 41.742359, lng: -72.698027},
+      {lat: 41.743191, lng: -72.682656},
+      {lat: 41.751403, lng: -72.683105},
+      {lat: 41.751164, lng: -72.697759}
     ];
 
     // Construct the polygon.
