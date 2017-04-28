@@ -11,13 +11,15 @@ var styles = {
     'marginTop': 10,
     'marginLeft': 10,
     'marginRight': 5,
-    'backgroundColor': '#f06602'
+    'backgroundColor': '#07193c',
+    'color': '#d9af0b'
   },
   reportButton: {
     'marginTop': 10,
     'marginLeft': 10,
     'marginRight': 20,
-    'backgroundColor': '#f06602'
+    'backgroundColor': '#07193c',
+    'color': '#d9af0b'
   }
 };
 

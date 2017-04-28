@@ -3,6 +3,7 @@
 var React = require('react');
 var Link = require('react-router').Link;
 var MuiThemeProvider = require('material-ui/styles/MuiThemeProvider').default;
+var GetMuiTheme = require('material-ui/styles/getMuiTheme').default;
 var ReactRouter = require('react-router');
 var Router = ReactRouter.Router;
 var Route = ReactRouter.Route;
@@ -24,13 +25,22 @@ var Empty = require('./empty.jsx');
 var createBrowserHistory = require('history/lib/createBrowserHistory');
 var history = createBrowserHistory();
 
+const muiTheme = GetMuiTheme({
+    palette: {
+        primary1Color: '#07193c',
+        primary2Color: '#07193c',
+        accent1Color: '#d9af0b',
+        pickerHeaderColor: '#d9af0b',
+    },
+});
+
 
 // Root components that wraps around everything
 var Root = React.createClass({
   render: function() {
     return (
         <div>
-          <MuiThemeProvider>
+          <MuiThemeProvider muiTheme={muiTheme}>
             <Router history={history}>
               <Route path="/" component={Main}>
                 <Route path="/emergencies" component={Emergencies}>
