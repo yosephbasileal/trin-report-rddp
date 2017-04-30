@@ -4,10 +4,12 @@ body, input, textarea {
 
 body {
   font-size: 14px;
-  margin: 0;
+  margin: 0 auto;
   background-color: #ffffff;
   color: #575757;
   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  min-width: 1300px;
+  width: auto !important;
 }
 
 p {
@@ -24,7 +26,6 @@ a, a:link, a:visited {
   color: #4092f1;
 }
 .body-content {
-  margin-top: 61px;
 }
 
 .wrapper {
@@ -143,9 +144,10 @@ h2 {
 .header {
   z-index: 10000;
   background-color: #FFF;
-  position: fixed;
+  position: relative;
   top: 0;
   display: block;
+  min-width: 1200px;
   width: 100%;
   height: 61px;
   border-bottom: 1px solid #dce0e0;
@@ -238,14 +240,25 @@ a.header-item {
   width: 100%;
 }
 
+.list-title {
+  width: 100%;
+  text-align: center;
+  background: #d9af0b;
+  padding: 5;
+  font-weight: bold;
+  color: #07193c;
+  font-size: 20;
+}
+
 .emergency-list-container {
-  width: 300px;
+  width: 310px;
   height: auto;
+  min-height: 500px;
   max-height: calc(100% - 110px);
   overflow-y: scroll;
   position: absolute;
   left: 20px;
-  top: 110px;
+  top: 20px;
   z-index: 1000;
   background-color: rgba(175, 175, 175, 0.38);
   padding:8px;
@@ -301,32 +314,52 @@ a.header-item {
 }
 
 .report-list-container {
-  margin: 0 auto;
-  width: 1200px;
+  width: 310px;
   height: auto;
-  max-height: calc(100% - 110px);*/
+  min-height: 500px;
+  max-height: calc(100% - 110px);
   overflow-y: scroll;
+  position: absolute;
+  right: 20px;
+  top: 20px;
   z-index: 1000;
+  background-color: rgba(175, 175, 175, 0.38);
   padding:8px;
 }
 
-.report-list-item {
-  background-color: rgba(175, 175, 175, 0.38);
-  border: 1px solid rgba(175, 175, 175, 0.38);
-  border-radius: 1px;
-  height: auto;
-  padding: 10px;
-  margin: 20px 0 20px 0;
-}
-
 .report-container {
-  /*width: 275px;
-  height: 75px;*/
-  color: black;
+  width: 275px;
+  height: 75px;
   background-color: white;
   border-radius: 25px;
   padding: 10px;
-  /*position: relative;*/
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.type {
+  position: absolute;
+  font-weight: bold;
+  top: 10px;
+  left: 15px;
+  font-size: 16px;
+  color: #000000;
+}
+
+.urgency {
+  position: absolute;
+  top: 30px;
+  left: 15px;
+  font-size: 14px;
+  color: #000000;
+}
+
+.date {
+  position: absolute;
+  bottom: 5px;
+  left: 15px;
+  font-size: 14px;
+  color: #000000;
 }
 
 .urgency-indicator {
@@ -341,6 +374,16 @@ a.header-item {
 .refresh-row {
   margin-left: 22px;
   padding-top: 5;
+}
+
+.images-list-container {
+  padding-left: 35px;
+}
+
+@media only screen and (max-width: 960px) {
+  .images-list-container {
+    padding-left: 0px;
+  }
 }
 
 /* dialog */
@@ -361,13 +404,6 @@ a.header-item {
 }
 
 /* inbox */
-.messages-div {
-  padding-left: 20px;
-  padding-right: 20px;
-  height: 55%;
-  overflow-y: scroll;
-  margin-bottom: 10px;
-}
 .active {
   background-color: rgba(15, 50, 80, 0.5);
 }
@@ -392,22 +428,20 @@ a.header-item {
 .messages-div {
   /*padding-left: 20px;*/
   padding-right: 20px;
-  height: 50%;
+  height: 250px;
   overflow-y: scroll;
   margin-bottom: 10px;
 }
 .send-div {
-  height: 140px;
+  min-height: 100px;
 }
 .send-text {
   width: 83%;
   float: left;
 }
 .send-button {
-  padding-left: 5px;
-  width: 15%;
-  float: left;
-  padding-top: 30px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 /* chat window message styles */
 .message-wrapper {
@@ -426,7 +460,7 @@ a.header-item {
   padding: 10.66667px;
   min-height: 20.66667px;
   width: auto;
-  max-width: 330px;
+  max-width: 350px;
   /*margin: 0 10.66667px;*/
   box-shadow: 0px 1px 0px 0px rgba(50, 50, 50, 0.3);
   border-radius: 2px;

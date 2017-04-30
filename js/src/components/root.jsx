@@ -43,14 +43,12 @@ var Root = React.createClass({
           <MuiThemeProvider muiTheme={muiTheme}>
             <Router history={history}>
               <Route path="/" component={Main}>
-                <Route path="/emergencies" component={Emergencies}>
+                <Route path="/home" component={Emergencies}>
                   <IndexRoute  component={Empty} />
-                  <Route path=":emergency_id" component={EmergencyDialog} />  
-                </Route>
-
-                <Route path="/reports" component={Reports}>
-                  <IndexRoute  component={Empty} />
-                  <Route path=":report_id" component={ReportDialog}>
+                  <Route path="/emergencies/:emergency_id" component={EmergencyDialog}>
+                    <IndexRoute  component={Empty} />
+                  </Route>
+                  <Route path="/reports/:report_id" component={ReportDialog}>
                     <IndexRoute  component={Empty} />
                   </Route>
                 </Route>
@@ -58,7 +56,6 @@ var Root = React.createClass({
                 <Route path="/login" component={Login} />
                 <Route path="/signup" component={Signup} />
               </Route>
-              
             </Router>
           </MuiThemeProvider>
         </div>

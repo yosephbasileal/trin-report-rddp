@@ -11,7 +11,8 @@ var RSA = require('../actions/rsa');
 
 var styles = {
   dialog: {
-    'width': 1200,
+    'max-width': 1200,
+    'width': 'auto',
     'maxWidth': 'none',
     'backgroundColor': '#f5f5f5'
   }
@@ -42,7 +43,7 @@ var ReportDialog = React.createClass({
 
   getData: function(r_id) {
     var data = {
-      'report': this.props.getData(r_id),
+      'report': this.props.getReportData(r_id),
       'report_loaded':  true
     };
     Actions.saveData(data);
@@ -195,67 +196,71 @@ var ReportDialog = React.createClass({
           open={this.state.data.get("open")}
           onRequestClose={this.handleClose}
           contentStyle={styles.dialog}
+          autoScrollBodyContent={true}
         >
-          <div className="col-xs-4 info-col">
-            <div className="row">
-              <div><b>Received at:</b> {timestamp}</div>
+          <div className="row" style={{'paddingRight': '20px','paddingLeft': '20px', 'paddingTop': '20px'}}>
+            <div className="col-sm-4 info-col">
+              <div className="row">
+                <div><b>Received at:</b> {timestamp}</div>
+                <br />
+                <div><b>Type:</b> {type}</div>
+                <div><b>Urgency:</b> {urgency}</div>
+                <div><b>Incident date:</b> {date}</div>
+                <div><b>Incident location:</b> {location}</div>
+                <div><b>Description:</b> {description}</div>
+              </div>
+
               <br />
-              <div><b>Type:</b> {type}</div>
-              <div><b>Urgency:</b> {urgency}</div>
-              <div><b>Incident date:</b> {date}</div>
-              <div><b>Incident location:</b> {location}</div>
-              <div><b>Description:</b> {description}</div>
+
+              <div className="row">
+                <div><b>Name:</b> {name}</div>
+                <div><b>ID #:</b> {id_num}</div>
+                <div><b>Phone:</b> {phone}</div>
+                <div><b>Email:</b> {email}</div>
+                <div><b>Dorm:</b> {dorm}</div>
+              </div>
+
+              <br />
+
+              <div className="row">
+                <mui.RaisedButton
+                  label="Archive"
+                  onTouchTap={this.onMarkAsArchived}
+                  secondary={true}
+                />
+                &nbsp;&nbsp;&nbsp;
+                <mui.RaisedButton
+                  label="Refresh Messages"
+                  onTouchTap={this.onRefreshClicked}
+                  primary={true}
+                />
+                <br /> <br />
+              </div>
             </div>
-
-            <br />
-
-            <div className="row">
-              <div><b>Name:</b> {name}</div>
-              <div><b>ID #:</b> {id_num}</div>
-              <div><b>Phone:</b> {phone}</div>
-              <div><b>Email:</b> {email}</div>
-              <div><b>Dorm:</b> {dorm}</div>
+            <div className="col-sm-6" style={{'padding': '0px'}}>
+              {followup_block}
             </div>
-
-            <br /><br /><br />
-
-            <div className="row">
-              <mui.RaisedButton
-                label="Archive"
-                onTouchTap={this.onMarkAsArchived}
-                secondary={true}
-              />
-              &nbsp;&nbsp;&nbsp;
-              <mui.RaisedButton
-                label="Refresh Messages"
-                onTouchTap={this.onRefreshClicked}
-                primary={true}
-              />
+            <div className="col-sm-2 images-list-container">
+              <h3>Images</h3>
+              <div>
+                <mui.List>
+                  {images.map((item, index) => {
+                    var s3_key = item.get('s3_key');
+                    var image = item.get('image');
+                    var src = 'data:image/png;base64,'+ image;
+                    return (
+                        <div key={s3_key}>
+                          <img src={src} id="image-container" width="70"></img>
+                          <br />
+                        </div>
+                      )
+                  })}
+                </mui.List>
+              </div>
             </div>
-          </div>
-          <div className="col-xs-2">
-            <div className="images-list-container">
-              <mui.List>
-                {images.map((item, index) => {
-                  var s3_key = item.get('s3_key');
-                  var image = item.get('image');
-                  var src = 'data:image/png;base64,'+ image;
-                  return (
-                      <div key={s3_key}>
-                        <img src={src} id="image-container" width="75"></img>
-                        <br />
-                      </div>
-                    )
-                })}
-              </mui.List>
+            <div className="dialog-close-button">
+              <Link to="/home">[X]</Link>
             </div>
-          </div>
-
-          <div className="col-xs-6">
-            {followup_block}
-          </div>
-          <div className="dialog-close-button">
-            <Link to="/reports">[X]</Link>
           </div>
         </mui.Dialog>
       </div>
@@ -315,7 +320,7 @@ var NewMessage = React.createClass({
     var state = getStateFromStore();
     return (
       <div className="send-div">
-        <div className="send-text">
+        <div className="col-sm-9" style={{'padding': '0px'}}>
           <mui.TextField
             name="message"
             floatingLabelText="Enter a message"
@@ -331,7 +336,7 @@ var NewMessage = React.createClass({
           />
         </div>
 
-        <div className="send-button">
+        <div className="col-sm-2 send-button" style={{'padding': '0px', 'paddingBottom':'20px'}}>
           <mui.RaisedButton
             label="Send"
             primary={true}

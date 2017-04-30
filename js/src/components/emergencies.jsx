@@ -7,6 +7,8 @@ var mui = require('material-ui');
 var Store = require('../stores/emergenciesStore');
 var Actions = require('../actions/emergenciesActions');
 
+var HeaderStore = require('../stores/headerStore');
+
 // global states
 var timer;
 var map;
@@ -23,6 +25,7 @@ function getStateFromStore() {
 var EmergenciesPage = React.createClass({
   getInitialState: function() {
     Actions.getEmergencies();
+    Actions.getReports();
     return getStateFromStore();
   },
 
@@ -32,6 +35,9 @@ var EmergenciesPage = React.createClass({
 
     // request updated data every five seconds
     timer = setInterval(function(){
+      if(!HeaderStore.getState().get('auto-refresh')) {
+        return;
+      };
       var list = [];
       var state = getStateFromStore();
       var data = state.data.get('emergencies');
@@ -63,11 +69,11 @@ var EmergenciesPage = React.createClass({
 
     // Define the LatLng coordinates for the polygon's path.
     var campusCoords = [
-      {lat: 41.751164, lng: -72.697759},
-      {lat: 41.742359, lng: -72.698027},
-      {lat: 41.743191, lng: -72.682656},
-      {lat: 41.751403, lng: -72.683105},
-      {lat: 41.751164, lng: -72.697759}
+      {lat: 41.750948, lng: -72.693784},
+      {lat: 41.742730, lng: -72.694178},
+      {lat: 41.742768, lng: -72.687180},
+      {lat: 41.751228, lng: -72.687105},
+      {lat: 41.750948, lng: -72.693784}
     ];
 
     // Construct the polygon.
@@ -133,6 +139,18 @@ var EmergenciesPage = React.createClass({
     return e;
   },
 
+  getReportFromList: function(id) {
+    var reports = this.state.data.get('reports');
+    var r = null;
+    for (var i = reports.size - 1; i >= 0; i--) {
+      if (String(reports.get(i).get('id')) == id) {
+        r = reports.get(i);
+        break;
+      }
+    }
+    return r;
+  },
+
   render: function() {
     if (this.state.data.get('emergencies_loaded')) {
       if(!map_ready) {
@@ -149,8 +167,9 @@ var EmergenciesPage = React.createClass({
     var iconLetter = 65;
 
     return (
-      <div>
+      <div style={{'position': 'relative'}}>
         <div className="emergency-list-container">
+          <h3 className="list-title">Emergency Requests</h3>
           <mui.List>
             {emergencies.map((item, index) => {
               var iconlink = "blue_Marker" + String.fromCharCode(iconLetter);
@@ -194,13 +213,50 @@ var EmergenciesPage = React.createClass({
           </mui.List>
         </div>
 
+        <div className="report-list-container">
+          <h3 className="list-title">Incident Reports</h3>
+          <mui.List>
+            {reports.map((item, index) => {
+              var dummy_id = String(item.get('id_dummy'));
+              var id = String(item.get('id'));
+              var type = item.get('type');
+              var urgency = item.get('urgency');
+              var date = item.get('date')
+
+              var link = "/reports/" + id + "?index=" + index;
+
+              var color = "rgba(0, 128, 0, 0.86)";
+              if (urgency == "medium") {
+                color = "rgba(255, 255, 0, 0.86)";
+              } else if(urgency == "high") {
+                color = "rgba(255, 0, 0, 0.86)";
+              }
+
+              console.log(color);
+
+              return (
+                  <Link to={link} key={id}>
+                    <div key={id} className="report-container">
+                      <div className="type">Type: {type}</div>
+                      <div className="urgency">Urgency: {urgency}</div>
+                      <div className="date">Date: {date}</div>
+                      <div className="urgency-indicator" style={{'backgroundColor': color}}></div>
+                    </div>
+                  </Link>
+                )
+            })}
+          </mui.List>
+        </div>
+
         <div className="map" id="map">
         </div>
 
         <div>
           {React.cloneElement(this.props.children, {
-            getData: this.getEmergencyFromList,
-            dataLoaded: this.state.data.get('emergencies_loaded')
+            getEmergencyData: this.getEmergencyFromList,
+            emergencyDataLoaded: this.state.data.get('emergencies_loaded'),
+            getReportData: this.getReportFromList,
+            reportDataLoaded: this.state.data.get('reports_loaded')
           })}
         </div>
       </div>

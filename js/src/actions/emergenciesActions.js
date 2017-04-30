@@ -20,6 +20,7 @@ var EmergenciesActions = {
   },
 
   getEmergencies: function() {
+    console.log('getting emergency recods');
     $.ajax({
       type: "GET",
       url: '/api/rddp/emergency-records',
@@ -33,6 +34,27 @@ var EmergenciesActions = {
         console.log('getEmergencies: some unidentified error');
         AppDispatcher.dispatch({
           type: ActionTypes.EMERGENCIES_UNITENTIFIED_ERROR,
+          payload: {}
+        });
+      }
+    });
+  },
+
+  getReports: function() {
+    console.log('getting incident reports');
+    $.ajax({
+      type: "GET",
+      url: '/api/rddp/report-records',
+      success: function(res) {
+        AppDispatcher.dispatch({
+          type: ActionTypes.REPORTS_DATA_LOADED,
+          payload: res
+        });
+      },
+      error: function(res) {
+        console.log('getReports: some unidentified error');
+        AppDispatcher.dispatch({
+          type: ActionTypes.REPORTS_UNITENTIFIED_ERROR,
           payload: {}
         });
       }

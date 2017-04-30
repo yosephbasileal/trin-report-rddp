@@ -15,7 +15,9 @@ var get_default_state = function() {
     'emergencies_loaded': false,
     'map_ready': false,
     'map': null,
-    'markers': []
+    'markers': [],
+    'reports': [],
+    'reports_loaded': false
   })
 };
 
@@ -135,6 +137,30 @@ EmergenciesStore.dispatchToken = AppDispatcher.register(function(action) {
       _state = get_default_state();
       break;
     case ActionTypes.EMERGENCIES_UNITENTIFIED_ERROR:
+      _state = _state.merge(Immutable.fromJS(payload));
+      EmergenciesStore.emitChange();
+      break;
+    case ActionTypes.REPORTS_DATA_LOADED:
+      var data = Immutable.fromJS(payload).get('reports');
+      for (var i = 0; i < data.size; i++) {
+        var e = data.get(i);
+        e = e.set('reporer_name', decrypt(e.get('reporer_name')));
+        e = e.set('reporter_dorm', decrypt(e.get('reporter_dorm')));
+        e = e.set('reporter_email', decrypt(e.get('reporter_email')));
+        e = e.set('reporter_phone', decrypt(e.get('reporter_phone')));
+        e = e.set('reporter_id_num', decrypt(e.get('reporter_id_num')));
+
+        e = e.set('urgency', decrypt(e.get('urgency')));
+        e = e.set('type', decrypt(e.get('type')));
+        e = e.set('location', decrypt(e.get('location')));
+        e = e.set('description', decrypt(e.get('description')));
+        data = data.set(i, e);
+      }
+      _state = _state.set('reports', data);
+      _state = _state.set('reports_loaded', true);
+      EmergenciesStore.emitChange();
+      break;
+    case ActionTypes.REPORTS_UNITENTIFIED_ERROR:
       _state = _state.merge(Immutable.fromJS(payload));
       EmergenciesStore.emitChange();
       break;
