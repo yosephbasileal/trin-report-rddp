@@ -2,7 +2,7 @@
 from initialize_registry import load_registry
 import registry as r
 
-
+# Deletes all database tables
 def run():
     load_registry()
     r.get_registry()['MY_SQL'].query(
