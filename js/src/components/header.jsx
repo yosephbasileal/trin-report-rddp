@@ -26,7 +26,7 @@ var styles = {
     'marginLeft': 10,
     'marginRight': 10,
     'float': 'left',
-    'width': '250px'
+    'width': '270px'
   }
 };
 
@@ -99,21 +99,23 @@ var Header = React.createClass({
             />
           </div>
           <mui.RaisedButton
-            label="Refresh Emergency Panel"
+            label="Emergency Panel"
             style={styles.emergencyButton}
             primary={true}
             labelColor='#d9af0b'
-            labelStyle={{'color': '#d9af0b'}}
+            labelStyle={{'color': '#d9af0b', 'display': 'inline-block', 'float': 'right'}}
             disabled={this.state.data.get('auto-refresh')}
             onTouchTap={this.refreshEmergencies}
+            icon={<RefreshIcon />}
           />
           <mui.RaisedButton
-            label=" Refresh Incident Report Panel"
+            label="Incident Report Panel"
             style={styles.reportButton}
             primary={true}
             labelColor='#d9af0b'
-            labelStyle={{'color': '#d9af0b'}}
+            labelStyle={{'color': '#d9af0b', 'display': 'inline-block', 'float': 'right'}}
             onTouchTap={this.refreshReports}
+            icon={<RefreshIcon />}
           />
           <div className="header-icon-item" onTouchTap={this.signOut}>
             <SignOut />
@@ -139,7 +141,11 @@ var Header = React.createClass({
   }
 });
 
-
+var RefreshIcon = (props) => (
+  <mui.SvgIcon {...props} style={{'color': 'rgb(128, 128, 128)','marginTop': '5', 'marginLeft': '8'}}>
+    <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
+  </mui.SvgIcon>
+);
 
 var SignOut = React.createClass({
   render: function() {

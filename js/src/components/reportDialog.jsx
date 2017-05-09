@@ -251,7 +251,7 @@ var ReportDialog = React.createClass({
                     return (
                         <div key={s3_key}>
                           <img src={src} id="image-container" width="70"></img>
-                          <br />
+                          <br /><br />
                         </div>
                       )
                   })}
