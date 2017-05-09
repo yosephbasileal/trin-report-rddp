@@ -10,13 +10,14 @@ var Actions = require('../actions/emergencyDialogActions');
 // styles
 var styles = {
   dialog: {
-    'width': 1000,
+    'max-width': 1000,
+    'width': 'auto',
     'maxWidth': 'none',
     'backgroundColor': '#f5f5f5'
   },
   minimap: {
-    'width': 400,
-    'height': 400
+    'width': 350,
+    'height': 350
   }
 };
 
@@ -47,7 +48,7 @@ var EmergencyDialog = React.createClass({
   },
 
   getData: function(e_id) {
-    emergency = this.props.getData(e_id);
+    emergency = this.props.getEmergencyData(e_id);
     emergency_loaded = true;
   },
 
@@ -164,51 +165,55 @@ var EmergencyDialog = React.createClass({
           open={this.state.data.get("open")}
           onRequestClose={this.handleClose}
           contentStyle={styles.dialog}
+          autoScrollBodyContent={true}
         >
-          <div className="col-xs-6 info-col">
-            <div className="row">
-              <div><b>Received at:</b> {timestamp}</div>
+          <div className="row" style={{'padding': '20px'}}>
+            <div className="col-sm-6 info-col">
+              <div className="row">
+                <div><b>Received at:</b> {timestamp}</div>
+                <br />
+                <div><b>Explanation:</b> {explanation}</div>
+                <div><b>Can talk on the phone:</b> {callmetext}</div>
+                <br />
+                <div><b>Last known location:</b> Lat {lat} Lng {lng}</div>
+                <div><b>Last updated:</b> {timestamp_location}</div>
+              </div>
+
               <br />
-              <div><b>Explanation:</b> {explanation}</div>
-              <div><b>Can talk on the phone:</b> {callmetext}</div>
+
+              <div className="row">
+                <div><b>Name:</b> {name}</div>
+                <div><b>ID #:</b> {id_num}</div>
+                <div><b>Phone:</b> {phone}</div>
+                <div><b>Email:</b> {email}</div>
+                <div><b>Dorm:</b> {dorm}</div>
+              </div>
+
               <br />
-              <div><b>Last known location:</b> Lat {lat} Lng {lng}</div>
-              <div><b>Last updated:</b> {timestamp_location}</div>
-            </div>
 
-            <br />
-
-            <div className="row">
-              <div><b>Name:</b> {name}</div>
-              <div><b>ID #:</b> {id_num}</div>
-              <div><b>Phone:</b> {phone}</div>
-              <div><b>Email:</b> {email}</div>
-              <div><b>Dorm:</b> {dorm}</div>
+              <div className="row">
+                <mui.RaisedButton
+                  label="Mark as Received"
+                  primary={true}
+                  onTouchTap={this.onMarkAsRecieved}
+                  disabled={this.state.data.get('receieved')}
+                />
+                &nbsp;&nbsp;&nbsp;
+                <mui.RaisedButton
+                  label="Archive"
+                  onTouchTap={this.onMarkAsArchived}
+                  secondary={true}
+                />
+                <br /><br />
+              </div>
             </div>
-
-            <br />
-
-            <div className="row">
-              <mui.RaisedButton
-                label="Mark as Received"
-                primary={true}
-                onTouchTap={this.onMarkAsRecieved}
-                disabled={this.state.data.get('receieved')}
-              />
-              &nbsp;&nbsp;&nbsp;
-              <mui.RaisedButton
-                label="Archive"
-                onTouchTap={this.onMarkAsArchived}
-                secondary={true}
-              />
+            <div className="col-sm-5">
+              <div style={styles.minimap} id="minimap">
+              </div>
             </div>
-          </div>
-          <div className="col-xs-6">
-            <div style={styles.minimap} id="minimap">
+            <div className="dialog-close-button">
+              <Link to="/home">[X]</Link>
             </div>
-          </div>
-          <div className="dialog-close-button">
-            <Link to="/emergencies">[X]</Link>
           </div>
         </mui.Dialog>
       </div>

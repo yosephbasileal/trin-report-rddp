@@ -12,7 +12,8 @@ var ErrorBox = require('./error.jsx');
 var styles = {
   button: {
     'marginTop': '20px',
-    'marginBottom': '30px'
+    'marginBottom': '30px',
+    'color': '#d9af0b'
   }
 };
 

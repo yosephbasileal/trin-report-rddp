@@ -32,7 +32,7 @@ def sign_up_admin():
     # log in admin
     Signin.login(email)
     # create response
-    js = {'redirect': '/emergencies'}
+    js = {'redirect': '/home'}
     return jsonify(js), 200
 
 
@@ -61,7 +61,7 @@ def sign_in():
     Signin.login(email)
     # create response
     js = {
-        'redirect': '/emergencies',
+        'redirect': '/home',
         'logged_in': True
     }
     return jsonify(js), 200

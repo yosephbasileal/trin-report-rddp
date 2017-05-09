@@ -12,6 +12,13 @@ var HeaderActions = {
     });
   },
 
+  updateFieldInfo: function(change) {
+    AppDispatcher.dispatch({
+      type: ActionTypes.HEADER_FIELD_ITEM_UPDATED,
+      payload: change
+    });
+  },
+
   checkLogin: function() {
     $.ajax({
       type: "GET",

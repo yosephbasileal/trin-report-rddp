@@ -19,6 +19,7 @@ main = Blueprint('main', __name__)
 @main.route('/',  methods=['GET'])
 @main.route('/emergencies',  methods=['GET'])
 @main.route('/reports',  methods=['GET'])
+@main.route('/home',  methods=['GET'])
 def landing():
     if not Signin.is_loggedin():
         return redirect(url_for('main.login'))

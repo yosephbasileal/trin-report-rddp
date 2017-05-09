@@ -261,5 +261,5 @@ def mark_as_archived():
     )
     # create response
     js = {}
-    js['redirect'] = '/emergencies'
+    js['redirect'] = '/home'
     return jsonify(js), 200

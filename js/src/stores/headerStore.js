@@ -10,6 +10,7 @@ var ActionTypes = require('../constants/actionTypes');
 var get_default_state = function() {
   return Immutable.fromJS({
     'logged_in': false,
+    'auto-refresh': true,
     'user': new Map()
   })
 };
@@ -45,6 +46,10 @@ HeaderStore.dispatchToken = AppDispatcher.register(function(action) {
 
   switch (type) {
     case ActionTypes.HEADER_LOGIN_RESPONSE_LOADED:
+      _state = _state.merge(Immutable.fromJS(payload));
+      HeaderStore.emitChange();
+      break;
+    case ActionTypes.HEADER_FIELD_ITEM_UPDATED:
       _state = _state.merge(Immutable.fromJS(payload));
       HeaderStore.emitChange();
       break;
